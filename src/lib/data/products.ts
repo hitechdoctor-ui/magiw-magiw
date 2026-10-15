@@ -1,6 +1,6 @@
-import { handmadeSatinSet } from "@/lib/data/featured-product";
+import { FEATURED_PRODUCTS } from "@/lib/data/featured-products";
 import { mockFeed } from "@/lib/data/mock-feed";
-import type { ProductDetail } from "@/lib/types/database";
+import type { Product, ProductDetail } from "@/lib/types/database";
 
 function resolvePostImages(
   mediaUrl: string,
@@ -16,6 +16,14 @@ function resolvePostImages(
   return [mediaUrl];
 }
 
+function toProductDetail(product: Product, images: string[]): ProductDetail {
+  return {
+    ...product,
+    images,
+    sku: product.sku ?? `REF-${product.slug.toUpperCase().replace(/-/g, "")}`,
+  };
+}
+
 function buildProductCatalog(): ProductDetail[] {
   const catalog = new Map<string, ProductDetail>();
 
@@ -29,12 +37,10 @@ function buildProductCatalog(): ProductDetail[] {
     );
 
     const existing = catalog.get(post.product.id);
+    const detail = toProductDetail(post.product, images);
 
     if (!existing) {
-      catalog.set(post.product.id, {
-        ...post.product,
-        images,
-      });
+      catalog.set(post.product.id, detail);
       continue;
     }
 
@@ -45,7 +51,9 @@ function buildProductCatalog(): ProductDetail[] {
 
     catalog.set(post.product.id, {
       ...existing,
+      ...detail,
       images: mergedImages,
+      sku: post.product.sku ?? existing.sku,
     });
   }
 
@@ -53,14 +61,23 @@ function buildProductCatalog(): ProductDetail[] {
 }
 
 function mergeFeaturedProducts(catalog: ProductDetail[]): ProductDetail[] {
-  const featured = [handmadeSatinSet];
+  const byId = new Map(catalog.map((product) => [product.id, product]));
   const bySlug = new Map(catalog.map((product) => [product.slug, product]));
 
-  for (const product of featured) {
-    bySlug.set(product.slug, product);
+  for (const featured of FEATURED_PRODUCTS) {
+    byId.set(featured.id, featured);
+    bySlug.set(featured.slug, featured);
   }
 
-  return Array.from(bySlug.values());
+  const merged = new Map<string, ProductDetail>();
+  for (const product of byId.values()) {
+    merged.set(product.id, product);
+  }
+  for (const featured of FEATURED_PRODUCTS) {
+    merged.set(featured.id, featured);
+  }
+
+  return Array.from(merged.values());
 }
 
 const productCatalog = mergeFeaturedProducts(buildProductCatalog());
@@ -71,7 +88,8 @@ export function getAllProducts(): ProductDetail[] {
 
 export function getProductById(id: string): ProductDetail | undefined {
   return productCatalog.find(
-    (product) => product.id === id || product.slug === id,
+    (product) =>
+      product.id === id || product.slug === id || product.sku === id,
   );
 }
 

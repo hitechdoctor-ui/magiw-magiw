@@ -6,12 +6,25 @@ export type Product = {
   id: string;
   name: string;
   slug: string;
+  sku?: string;
   description: string | null;
   price_cents: number;
   currency: string;
   sizes: string[];
   stock: number;
   is_active: boolean;
+};
+
+export type SizeGuideRow = {
+  size: string;
+  bust: string;
+  waist: string;
+  hips: string;
+};
+
+export type ProductSizeGuide = {
+  rows: SizeGuideRow[];
+  customFitNote?: string;
 };
 
 export type ProductAccordionSection = {
@@ -22,9 +35,10 @@ export type ProductAccordionSection = {
 
 export type ProductDetail = Product & {
   images: string[];
-  sku?: string;
+  sku: string;
   statusLabel?: string;
   showVirtualTryOn?: boolean;
+  sizeGuide?: ProductSizeGuide;
   sections?: ProductAccordionSection[];
 };
 

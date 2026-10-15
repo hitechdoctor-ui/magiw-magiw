@@ -32,7 +32,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
         <div className="grid grid-cols-3 gap-3">
           {images.map((image, index) => (
             <button
-              key={image}
+              key={`${image}-${index}`}
               type="button"
               onClick={() => setActiveIndex(index)}
               className={`group relative aspect-[4/5] overflow-hidden bg-stone-100 transition ${

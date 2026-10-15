@@ -14,6 +14,38 @@ function instagramSprite(index: number): MediaSprite {
 
 export const mockFeed: FeedPost[] = [
   {
+    id: "mock-green-dress",
+    instagram_id: "magiw_aig_gw001",
+    media_type: "image",
+    media_url: "/images/products/aig-gw001-1.jpg",
+    thumbnail_url: null,
+    caption: "Emerald satin — atelier edition.",
+    aspect_ratio: 0.8,
+    product_id: "c2000000-0000-0000-0000-000000000002",
+    display_order: 110,
+    is_featured: true,
+    posted_at: new Date(Date.now() - 1 * 86400000).toISOString(),
+    gallery: [
+      "/images/products/aig-gw001-1.jpg",
+      "/images/products/aig-gw001-2.jpg",
+      "/images/products/aig-gw001-3.jpg",
+      "/images/products/aig-gw001-4.jpg",
+    ],
+    product: {
+      id: "c2000000-0000-0000-0000-000000000002",
+      name: "ATELIER GREEN SATIN DRESS",
+      slug: "atelier-green-satin-dress",
+      sku: "AIG-GW001",
+      description:
+        "Χειροποίητο maxi φόρεμα από εξαιρετικής ποιότητας σατέν ύφασμα σε σμαραγδί απόχρωση. Σχεδιάζεται, κόβεται και ράβεται εξ ολοκλήρου στο ατελιέ μας με ιδιαίτερη έμφαση στη λεπτομέρεια και στο πατρόν.",
+      price_cents: 11000,
+      currency: "EUR",
+      sizes: ["S", "M", "L", "XL"],
+      stock: 5,
+      is_active: true,
+    },
+  },
+  {
     id: "mock-1",
     instagram_id: "magiw_red_velvet",
     media_type: "image",
@@ -30,6 +62,7 @@ export const mockFeed: FeedPost[] = [
       id: "a3333333-3333-3333-3333-333333333333",
       name: "Red Velvet Coat",
       slug: "red-velvet-coat",
+      sku: "MW-RVC001",
       description:
         "Χειροποίητο βελούδινο παλτό, σχεδιασμένο και κομμένο στο χέρι. Διαθέτει μεταξωτή φόδρα και premium ραφή.",
       price_cents: 12000,

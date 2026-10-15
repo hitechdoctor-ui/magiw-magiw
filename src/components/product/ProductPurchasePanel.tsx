@@ -50,11 +50,9 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
           {product.name}
         </h1>
 
-        {product.sku && (
-          <p className="mt-3 text-xs uppercase tracking-[0.25em] text-neutral-400">
-            SKU · {product.sku}
-          </p>
-        )}
+        <p className="mt-3 font-mono text-sm tracking-wider text-neutral-700">
+          SKU · <span className="text-neutral-900">{product.sku}</span>
+        </p>
 
         {product.statusLabel && (
           <p className="mt-4 text-xs uppercase tracking-[0.22em] text-neutral-600">
@@ -140,7 +138,23 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
       </div>
 
       {sizeGuideOpen && (
-        <SizeGuideModal onClose={() => setSizeGuideOpen(false)} />
+        <SizeGuideModal
+          productName={product.name}
+          sku={product.sku}
+          sizeGuide={
+            product.sizeGuide ?? {
+              rows: product.sizes.map((size) => ({
+                size,
+                bust: "—",
+                waist: "—",
+                hips: "—",
+              })),
+              customFitNote:
+                "Για custom fit, επικοινώνησε με το ατελιέ MAGIW MAGIW.",
+            }
+          }
+          onClose={() => setSizeGuideOpen(false)}
+        />
       )}
 
       {tryOnOpen && (

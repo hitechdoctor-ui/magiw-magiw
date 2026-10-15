@@ -129,3 +129,37 @@ insert into public.instagram_posts (
     false,
     now() - interval '10 days'
   );
+
+insert into public.products (id, name, slug, sku, description, price_cents, sizes, stock) values
+  (
+    'c2000000-0000-0000-0000-000000000002',
+    'ATELIER GREEN SATIN DRESS',
+    'atelier-green-satin-dress',
+    'AIG-GW001',
+    'Χειροποίητο maxi φόρεμα από εξαιρετικής ποιότητας σατέν ύφασμα σε σμαραγδί απόχρωση.',
+    11000,
+    array['S', 'M', 'L', 'XL'],
+    5
+  )
+on conflict (slug) do update set
+  sku = excluded.sku,
+  name = excluded.name,
+  description = excluded.description,
+  price_cents = excluded.price_cents,
+  sizes = excluded.sizes,
+  stock = excluded.stock;
+
+insert into public.instagram_posts (
+  instagram_id, media_type, media_url, caption, aspect_ratio, product_id, display_order, is_featured, posted_at
+) values
+  (
+    'magiw_aig_gw001',
+    'image',
+    '/images/products/aig-gw001-1.jpg',
+    'Emerald satin — atelier edition.',
+    0.8,
+    'c2000000-0000-0000-0000-000000000002',
+    110,
+    true,
+    now() - interval '1 day'
+  );
