@@ -4,7 +4,11 @@ import {
   type TryOnGarmentCategory,
 } from "@/lib/ai/garment-try-on";
 import { runReplicateVirtualTryOn } from "@/lib/ai/replicate-try-on";
-import { fileToDataUri, publicAssetToDataUri } from "@/lib/ai/image-data-uri";
+import { publicAssetToDataUri } from "@/lib/ai/image-data-uri";
+import {
+  fileToOrientedDataUri,
+  remoteImageToOrientedDataUri,
+} from "@/lib/ai/normalize-orientation";
 import { getProductById } from "@/lib/data/products";
 import { NextResponse } from "next/server";
 
@@ -64,16 +68,18 @@ export async function POST(request: Request) {
     }
 
     const [humanImageDataUri, garmentImageDataUri] = await Promise.all([
-      fileToDataUri(userImage),
+      fileToOrientedDataUri(userImage),
       publicAssetToDataUri(productImageUrl),
     ]);
 
-    const outputUrl = await runReplicateVirtualTryOn({
+    const replicateOutputUrl = await runReplicateVirtualTryOn({
       humanImageDataUri,
       garmentImageDataUri,
       garmentDescription,
       category,
     });
+
+    const outputUrl = await remoteImageToOrientedDataUri(replicateOutputUrl);
 
     return NextResponse.json({ outputUrl });
   } catch (error) {

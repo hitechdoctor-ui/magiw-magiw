@@ -1,5 +1,7 @@
 "use client";
 
+import { TryOnResultImage } from "@/components/product/TryOnResultImage";
+import { normalizeUserImageFile } from "@/lib/utils/normalize-user-image";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
@@ -28,6 +30,7 @@ export function VirtualTryOnModal({
   const [isGenerating, setIsGenerating] = useState(false);
   const [resultImageUrl, setResultImageUrl] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isNormalizingPhoto, setIsNormalizingPhoto] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -49,18 +52,27 @@ export function VirtualTryOnModal({
     };
   }, [userPhotoUrl]);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    userPhotoFileRef.current = file;
+    setIsNormalizingPhoto(true);
     setResultImageUrl(null);
     setErrorMessage(null);
-    setUserPhotoUrl((previous) => {
-      if (previous) URL.revokeObjectURL(previous);
-      return URL.createObjectURL(file);
-    });
-    event.target.value = "";
+
+    try {
+      const orientedFile = await normalizeUserImageFile(file);
+      userPhotoFileRef.current = orientedFile;
+      setUserPhotoUrl((previous) => {
+        if (previous) URL.revokeObjectURL(previous);
+        return URL.createObjectURL(orientedFile);
+      });
+    } finally {
+      setIsNormalizingPhoto(false);
+      event.target.value = "";
+    }
   };
 
   const handleGenerate = async () => {
@@ -195,7 +207,7 @@ export function VirtualTryOnModal({
                     <img
                       src={userPhotoUrl}
                       alt="Η φωτογραφία σου"
-                      className="h-full w-full object-cover"
+                      className="h-full w-full object-contain object-center [image-orientation:from-image]"
                     />
                   </div>
                 </div>
@@ -230,18 +242,20 @@ export function VirtualTryOnModal({
                 <button
                   type="button"
                   onClick={handleGenerate}
-                  disabled={isGenerating}
+                  disabled={isGenerating || isNormalizingPhoto}
                   className="flex flex-1 items-center justify-center gap-2 bg-neutral-950 py-3 text-xs uppercase tracking-[0.2em] text-white disabled:opacity-60"
                 >
-                  {isGenerating && (
+                  {(isGenerating || isNormalizingPhoto) && (
                     <span
                       className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
                       aria-hidden
                     />
                   )}
-                  {isGenerating
-                    ? "AI δημιουργεί..."
-                    : "Δημιουργία AI Εφαρμογής"}
+                  {isNormalizingPhoto
+                    ? "Προετοιμασία φωτό..."
+                    : isGenerating
+                      ? "AI δημιουργεί..."
+                      : "Δημιουργία AI Εφαρμογής"}
                 </button>
               </div>
 
@@ -262,14 +276,10 @@ export function VirtualTryOnModal({
                   <p className="text-[10px] uppercase tracking-[0.3em] text-neutral-400">
                     AI Try-On Αποτέλεσμα
                   </p>
-                  <div className="relative mt-3 aspect-[3/4] overflow-hidden bg-neutral-100">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={resultImageUrl}
-                      alt={`AI try-on: ${productName}`}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
+                  <TryOnResultImage
+                    src={resultImageUrl}
+                    alt={`AI try-on: ${productName}`}
+                  />
                 </div>
               )}
             </>
