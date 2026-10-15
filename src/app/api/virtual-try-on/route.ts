@@ -1,16 +1,32 @@
+import {
+  buildGarmentDescription,
+  resolveTryOnCategory,
+  type TryOnGarmentCategory,
+} from "@/lib/ai/garment-try-on";
 import { runReplicateVirtualTryOn } from "@/lib/ai/replicate-try-on";
 import { fileToDataUri, publicAssetToDataUri } from "@/lib/ai/image-data-uri";
+import { getProductById } from "@/lib/data/products";
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 export const maxDuration = 120;
+
+function parseCategory(value: FormDataEntryValue | null): TryOnGarmentCategory | null {
+  if (typeof value !== "string") return null;
+  if (value === "dresses" || value === "upper_body" || value === "lower_body") {
+    return value;
+  }
+  return null;
+}
 
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
     const userImage = formData.get("userImage");
     const productImageUrl = formData.get("productImageUrl");
-    const garmentDescription = formData.get("garmentDescription");
+    const productSlug = formData.get("productSlug");
+    const garmentDescriptionField = formData.get("garmentDescription");
+    const categoryField = formData.get("tryOnCategory");
 
     if (!(userImage instanceof File)) {
       return NextResponse.json(
@@ -26,10 +42,26 @@ export async function POST(request: Request) {
       );
     }
 
-    const description =
-      typeof garmentDescription === "string" && garmentDescription.trim().length
-        ? garmentDescription.trim()
-        : "Handmade fashion garment";
+    const catalogProduct =
+      typeof productSlug === "string" && productSlug.trim().length
+        ? getProductById(productSlug.trim())
+        : undefined;
+
+    let garmentDescription: string;
+    let category: TryOnGarmentCategory;
+
+    if (catalogProduct) {
+      garmentDescription = buildGarmentDescription(catalogProduct);
+      category = resolveTryOnCategory(catalogProduct);
+    } else {
+      garmentDescription =
+        typeof garmentDescriptionField === "string" &&
+        garmentDescriptionField.trim().length
+          ? garmentDescriptionField.trim()
+          : "Handmade fashion garment, preserve full length from reference image, not mini";
+
+      category = parseCategory(categoryField) ?? "dresses";
+    }
 
     const [humanImageDataUri, garmentImageDataUri] = await Promise.all([
       fileToDataUri(userImage),
@@ -39,7 +71,8 @@ export async function POST(request: Request) {
     const outputUrl = await runReplicateVirtualTryOn({
       humanImageDataUri,
       garmentImageDataUri,
-      garmentDescription: description,
+      garmentDescription,
+      category,
     });
 
     return NextResponse.json({ outputUrl });

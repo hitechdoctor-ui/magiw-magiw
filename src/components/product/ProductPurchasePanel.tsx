@@ -161,6 +161,9 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
         <VirtualTryOnModal
           productName={product.name}
           productImage={product.images[0]}
+          productSlug={product.slug}
+          garmentDescription={product.garmentDescription}
+          tryOnCategory={product.tryOnCategory}
           onClose={() => setTryOnOpen(false)}
         />
       )}

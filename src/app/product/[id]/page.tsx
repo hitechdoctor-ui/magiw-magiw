@@ -1,3 +1,4 @@
+import { EditorialProductView } from "@/components/product/editorial/EditorialProductView";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { ProductPurchasePanel } from "@/components/product/ProductPurchasePanel";
 import { getAllProducts, getProductById } from "@/lib/data/products";
@@ -36,6 +37,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   if (!product) {
     notFound();
+  }
+
+  if (product.pageLayout === "editorial") {
+    return <EditorialProductView product={product} />;
   }
 
   return (

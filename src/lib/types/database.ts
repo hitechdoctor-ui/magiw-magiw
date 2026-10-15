@@ -33,11 +33,32 @@ export type ProductAccordionSection = {
   content: string;
 };
 
+export type TryOnGarmentCategory = "dresses" | "upper_body" | "lower_body";
+
+export type ProductPageLayout = "standard" | "editorial";
+
+export type EditorialLookbookSlide = {
+  image: string;
+  caption?: string;
+};
+
+export type ProductEditorialMeta = {
+  collectionLine: string;
+  seasonLabel?: string;
+  slides?: EditorialLookbookSlide[];
+};
+
 export type ProductDetail = Product & {
   images: string[];
   sku: string;
+  pageLayout?: ProductPageLayout;
+  editorial?: ProductEditorialMeta;
   statusLabel?: string;
   showVirtualTryOn?: boolean;
+  /** English prompt for Replicate IDM-VTON `garment_des` (length, fit, fabric). */
+  garmentDescription?: string;
+  /** IDM-VTON `category`; defaults from product name/description when omitted. */
+  tryOnCategory?: TryOnGarmentCategory;
   sizeGuide?: ProductSizeGuide;
   sections?: ProductAccordionSection[];
 };

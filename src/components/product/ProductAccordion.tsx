@@ -2,11 +2,17 @@
 
 type ProductAccordionProps = {
   sections: { id: string; title: string; content: string }[];
+  className?: string;
 };
 
-export function ProductAccordion({ sections }: ProductAccordionProps) {
+export function ProductAccordion({ sections, className }: ProductAccordionProps) {
   return (
-    <div className="mt-10 divide-y divide-stone-200 border-t border-stone-200">
+    <div
+      className={
+        className ??
+        "mt-10 divide-y divide-stone-200 border-t border-stone-200"
+      }
+    >
       {sections.map((section) => (
         <details key={section.id} className="group py-4">
           <summary className="flex cursor-pointer list-none items-center justify-between text-sm tracking-wide text-neutral-800 marker:content-none">

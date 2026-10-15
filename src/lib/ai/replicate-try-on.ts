@@ -1,7 +1,10 @@
+import type { TryOnGarmentCategory } from "@/lib/types/database";
+
 type TryOnInput = {
   humanImageDataUri: string;
   garmentImageDataUri: string;
   garmentDescription: string;
+  category: TryOnGarmentCategory;
 };
 
 const DEFAULT_VERSION =
@@ -88,9 +91,9 @@ export async function runReplicateVirtualTryOn(
         human_img: input.humanImageDataUri,
         garm_img: input.garmentImageDataUri,
         garment_des: input.garmentDescription,
-        category: "dresses",
+        category: input.category,
         force_dc: true,
-        crop: true,
+        crop: false,
         steps: 30,
       },
     }),

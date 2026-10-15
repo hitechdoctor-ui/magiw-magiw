@@ -6,12 +6,18 @@ import { useEffect, useRef, useState } from "react";
 type VirtualTryOnModalProps = {
   productName: string;
   productImage: string;
+  productSlug?: string;
+  garmentDescription?: string;
+  tryOnCategory?: "dresses" | "upper_body" | "lower_body";
   onClose: () => void;
 };
 
 export function VirtualTryOnModal({
   productName,
   productImage,
+  productSlug,
+  garmentDescription,
+  tryOnCategory,
   onClose,
 }: VirtualTryOnModalProps) {
   const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -69,7 +75,13 @@ export function VirtualTryOnModal({
       const formData = new FormData();
       formData.append("userImage", userFile);
       formData.append("productImageUrl", productImage);
-      formData.append("garmentDescription", productName);
+      if (productSlug) formData.append("productSlug", productSlug);
+      if (garmentDescription?.trim()) {
+        formData.append("garmentDescription", garmentDescription.trim());
+      } else {
+        formData.append("garmentDescription", productName);
+      }
+      if (tryOnCategory) formData.append("tryOnCategory", tryOnCategory);
 
       const response = await fetch("/api/virtual-try-on", {
         method: "POST",
