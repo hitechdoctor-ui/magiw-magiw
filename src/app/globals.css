@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-dm-sans);
+  --font-serif: var(--font-cormorant);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.font-serif {
+  font-family: var(--font-cormorant), Georgia, "Times New Roman", serif;
+}
+
+.post-media {
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.post-card:hover .post-media {
+  transform: scale(1.04);
+}
+
+.post-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgb(0 0 0 / 0.35);
+  opacity: 0;
+  backdrop-filter: blur(0px);
+  transition:
+    opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    backdrop-filter 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.post-card:hover .post-overlay {
+  opacity: 1;
+  backdrop-filter: blur(2px);
+}
+
+.post-overlay-content {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.05s,
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.05s;
+}
+
+.post-card:hover .post-overlay-content {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.post-cta {
+  transform: translateY(8px);
+  opacity: 0;
+  transition:
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.12s,
+    opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.12s,
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.post-card:hover .post-cta {
+  transform: translateY(0);
+  opacity: 1;
+}
