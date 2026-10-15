@@ -13,7 +13,7 @@ export const handmadeSatinSet: ProductDetail = {
   stock: 6,
   is_active: true,
   statusLabel: "Χειροποίητο στο ατελιέ μας",
-  showVirtualTryOn: false,
+  showVirtualTryOn: true,
   images: [
     "/images/sample-set.jpg",
     "/images/black-satin-set.jpg",

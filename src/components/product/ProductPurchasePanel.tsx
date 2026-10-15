@@ -2,6 +2,7 @@
 
 import { ProductAccordion } from "@/components/product/ProductAccordion";
 import { SizeGuideModal } from "@/components/product/SizeGuideModal";
+import { VirtualTryOnModal } from "@/components/product/VirtualTryOnModal";
 import type { ProductDetail } from "@/lib/types/database";
 import { formatPricePrecise } from "@/lib/utils/format";
 import Link from "next/link";
@@ -11,31 +12,12 @@ type ProductPurchasePanelProps = {
   product: ProductDetail;
 };
 
-function AiSparkleIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      className="h-4 w-4"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      aria-hidden
-    >
-      <path
-        d="M12 3l1.2 4.2L17.5 8.5 13.2 9.7 12 14l-1.2-4.3L6.5 8.5l4.3-1.3L12 3Z"
-        strokeLinejoin="round"
-      />
-      <path d="M5 16l.6 2.1L7.7 19l-2.1.6L5 22l-.6-2.4L2.3 19l2.1-.9L5 16Z" />
-    </svg>
-  );
-}
-
 export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
   const [selectedSize, setSelectedSize] = useState("");
   const [sizeError, setSizeError] = useState(false);
   const [added, setAdded] = useState(false);
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
-  const [tryOnNote, setTryOnNote] = useState(false);
+  const [tryOnOpen, setTryOnOpen] = useState(false);
 
   const handleAddToCart = () => {
     if (!selectedSize) {
@@ -49,6 +31,7 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
   };
 
   const sections = product.sections ?? [];
+  const showTryOn = product.showVirtualTryOn === true;
 
   return (
     <>
@@ -136,24 +119,14 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
               : "ΠΡΟΣΘΗΚΗ ΣΤΟ ΚΑΛΑΘΙ"}
         </button>
 
-        {product.showVirtualTryOn && (
+        {showTryOn && (
           <button
             type="button"
-            onClick={() => {
-              setTryOnNote(true);
-              window.setTimeout(() => setTryOnNote(false), 2600);
-            }}
-            className="mt-3 flex w-full items-center justify-center gap-2 border border-stone-300 bg-white py-4 text-[11px] uppercase tracking-[0.22em] text-neutral-800 transition hover:border-neutral-500"
+            onClick={() => setTryOnOpen(true)}
+            className="mt-3 w-full border border-neutral-900 bg-white py-4 text-sm text-neutral-900 transition hover:bg-neutral-50"
           >
-            <AiSparkleIcon />
-            Δες το πάνω σου (Virtual Try-On)
+            ✨ Δες το πάνω σου (Virtual Try-On)
           </button>
-        )}
-
-        {tryOnNote && product.showVirtualTryOn && (
-          <p className="mt-3 text-xs text-neutral-500" aria-live="polite">
-            Το Virtual Try-On έρχεται σύντομα — AI preview για το σετ σου.
-          </p>
         )}
 
         {added && (
@@ -168,6 +141,14 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
 
       {sizeGuideOpen && (
         <SizeGuideModal onClose={() => setSizeGuideOpen(false)} />
+      )}
+
+      {tryOnOpen && (
+        <VirtualTryOnModal
+          productName={product.name}
+          productImage={product.images[0]}
+          onClose={() => setTryOnOpen(false)}
+        />
       )}
     </>
   );
