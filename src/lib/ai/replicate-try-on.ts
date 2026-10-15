@@ -7,6 +7,9 @@ type TryOnInput = {
 const DEFAULT_VERSION =
   "0513734a452173b8173e907e3a59d19a36266e55b48528559432bd21c7d7e985";
 
+const POLL_INTERVAL_MS = 2000;
+const POLL_TIMEOUT_MS = 120_000;
+
 type ReplicatePrediction = {
   id: string;
   status: "starting" | "processing" | "succeeded" | "failed" | "canceled";
@@ -39,6 +42,27 @@ function extractOutputUrl(output: ReplicatePrediction["output"]): string {
   throw new Error("Replicate returned empty output.");
 }
 
+async function waitForPrediction(
+  id: string,
+  token: string,
+): Promise<ReplicatePrediction> {
+  const deadline = Date.now() + POLL_TIMEOUT_MS;
+
+  while (Date.now() < deadline) {
+    const prediction = await getPrediction(id, token);
+
+    if (prediction.status === "succeeded") return prediction;
+
+    if (prediction.status === "failed" || prediction.status === "canceled") {
+      throw new Error(prediction.error ?? "Replicate prediction failed.");
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));
+  }
+
+  throw new Error("Replicate prediction timed out.");
+}
+
 export async function runReplicateVirtualTryOn(
   input: TryOnInput,
 ): Promise<string> {
@@ -57,7 +81,6 @@ export async function runReplicateVirtualTryOn(
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
-      Prefer: "wait=120",
     },
     body: JSON.stringify({
       version,
@@ -78,29 +101,16 @@ export async function runReplicateVirtualTryOn(
     throw new Error(`Replicate create error: ${createResponse.status} ${body}`);
   }
 
-  let prediction = (await createResponse.json()) as ReplicatePrediction;
+  const created = (await createResponse.json()) as ReplicatePrediction;
 
-  if (prediction.status === "succeeded") {
-    return extractOutputUrl(prediction.output);
+  if (created.status === "succeeded") {
+    return extractOutputUrl(created.output);
   }
 
-  if (prediction.status === "failed" || prediction.status === "canceled") {
-    throw new Error(prediction.error ?? "Replicate prediction failed.");
+  if (created.status === "failed" || created.status === "canceled") {
+    throw new Error(created.error ?? "Replicate prediction failed.");
   }
 
-  const deadline = Date.now() + 120_000;
-  while (Date.now() < deadline) {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    prediction = await getPrediction(prediction.id, token);
-
-    if (prediction.status === "succeeded") {
-      return extractOutputUrl(prediction.output);
-    }
-
-    if (prediction.status === "failed" || prediction.status === "canceled") {
-      throw new Error(prediction.error ?? "Replicate prediction failed.");
-    }
-  }
-
-  throw new Error("Replicate prediction timed out.");
+  const finished = await waitForPrediction(created.id, token);
+  return extractOutputUrl(finished.output);
 }
