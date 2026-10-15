@@ -16,9 +16,12 @@ export function VirtualTryOnModal({
 }: VirtualTryOnModalProps) {
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
+  const userPhotoFileRef = useRef<File | null>(null);
+
   const [userPhotoUrl, setUserPhotoUrl] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [showResult, setShowResult] = useState(false);
+  const [resultImageUrl, setResultImageUrl] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -44,7 +47,9 @@ export function VirtualTryOnModal({
     const file = event.target.files?.[0];
     if (!file) return;
 
-    setShowResult(false);
+    userPhotoFileRef.current = file;
+    setResultImageUrl(null);
+    setErrorMessage(null);
     setUserPhotoUrl((previous) => {
       if (previous) URL.revokeObjectURL(previous);
       return URL.createObjectURL(file);
@@ -52,16 +57,44 @@ export function VirtualTryOnModal({
     event.target.value = "";
   };
 
-  const handleGenerate = () => {
-    if (!userPhotoUrl || isGenerating) return;
+  const handleGenerate = async () => {
+    const userFile = userPhotoFileRef.current;
+    if (!userFile || isGenerating) return;
 
     setIsGenerating(true);
-    setShowResult(false);
+    setResultImageUrl(null);
+    setErrorMessage(null);
 
-    window.setTimeout(() => {
+    try {
+      const formData = new FormData();
+      formData.append("userImage", userFile);
+      formData.append("productImageUrl", productImage);
+      formData.append("garmentDescription", productName);
+
+      const response = await fetch("/api/virtual-try-on", {
+        method: "POST",
+        body: formData,
+      });
+
+      const payload = (await response.json()) as {
+        outputUrl?: string;
+        error?: string;
+      };
+
+      if (!response.ok || !payload.outputUrl) {
+        throw new Error(payload.error ?? "Η δημιουργία απέτυχε.");
+      }
+
+      setResultImageUrl(payload.outputUrl);
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Κάτι πήγε στραβά. Δοκίμασε ξανά.";
+      setErrorMessage(message);
+    } finally {
       setIsGenerating(false);
-      setShowResult(true);
-    }, 3000);
+    }
   };
 
   return (
@@ -174,8 +207,9 @@ export function VirtualTryOnModal({
                 <button
                   type="button"
                   onClick={() => {
-                    setShowResult(false);
-                    cameraInputRef.current?.click();
+                    setResultImageUrl(null);
+                    setErrorMessage(null);
+                    galleryInputRef.current?.click();
                   }}
                   className="flex-1 border border-stone-300 bg-white py-3 text-xs uppercase tracking-[0.2em] text-neutral-700"
                 >
@@ -194,35 +228,35 @@ export function VirtualTryOnModal({
                     />
                   )}
                   {isGenerating
-                    ? "Δημιουργία..."
+                    ? "AI δημιουργεί..."
                     : "Δημιουργία AI Εφαρμογής"}
                 </button>
               </div>
 
-              {showResult && (
+              {isGenerating && (
+                <p className="text-center text-xs text-neutral-500" aria-live="polite">
+                  Το AI επεξεργάζεται τη φωτογραφία σου — συνήθως 20–60 δευτερόλεπτα.
+                </p>
+              )}
+
+              {errorMessage && (
+                <p className="rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700" role="alert">
+                  {errorMessage}
+                </p>
+              )}
+
+              {resultImageUrl && (
                 <div className="border border-stone-200 bg-white p-4">
                   <p className="text-[10px] uppercase tracking-[0.3em] text-neutral-400">
-                    AI Preview (demo)
+                    AI Try-On Αποτέλεσμα
                   </p>
                   <div className="relative mt-3 aspect-[3/4] overflow-hidden bg-neutral-100">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={userPhotoUrl}
-                      alt="AI try-on preview"
+                      src={resultImageUrl}
+                      alt={`AI try-on: ${productName}`}
                       className="h-full w-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <p className="text-xs uppercase tracking-[0.2em] text-white/90">
-                        {productName}
-                      </p>
-                      <p className="mt-1 text-sm text-white">
-                        Placeholder αποτελέσματος — σύντομα σύνδεση με AI API.
-                      </p>
-                    </div>
-                    <div className="pointer-events-none absolute inset-x-6 top-1/3 rounded border border-dashed border-white/40 bg-black/20 py-8 text-center text-[10px] uppercase tracking-[0.25em] text-white/80">
-                      Virtual fit overlay
-                    </div>
                   </div>
                 </div>
               )}
