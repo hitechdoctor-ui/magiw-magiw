@@ -2,35 +2,35 @@ import type { ProductDetail } from "@/lib/types/database";
 
 export const handmadeSatinSet: ProductDetail = {
   id: "b1000000-0000-0000-0000-000000000001",
-  name: "Handmade Satin Bustier & Skirt Set",
+  name: "ΣΕΤ: ΜΑΤ ΜΑΥΡΟ ΜΠΟΥΣΤΙΕ & ΦΟΥΣΤΑ",
   slug: "handmade-satin-bustier-skirt-set",
-  sku: "MW-SET-01",
+  sku: "MM-BT001",
   description:
-    "Μαύρο σετ bustier & maxi φούστα από σατέν — structured top με ruffled shoulders και ζώνη στη μέση, ραμμένο στο ατελιέ MAGIW MAGIW.",
-  price_cents: 12000,
+    "Ματ μαύρο σετ με bustier top και maxi φούστα — χειροποίητο πατρόν, structured εφαρμογή στη μέση και fluid όγκος στη φούστα.",
+  price_cents: 7500,
   currency: "EUR",
-  sizes: ["S", "M", "L", "XL"],
+  sizes: ["S", "M", "L"],
   stock: 6,
   is_active: true,
-  images: ["/images/black-satin-set.jpg"],
+  statusLabel: "Χειροποίητο στο ατελιέ μας",
+  showVirtualTryOn: false,
+  images: [
+    "/images/sample-set.jpg",
+    "/images/black-satin-set.jpg",
+    "/images/sample-set.jpg",
+  ],
   sections: [
     {
-      id: "design",
-      title: "Περιγραφή & Σχεδιασμός",
+      id: "details",
+      title: "Λεπτομέρειες Προϊόντος",
       content:
-        "Two-piece σετ με bustier crop top και fluid satin maxi skirt. Σχεδιάζεται, κόβεται και ράβεται στο χέρι στο ατελιέ, με έμφαση στη structured σιλουέτα και τις editorial λεπτομέρειες (ruffles, belted waist).",
+        "Two-piece σετ bustier & φούστα με έμφαση στη μέση. Το design σχεδιάζεται στο ατελιέ, το πατρόν κόβεται στο χέρι και η εφαρμογή ρυθμίζεται για καθαρή, structured σιλουέτα. Το top τονίζει τους ώμους με ruffle λεπτομέρειες, ενώ η φούστα έχει ζώνη και fluid fall.",
     },
     {
       id: "care",
       title: "Υλικό & Φροντίδα",
       content:
-        "100% Σατέν · Στεγνό καθάρισμα ή πλύσιμο στο χέρι στους 30°C · Μην χρησιμοποιείτε λευκαντικό · Σιδερώστε σε χαμηλή θερμοκρασία με παράπηχο.",
-    },
-    {
-      id: "shipping",
-      title: "Αποστολή & Επιστροφές",
-      content:
-        "Αποστολή σε 3–5 εργάσιμες (Ελλάδα) · Διεθνής αποστολή κατόπιν συνεννόησης · Επιστροφές εντός 14 ημερών για μη εξατομικευμένα pieces σε άριστη κατάσταση.",
+        "Σατέν ύφασμα · Στεγνό καθάρισμα ή πλύσιμο στο χέρι στους 30°C · Μην χρησιμοποιείτε λευκαντικό · Σιδερώστε σε χαμηλή θερμοκρασία με παράπηχο.",
     },
   ],
 };

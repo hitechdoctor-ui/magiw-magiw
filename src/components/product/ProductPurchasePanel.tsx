@@ -73,6 +73,12 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
           </p>
         )}
 
+        {product.statusLabel && (
+          <p className="mt-4 text-xs uppercase tracking-[0.22em] text-neutral-600">
+            {product.statusLabel}
+          </p>
+        )}
+
         <p className="mt-6 text-2xl font-light tracking-wide text-neutral-900">
           {formatPricePrecise(product.price_cents, product.currency)}
         </p>
@@ -127,22 +133,24 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
             ? "Εξαντλήθηκε"
             : added
               ? `Προστέθηκε · ${selectedSize}`
-              : "Προσθήκη στο Καλάθι"}
+              : "ΠΡΟΣΘΗΚΗ ΣΤΟ ΚΑΛΑΘΙ"}
         </button>
 
-        <button
-          type="button"
-          onClick={() => {
-            setTryOnNote(true);
-            window.setTimeout(() => setTryOnNote(false), 2600);
-          }}
-          className="mt-3 flex w-full items-center justify-center gap-2 border border-stone-300 bg-white py-4 text-[11px] uppercase tracking-[0.22em] text-neutral-800 transition hover:border-neutral-500"
-        >
-          <AiSparkleIcon />
-          Δες το πάνω σου (Virtual Try-On)
-        </button>
+        {product.showVirtualTryOn && (
+          <button
+            type="button"
+            onClick={() => {
+              setTryOnNote(true);
+              window.setTimeout(() => setTryOnNote(false), 2600);
+            }}
+            className="mt-3 flex w-full items-center justify-center gap-2 border border-stone-300 bg-white py-4 text-[11px] uppercase tracking-[0.22em] text-neutral-800 transition hover:border-neutral-500"
+          >
+            <AiSparkleIcon />
+            Δες το πάνω σου (Virtual Try-On)
+          </button>
+        )}
 
-        {tryOnNote && (
+        {tryOnNote && product.showVirtualTryOn && (
           <p className="mt-3 text-xs text-neutral-500" aria-live="polite">
             Το Virtual Try-On έρχεται σύντομα — AI preview για το σετ σου.
           </p>

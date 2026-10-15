@@ -23,6 +23,8 @@ export type ProductAccordionSection = {
 export type ProductDetail = Product & {
   images: string[];
   sku?: string;
+  statusLabel?: string;
+  showVirtualTryOn?: boolean;
   sections?: ProductAccordionSection[];
 };
 
