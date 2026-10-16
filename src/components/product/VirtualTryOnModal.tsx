@@ -1,6 +1,7 @@
 "use client";
 
 import { TryOnResultImage } from "@/components/product/TryOnResultImage";
+import { VirtualTryOnPhotoGuide } from "@/components/product/VirtualTryOnPhotoGuide";
 import { normalizeUserImageFile } from "@/lib/utils/normalize-user-image";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -158,11 +159,13 @@ export function VirtualTryOnModal({
 
         <div className="space-y-6 px-4 py-6 sm:px-6">
           {!userPhotoUrl ? (
-            <div className="space-y-3">
+            <div className="space-y-4">
               <p className="text-sm leading-relaxed text-neutral-600">
                 Βγάλε selfie ή ανέβασε φωτογραφία σώματος για να δεις πώς
                 κάθεται το {productName}.
               </p>
+
+              <VirtualTryOnPhotoGuide />
 
               <input
                 ref={cameraInputRef}

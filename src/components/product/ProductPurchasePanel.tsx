@@ -2,6 +2,7 @@
 
 import { ProductAccordion } from "@/components/product/ProductAccordion";
 import { SizeGuideModal } from "@/components/product/SizeGuideModal";
+import { VirtualTryOnCta } from "@/components/product/VirtualTryOnCta";
 import { VirtualTryOnModal } from "@/components/product/VirtualTryOnModal";
 import type { ProductDetail } from "@/lib/types/database";
 import { formatPricePrecise } from "@/lib/utils/format";
@@ -64,6 +65,12 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
           {formatPricePrecise(product.price_cents, product.currency)}
         </p>
 
+        {showTryOn && (
+          <div className="mt-8">
+            <VirtualTryOnCta onClick={() => setTryOnOpen(true)} />
+          </div>
+        )}
+
         <div className="mt-10 border-t border-stone-200 pt-8">
           <div className="flex items-center justify-between gap-4">
             <p className="text-[10px] uppercase tracking-[0.3em] text-neutral-500">
@@ -117,16 +124,6 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
               : "ΠΡΟΣΘΗΚΗ ΣΤΟ ΚΑΛΑΘΙ"}
         </button>
 
-        {showTryOn && (
-          <button
-            type="button"
-            onClick={() => setTryOnOpen(true)}
-            className="mt-3 w-full border border-neutral-900 bg-white py-4 text-sm text-neutral-900 transition hover:bg-neutral-50"
-          >
-            ✨ Δες το πάνω σου (Virtual Try-On)
-          </button>
-        )}
-
         {added && (
           <p className="mt-4 text-sm text-neutral-700" aria-live="polite">
             Προστέθηκε: {product.name} · {selectedSize} ·{" "}
@@ -134,8 +131,20 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
           </p>
         )}
 
-        {sections.length > 0 && <ProductAccordion sections={sections} />}
+        {sections.length > 0 && (
+          <ProductAccordion
+            sections={sections}
+            className={showTryOn ? "pb-24 lg:pb-0" : undefined}
+          />
+        )}
       </div>
+
+      {showTryOn && !tryOnOpen && (
+        <VirtualTryOnCta
+          variant="sticky"
+          onClick={() => setTryOnOpen(true)}
+        />
+      )}
 
       {sizeGuideOpen && (
         <SizeGuideModal

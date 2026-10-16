@@ -43,9 +43,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
     return <EditorialProductView product={product} />;
   }
 
+  const hasTryOn = product.showVirtualTryOn === true;
+
   return (
     <div className="min-h-screen bg-[#faf8f5] text-neutral-900">
-      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-16">
+      <div
+        className={`mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-16 ${hasTryOn ? "pb-24 lg:pb-16" : ""}`}
+      >
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16 xl:gap-20">
           <ProductGallery images={product.images} productName={product.name} />
 
