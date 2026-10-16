@@ -5,9 +5,19 @@ export function Footer() {
         <p className="font-serif text-lg tracking-[0.15em] text-neutral-900">
           MAGIW MAGIW
         </p>
-        <p className="text-sm text-neutral-500">
-          Ιδιαίτερα ρούχα · Shoppable Instagram Feed · Athens
-        </p>
+        <div className="flex flex-col items-start gap-2 sm:items-end">
+          <a
+            href="https://instagram.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[10px] uppercase tracking-[0.25em] text-neutral-500 transition hover:text-neutral-900"
+          >
+            Instagram
+          </a>
+          <p className="text-sm text-neutral-500">
+            Ιδιαίτερα ρούχα · Shoppable Instagram Feed · Athens
+          </p>
+        </div>
       </div>
     </footer>
   );
