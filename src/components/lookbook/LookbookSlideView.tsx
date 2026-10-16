@@ -27,7 +27,7 @@ export function LookbookSlideView({
   const focus = Math.min(1, Math.max(0, transitionProgress));
   const scale = 1.04 - focus * 0.04;
   const panelOpacity = focus;
-  const panelY = (1 - focus) * 28;
+  const panelY = (1 - focus) * 14;
 
   return (
     <section className="lookbook-viewport-height relative flex w-screen shrink-0 items-center justify-center overflow-hidden">
