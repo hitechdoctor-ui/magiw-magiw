@@ -8,6 +8,8 @@ import Link from "next/link";
 type LookbookSlideViewProps = {
   slide: LookbookSlide;
   isActive?: boolean;
+  /** 0–1 proximity to viewport center (for crossfade while dragging) */
+  transitionProgress?: number;
   priorityImage?: boolean;
   onTryOn: () => void;
 };
@@ -15,18 +17,26 @@ type LookbookSlideViewProps = {
 export function LookbookSlideView({
   slide,
   isActive = false,
+  transitionProgress = isActive ? 1 : 0,
   priorityImage = false,
   onTryOn,
 }: LookbookSlideViewProps) {
   const { product } = slide;
   const showTryOn = product.showVirtualTryOn === true;
 
+  const focus = Math.min(1, Math.max(0, transitionProgress));
+  const scale = 1.04 - focus * 0.04;
+  const panelOpacity = focus;
+  const panelY = (1 - focus) * 28;
+
   return (
-    <section className="relative flex h-[100dvh] w-screen shrink-0 items-center justify-center overflow-hidden">
+    <section className="lookbook-viewport-height relative flex w-screen shrink-0 items-center justify-center overflow-hidden">
       <div
-        className={`absolute inset-0 transition-transform duration-[720ms] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${
-          isActive ? "scale-100" : "scale-[1.03]"
-        }`}
+        className="absolute inset-0 will-change-transform"
+        style={{
+          transform: `scale(${scale})`,
+          opacity: 0.35 + focus * 0.65,
+        }}
       >
         {slide.isVideo ? (
           <video
@@ -49,15 +59,18 @@ export function LookbookSlideView({
             priority={priorityImage}
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/35" />
+        <div
+          className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/35"
+          style={{ opacity: 0.5 + focus * 0.5 }}
+        />
       </div>
 
       <div
-        className={`relative z-10 flex h-full w-full max-w-lg flex-col justify-end px-5 pb-10 pt-24 transition-all duration-[720ms] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none sm:px-8 sm:pb-12 ${
-          isActive
-            ? "translate-y-0 opacity-100"
-            : "translate-y-6 opacity-0"
-        }`}
+        className="relative z-10 flex h-full w-full max-w-lg flex-col justify-end px-5 pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-[max(6rem,calc(env(safe-area-inset-top)+4rem))] sm:px-8 sm:pb-12"
+        style={{
+          opacity: panelOpacity,
+          transform: `translate3d(0, ${panelY}px, 0)`,
+        }}
       >
         <p className="text-[10px] uppercase tracking-[0.35em] text-white/70">
           {slide.post.caption ?? "MAGIW MAGIW · Lookbook"}
@@ -85,9 +98,7 @@ export function LookbookSlideView({
           )}
           <Link
             href={`/product/${product.slug}`}
-            className={`flex flex-1 items-center justify-center border border-white/60 py-3.5 text-[11px] uppercase tracking-[0.22em] text-white transition hover:bg-white/10 ${
-              showTryOn ? "" : "sm:flex-[1]"
-            }`}
+            className="flex flex-1 items-center justify-center border border-white/60 py-3.5 text-[11px] uppercase tracking-[0.22em] text-white transition hover:bg-white/10"
           >
             Προβολή λεπτομερειών
           </Link>

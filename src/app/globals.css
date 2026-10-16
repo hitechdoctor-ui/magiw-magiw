@@ -21,6 +21,17 @@ html.lookbook-active,
 html.lookbook-active body {
   height: 100%;
   overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.lookbook-viewport-height {
+  height: var(--app-vh, 100dvh);
+  min-height: -webkit-fill-available;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .font-serif {

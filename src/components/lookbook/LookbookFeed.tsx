@@ -5,42 +5,115 @@ import { LookbookTopBar } from "@/components/lookbook/LookbookTopBar";
 import { VirtualTryOnModal } from "@/components/product/VirtualTryOnModal";
 import type { LookbookSlide } from "@/lib/data/lookbook";
 import type { ProductDetail } from "@/lib/types/database";
+import { useVisualViewportHeight } from "@/hooks/useVisualViewportHeight";
+import {
+  animateValue,
+  applyEdgeResistance,
+  LOOKBOOK_TRANSITION_MS,
+} from "@/lib/utils/lookbook-motion";
+import { LookbookInstallHint } from "@/components/lookbook/LookbookInstallHint";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 type LookbookFeedProps = {
   slides: LookbookSlide[];
 };
 
-const SLIDE_MS = 720;
-const SWIPE_THRESHOLD_PX = 48;
-const WHEEL_THRESHOLD = 28;
+const SWIPE_THRESHOLD_PX = 56;
+const WHEEL_THRESHOLD = 24;
+const WHEEL_COOLDOWN_MS = LOOKBOOK_TRANSITION_MS + 80;
 
 export function LookbookFeed({ slides }: LookbookFeedProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  const slideHeightRef = useRef(0);
+  const offsetPxRef = useRef(0);
   const activeIndexRef = useRef(0);
   const isAnimatingRef = useRef(false);
+  const cancelAnimateRef = useRef<(() => void) | null>(null);
+
   const touchStartYRef = useRef<number | null>(null);
+  const touchBaseOffsetRef = useRef(0);
+  const wheelLockUntilRef = useRef(0);
 
   const [activeIndex, setActiveIndex] = useState(0);
+  const [offsetPx, setOffsetPx] = useState(0);
+  const [viewportHeight, setViewportHeight] = useState(0);
   const [tryOnProduct, setTryOnProduct] = useState<ProductDetail | null>(null);
 
   activeIndexRef.current = activeIndex;
+  offsetPxRef.current = offsetPx;
+
+  useVisualViewportHeight(true);
+
+  const getSlideHeight = useCallback(() => {
+    if (typeof window === "undefined") return 800;
+    const cssVar = getComputedStyle(document.documentElement)
+      .getPropertyValue("--app-vh")
+      .trim();
+    const fromVar = cssVar.endsWith("px") ? parseFloat(cssVar) : 0;
+    return (
+      fromVar ||
+      window.visualViewport?.height ||
+      window.innerHeight ||
+      containerRef.current?.clientHeight ||
+      800
+    );
+  }, []);
+
+  const indexToOffset = useCallback(
+    (index: number) => -index * slideHeightRef.current,
+    [],
+  );
+
+  const clampIndex = useCallback(
+    (index: number) => Math.min(Math.max(index, 0), slides.length - 1),
+    [slides.length],
+  );
+
+  const applyOffset = useCallback((px: number) => {
+    offsetPxRef.current = px;
+    setOffsetPx(px);
+    if (trackRef.current) {
+      trackRef.current.style.transform = `translate3d(0, ${px}px, 0)`;
+    }
+  }, []);
+
+  const animateToOffset = useCallback(
+    (targetPx: number, onDone?: () => void) => {
+      cancelAnimateRef.current?.();
+      isAnimatingRef.current = true;
+
+      const from = offsetPxRef.current;
+      cancelAnimateRef.current = animateValue(
+        from,
+        targetPx,
+        LOOKBOOK_TRANSITION_MS,
+        applyOffset,
+        () => {
+          isAnimatingRef.current = false;
+          cancelAnimateRef.current = null;
+          onDone?.();
+        },
+      );
+    },
+    [applyOffset],
+  );
 
   const goToSlide = useCallback(
     (index: number) => {
-      if (slides.length === 0) return;
+      if (slides.length === 0 || isAnimatingRef.current) return;
 
-      const clamped = Math.min(Math.max(index, 0), slides.length - 1);
-      if (clamped === activeIndexRef.current || isAnimatingRef.current) return;
+      const clamped = clampIndex(index);
+      if (clamped === activeIndexRef.current) return;
 
-      isAnimatingRef.current = true;
+      const target = indexToOffset(clamped);
+      animateToOffset(target, () => {
+        setActiveIndex(clamped);
+      });
       setActiveIndex(clamped);
-
-      window.setTimeout(() => {
-        isAnimatingRef.current = false;
-      }, SLIDE_MS);
     },
-    [slides.length],
+    [animateToOffset, clampIndex, indexToOffset, slides.length],
   );
 
   const goNext = useCallback(() => {
@@ -53,14 +126,35 @@ export function LookbookFeed({ slides }: LookbookFeedProps) {
 
   useEffect(() => {
     document.documentElement.classList.add("lookbook-active");
-    return () => document.documentElement.classList.remove("lookbook-active");
-  }, []);
+
+    const syncHeight = () => {
+      const height = getSlideHeight();
+      slideHeightRef.current = height;
+      setViewportHeight(height);
+      const target = indexToOffset(activeIndexRef.current);
+      applyOffset(target);
+    };
+
+    syncHeight();
+    window.addEventListener("resize", syncHeight);
+
+    return () => {
+      document.documentElement.classList.remove("lookbook-active");
+      window.removeEventListener("resize", syncHeight);
+      cancelAnimateRef.current?.();
+    };
+  }, [applyOffset, getSlideHeight, indexToOffset]);
 
   useEffect(() => {
     const node = containerRef.current;
     if (!node) return;
 
     const onWheel = (event: WheelEvent) => {
+      if (Date.now() < wheelLockUntilRef.current) {
+        event.preventDefault();
+        return;
+      }
+
       if (isAnimatingRef.current) {
         event.preventDefault();
         return;
@@ -69,6 +163,8 @@ export function LookbookFeed({ slides }: LookbookFeedProps) {
       if (Math.abs(event.deltaY) < WHEEL_THRESHOLD) return;
 
       event.preventDefault();
+      wheelLockUntilRef.current = Date.now() + WHEEL_COOLDOWN_MS;
+
       if (event.deltaY > 0) goNext();
       else goPrev();
     };
@@ -94,7 +190,25 @@ export function LookbookFeed({ slides }: LookbookFeedProps) {
   }, [goNext, goPrev]);
 
   const onTouchStart = (event: React.TouchEvent) => {
+    if (isAnimatingRef.current) return;
+    cancelAnimateRef.current?.();
+    cancelAnimateRef.current = null;
+    isAnimatingRef.current = false;
+
     touchStartYRef.current = event.touches[0]?.clientY ?? null;
+    touchBaseOffsetRef.current = offsetPxRef.current;
+  };
+
+  const onTouchMove = (event: React.TouchEvent) => {
+    const startY = touchStartYRef.current;
+    const currentY = event.touches[0]?.clientY;
+    if (startY == null || currentY == null) return;
+
+    const delta = currentY - startY;
+    const raw = touchBaseOffsetRef.current + delta;
+    const min = indexToOffset(0);
+    const max = indexToOffset(slides.length - 1);
+    applyOffset(applyEdgeResistance(raw, min, max));
   };
 
   const onTouchEnd = (event: React.TouchEvent) => {
@@ -105,10 +219,18 @@ export function LookbookFeed({ slides }: LookbookFeedProps) {
     if (startY == null || endY == null) return;
 
     const delta = startY - endY;
-    if (Math.abs(delta) < SWIPE_THRESHOLD_PX) return;
+    const height = slideHeightRef.current || getSlideHeight();
 
-    if (delta > 0) goNext();
-    else goPrev();
+    let targetIndex = activeIndexRef.current;
+    if (Math.abs(delta) >= SWIPE_THRESHOLD_PX) {
+      targetIndex += delta > 0 ? 1 : -1;
+    } else {
+      targetIndex = Math.round(-offsetPxRef.current / height);
+    }
+
+    const clamped = clampIndex(targetIndex);
+    animateToOffset(indexToOffset(clamped), () => setActiveIndex(clamped));
+    setActiveIndex(clamped);
   };
 
   if (slides.length === 0) {
@@ -124,22 +246,39 @@ export function LookbookFeed({ slides }: LookbookFeedProps) {
   return (
     <div
       ref={containerRef}
-      className="relative h-[100dvh] w-screen overflow-hidden bg-black touch-pan-y"
+      className="lookbook-viewport-height relative w-screen overflow-hidden bg-black touch-none select-none"
       onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
       aria-label="MAGIW MAGIW lookbook"
     >
       <LookbookTopBar />
 
       <div
-        className="will-change-transform transition-transform duration-[720ms] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none"
-        style={{ transform: `translate3d(0, -${activeIndex * 100}dvh, 0)` }}
+        ref={trackRef}
+        className="will-change-transform backface-hidden"
+        style={{ transform: `translate3d(0, ${offsetPx}px, 0)` }}
       >
         {slides.map((slide, index) => (
           <LookbookSlideView
             key={slide.post.id}
             slide={slide}
             isActive={index === activeIndex}
+            transitionProgress={
+              viewportHeight > 0
+                ? Math.max(
+                    0,
+                    1 -
+                      Math.min(
+                        1,
+                        Math.abs(offsetPx + index * viewportHeight) /
+                          viewportHeight,
+                      ),
+                  )
+                : index === 0
+                  ? 1
+                  : 0
+            }
             priorityImage={index <= 1}
             onTryOn={() => setTryOnProduct(slide.product)}
           />
@@ -155,7 +294,7 @@ export function LookbookFeed({ slides }: LookbookFeedProps) {
             key={`dot-${slide.post.id}`}
             type="button"
             onClick={() => goToSlide(index)}
-            className={`pointer-events-auto rounded-full transition-all duration-500 ${
+            className={`pointer-events-auto rounded-full transition-all duration-700 ease-out ${
               activeIndex === index
                 ? "h-3 w-3 bg-white"
                 : "h-2 w-2 bg-white/40 hover:bg-white/70"
@@ -166,9 +305,11 @@ export function LookbookFeed({ slides }: LookbookFeedProps) {
         ))}
       </nav>
 
-      <p className="pointer-events-none fixed bottom-5 left-1/2 z-40 -translate-x-1/2 text-[9px] uppercase tracking-[0.35em] text-white/45 lg:hidden">
+      <p className="pointer-events-none fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] left-1/2 z-40 -translate-x-1/2 text-[9px] uppercase tracking-[0.35em] text-white/45 lg:hidden">
         Σύρε κάθετα
       </p>
+
+      <LookbookInstallHint />
 
       {tryOnProduct && (
         <VirtualTryOnModal

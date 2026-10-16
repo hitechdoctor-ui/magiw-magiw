@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function LookbookTopBar() {
   return (
-    <header className="pointer-events-none fixed inset-x-0 top-0 z-50 flex items-center justify-between px-4 py-4 sm:px-6">
+    <header className="pointer-events-none fixed inset-x-0 top-0 z-50 flex items-center justify-between px-4 pb-4 pt-[max(1rem,env(safe-area-inset-top))] sm:px-6">
       <Link
         href="/"
         className="pointer-events-auto font-serif text-lg tracking-[0.22em] text-white drop-shadow-sm sm:text-xl"
