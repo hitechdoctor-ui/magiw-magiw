@@ -17,6 +17,12 @@ body {
   color: var(--foreground);
 }
 
+html.lookbook-active,
+html.lookbook-active body {
+  height: 100%;
+  overflow: hidden;
+}
+
 .font-serif {
   font-family: var(--font-cormorant), Georgia, "Times New Roman", serif;
 }

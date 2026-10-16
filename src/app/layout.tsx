@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, DM_Sans } from "next/font/google";
-import { Footer } from "@/components/layout/Footer";
-import { Header } from "@/components/layout/Header";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -16,9 +14,8 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "MAGIW MAGIW — Shoppable Instagram Feed",
-  description:
-    "Ιδιαίτερα ρούχα. Scroll το Instagram feed μας και αγόρασε κάθε look με ένα κλικ.",
+  title: "MAGIW MAGIW",
+  description: "Handmade Atelier & Custom Design · magiwmagiw.gr",
 };
 
 export default function RootLayout({
@@ -28,10 +25,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="el" className={`${dmSans.variable} ${cormorant.variable} h-full`}>
-      <body className="min-h-full bg-neutral-50 font-sans text-neutral-950 antialiased">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+      <body className="min-h-full bg-neutral-950 font-sans text-neutral-950 antialiased">
+        {children}
       </body>
     </html>
   );
