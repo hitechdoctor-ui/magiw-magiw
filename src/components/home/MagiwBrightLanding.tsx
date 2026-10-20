@@ -2,6 +2,9 @@
 
 import { CartIconButton } from "@/components/cart/CartIconButton";
 import { useCart } from "@/components/cart/CartProvider";
+import { LanguageSwitch } from "@/components/i18n/LanguageSwitch";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { FloatingTulipBouquet } from "@/components/decor/FloatingTulipBouquet";
 import { atelierStoryFont } from "@/lib/fonts/atelier-story-font";
 import { taglineFont } from "@/lib/fonts/tagline-font";
 import Image from "next/image";
@@ -16,35 +19,23 @@ const STORY_BLOCKS = [
 export function MagiwBrightLanding() {
   const script = atelierStoryFont.className;
   const { count, openCart, hydrated } = useCart();
+  const { t } = useLocale();
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-[#f3eee4] text-[#5c4a32]">
-      <div
-        className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
-        aria-hidden
-      >
-        <div className="tulip-float absolute -left-6 bottom-0 h-[min(48vh,400px)] w-[min(70vw,320px)] -scale-x-100 opacity-65 sm:-left-4 sm:h-[min(52vh,460px)] sm:w-[360px] sm:opacity-70 lg:h-[min(56vh,500px)] lg:w-[400px]">
-          <Image
-            src="/brand/tulips-bouquet.png"
-            alt=""
-            fill
-            className="object-contain object-bottom"
-            sizes="(max-width: 1024px) 320px, 400px"
-          />
-        </div>
-      </div>
+      <FloatingTulipBouquet prominence="hero" />
 
       <div className="relative z-10">
         <header className="flex flex-col items-center gap-5 px-5 pb-6 pt-[max(1.25rem,env(safe-area-inset-top))] sm:grid sm:grid-cols-[1fr_auto_1fr] sm:items-start sm:gap-4 sm:px-10 lg:px-14">
           <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 font-serif text-[11px] tracking-[0.08em] text-[#6b563c] sm:justify-start sm:text-xs">
             <Link href="/shop#editorial" className="transition hover:text-[#9a7b3c]">
-              Γυναικεία
+              {t("navWomen")}
             </Link>
             <Link href="/shop#atelier" className="transition hover:text-[#9a7b3c]">
-              Ανδρικά
+              {t("navMen")}
             </Link>
             <Link href="/shop" className="transition hover:text-[#9a7b3c]">
-              Συλλογή
+              {t("navCollection")}
             </Link>
           </nav>
 
@@ -57,11 +48,12 @@ export function MagiwBrightLanding() {
               href="#brand-story"
               className={`${script} text-[13px] tracking-normal text-[#6b563c] transition hover:text-[#9a7b3c] sm:text-sm`}
             >
-              Η ιστορία μας
+              {t("navOurStory")}
             </Link>
             <Link href="/shop" className="transition hover:text-[#9a7b3c]">
-              Αναζήτηση
+              {t("navSearch")}
             </Link>
+            <LanguageSwitch variant="landing" />
             <CartIconButton
               count={count}
               hydrated={hydrated}

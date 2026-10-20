@@ -1,6 +1,11 @@
+"use client";
+
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import Image from "next/image";
 
 export function Footer() {
+  const { t } = useLocale();
+
   return (
     <footer className="relative border-t border-neutral-200 bg-neutral-50">
       <div
@@ -29,9 +34,7 @@ export function Footer() {
           >
             Instagram
           </a>
-          <p className="text-sm text-neutral-500">
-            Ιδιαίτερα ρούχα · Shoppable Instagram Feed · Athens
-          </p>
+          <p className="text-sm text-neutral-500">{t("footerTagline")}</p>
         </div>
       </div>
     </footer>

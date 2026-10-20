@@ -1,6 +1,8 @@
 "use client";
 
 import { CartIconButton } from "@/components/cart/CartIconButton";
+import { LanguageSwitch } from "@/components/i18n/LanguageSwitch";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -13,6 +15,8 @@ export function SilentRunwayHeader({
   cartCount,
   onCartClick,
 }: SilentRunwayHeaderProps) {
+  const { t } = useLocale();
+
   return (
     <header className="pointer-events-none fixed inset-x-0 top-0 z-50 flex items-center justify-between px-5 pt-[max(1rem,env(safe-area-inset-top))] sm:px-8">
       <Link
@@ -34,8 +38,9 @@ export function SilentRunwayHeader({
           href="/shop"
           className="hidden rounded-full border border-white/15 bg-black/20 px-3 py-1.5 text-[9px] uppercase tracking-[0.28em] text-white/75 backdrop-blur-md transition hover:border-white/30 hover:text-white sm:inline"
         >
-          Συλλογή
+          {t("runwayCollection")}
         </Link>
+        <LanguageSwitch variant="runway" />
         <CartIconButton
           count={cartCount}
           onClick={onCartClick}

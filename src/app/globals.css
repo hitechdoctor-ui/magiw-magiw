@@ -115,6 +115,12 @@ html.lookbook-active body {
   }
 }
 
+@media (prefers-reduced-transparency: reduce) {
+  .tulip-backdrop-hide-when-reduced {
+    display: none;
+  }
+}
+
 .backface-hidden {
   backface-visibility: hidden;
   transform: translateZ(0);

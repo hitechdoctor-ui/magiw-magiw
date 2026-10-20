@@ -1,3 +1,7 @@
+"use client";
+
+import { useLocale } from "@/components/i18n/LocaleProvider";
+
 type VirtualTryOnCtaProps = {
   onClick: () => void;
   variant?: "card" | "sticky";
@@ -9,6 +13,8 @@ export function VirtualTryOnCta({
   variant = "card",
   className = "",
 }: VirtualTryOnCtaProps) {
+  const { t } = useLocale();
+
   if (variant === "sticky") {
     return (
       <div
@@ -22,7 +28,7 @@ export function VirtualTryOnCta({
           <span aria-hidden className="text-base">
             ✨
           </span>
-          Δες το πάνω σου · Virtual Try-On
+          {t("tryOnSticky")}
         </button>
       </div>
     );
@@ -38,13 +44,13 @@ export function VirtualTryOnCta({
       <span className="flex items-start justify-between gap-3">
         <span>
           <span className="block text-[10px] font-medium uppercase tracking-[0.35em] text-neutral-500">
-            AI Atelier
+            {t("tryOnEyebrow")}
           </span>
           <span className="mt-2 block font-serif text-xl leading-tight text-neutral-950 sm:text-2xl">
-            Δες το πάνω σου
+            {t("tryOnTitle")}
           </span>
           <span className="mt-2 block text-sm text-neutral-600">
-            Virtual Try-On — ανέβασε selfie και δες το look live.
+            {t("tryOnSubtitle")}
           </span>
         </span>
         <span

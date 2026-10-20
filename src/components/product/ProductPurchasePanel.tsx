@@ -1,6 +1,7 @@
 "use client";
 
 import { useCart } from "@/components/cart/CartProvider";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import { ProductAccordion } from "@/components/product/ProductAccordion";
 import { SizeGuideModal } from "@/components/product/SizeGuideModal";
 import { VirtualTryOnCta } from "@/components/product/VirtualTryOnCta";
@@ -25,6 +26,7 @@ export function ProductPurchasePanel({
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
   const [tryOnOpen, setTryOnOpen] = useState(false);
   const { addProduct } = useCart();
+  const { t } = useLocale();
 
   const handleAddToCart = () => {
     if (!selectedSize) {
@@ -48,11 +50,11 @@ export function ProductPurchasePanel({
           href="/"
           className="mb-8 text-[10px] uppercase tracking-[0.32em] text-neutral-400 transition hover:text-neutral-700"
         >
-          ← Επιστροφή στο Feed
+          {t("productBackFeed")}
         </Link>
 
         <p className="text-[10px] uppercase tracking-[0.35em] text-neutral-400">
-          MAGIW MAGIW · Atelier
+          {t("productAtelier")}
         </p>
         <h1 className="mt-4 font-serif text-3xl leading-tight tracking-tight text-neutral-950 sm:text-4xl">
           {product.name}
@@ -81,14 +83,14 @@ export function ProductPurchasePanel({
         <div className="mt-10 border-t border-stone-200 pt-8">
           <div className="flex items-center justify-between gap-4">
             <p className="text-[10px] uppercase tracking-[0.3em] text-neutral-500">
-              Μέγεθος
+              {t("productSize")}
             </p>
             <button
               type="button"
               onClick={() => setSizeGuideOpen(true)}
               className="text-[10px] uppercase tracking-[0.2em] text-neutral-500 underline-offset-4 transition hover:text-neutral-800 hover:underline"
             >
-              Οδηγός Μεγεθών
+              {t("productSizeGuide")}
             </button>
           </div>
 
@@ -113,7 +115,7 @@ export function ProductPurchasePanel({
           </div>
           {sizeError && (
             <p className="mt-3 text-xs text-red-700">
-              Επίλεξε μέγεθος πριν την προσθήκη στο καλάθι.
+              {t("productSizeError")}
             </p>
           )}
         </div>
@@ -128,7 +130,7 @@ export function ProductPurchasePanel({
             }
             className="mt-8 w-full border-2 border-neutral-900 bg-white py-4 text-[11px] font-medium uppercase tracking-[0.28em] text-neutral-900 transition hover:bg-neutral-950 hover:text-white"
           >
-            Συνδύασέ το
+            {t("productStyleWith")}
           </button>
         )}
 
@@ -141,16 +143,19 @@ export function ProductPurchasePanel({
           }`}
         >
           {product.stock === 0
-            ? "Εξαντλήθηκε"
+            ? t("productSoldOut")
             : added
-              ? `Προστέθηκε · ${selectedSize}`
-              : "ΠΡΟΣΘΗΚΗ ΣΤΟ ΚΑΛΑΘΙ"}
+              ? t("productAdded", { size: selectedSize })
+              : t("productAddToCart")}
         </button>
 
         {added && (
           <p className="mt-4 text-sm text-neutral-700" aria-live="polite">
-            Προστέθηκε: {product.name} · {selectedSize} ·{" "}
-            {formatPricePrecise(product.price_cents, product.currency)}
+            {t("cartAdded", {
+              name: product.name,
+              size: selectedSize,
+              price: formatPricePrecise(product.price_cents, product.currency),
+            })}
           </p>
         )}
 

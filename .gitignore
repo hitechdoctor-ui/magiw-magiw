@@ -20,6 +20,9 @@
 # production
 /build
 
+# local subscriber fallback (when Supabase service role is not set)
+/data/
+
 # misc
 .DS_Store
 *.pem

@@ -1,5 +1,7 @@
 "use client";
 
+import { useLocale } from "@/components/i18n/LocaleProvider";
+
 type CartIconButtonProps = {
   count: number;
   hydrated?: boolean;
@@ -28,6 +30,7 @@ export function CartIconButton({
   variant = "site",
   className = "",
 }: CartIconButtonProps) {
+  const { t } = useLocale();
   const displayCount = hydrated ? count : 0;
   const isRunway = variant === "runway";
 
@@ -40,8 +43,8 @@ export function CartIconButton({
       } ${className}`}
       aria-label={
         displayCount > 0
-          ? `Καλάθι αγορών, ${displayCount} είδη`
-          : "Καλάθι αγορών"
+          ? t("cartAriaWithCount", { count: displayCount })
+          : t("cartAria")
       }
     >
       <svg

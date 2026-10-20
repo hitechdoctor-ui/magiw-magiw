@@ -2,6 +2,7 @@
 
 import { CartLineList } from "@/components/cart/CartLineList";
 import { useCart } from "@/components/cart/CartProvider";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import { formatPricePrecise } from "@/lib/utils/format";
 import Link from "next/link";
 import { useEffect } from "react";
@@ -16,6 +17,7 @@ export function CartDrawer() {
     currency,
     count,
   } = useCart();
+  const { t } = useLocale();
 
   useEffect(() => {
     if (!cartOpen) return;
@@ -39,7 +41,7 @@ export function CartDrawer() {
       <button
         type="button"
         className="absolute inset-0 bg-black/45 backdrop-blur-[2px]"
-        aria-label="Κλείσιμο καλαθιού"
+        aria-label={t("cartCloseOverlay")}
         onClick={() => setCartOpen(false)}
       />
 
@@ -57,14 +59,14 @@ export function CartDrawer() {
               id="cart-drawer-title"
               className="mt-1 font-serif text-xl text-neutral-950"
             >
-              Καλάθι ({count})
+              {t("cartTitle", { count })}
             </h2>
           </div>
           <button
             type="button"
             onClick={() => setCartOpen(false)}
             className="text-2xl leading-none text-neutral-400 transition hover:text-neutral-900"
-            aria-label="Κλείσιμο"
+            aria-label={t("cartClose")}
           >
             ×
           </button>
@@ -77,14 +79,14 @@ export function CartDrawer() {
         <div className="border-t border-stone-200 px-5 py-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
           <div className="flex items-baseline justify-between gap-4">
             <p className="text-[10px] uppercase tracking-[0.28em] text-neutral-500">
-              Υποσύνολο
+              {t("cartSubtotal")}
             </p>
             <p className="font-mono text-lg text-neutral-950">
               {formatPricePrecise(subtotalCents, currency)}
             </p>
           </div>
           <p className="mt-2 text-xs text-neutral-500">
-            Μεταφορικά & τελικό σύνολο στο checkout.
+            {t("cartShippingNote")}
           </p>
 
           <Link
@@ -97,16 +99,21 @@ export function CartDrawer() {
             }`}
             aria-disabled={count === 0}
           >
-            Προβολή καλαθιού
+            {t("cartView")}
           </Link>
 
-          <button
-            type="button"
-            disabled={count === 0}
-            className="mt-3 w-full border border-neutral-900 py-4 text-[11px] font-medium uppercase tracking-[0.26em] text-neutral-900 transition hover:bg-neutral-950 hover:text-white disabled:cursor-not-allowed disabled:border-neutral-200 disabled:text-neutral-300 disabled:hover:bg-transparent"
+          <Link
+            href="/checkout"
+            onClick={() => setCartOpen(false)}
+            className={`mt-3 block w-full border border-neutral-900 py-4 text-center text-[11px] font-medium uppercase tracking-[0.26em] text-neutral-900 transition hover:bg-neutral-950 hover:text-white ${
+              count === 0
+                ? "pointer-events-none border-neutral-200 text-neutral-300"
+                : ""
+            }`}
+            aria-disabled={count === 0}
           >
-            Checkout · σύντομα
-          </button>
+            {t("cartCheckoutSoon")}
+          </Link>
         </div>
       </aside>
     </div>

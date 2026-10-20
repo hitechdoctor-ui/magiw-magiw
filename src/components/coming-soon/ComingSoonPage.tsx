@@ -1,10 +1,14 @@
 "use client";
 
+import { FloatingTulipBouquet } from "@/components/decor/FloatingTulipBouquet";
+import { LanguageSwitch } from "@/components/i18n/LanguageSwitch";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import { FormEvent, useState } from "react";
 
 const INSTAGRAM_URL = "https://www.instagram.com/magiwmagiw/";
 
 export function ComingSoonPage() {
+  const { t, locale } = useLocale();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">(
     "idle",
@@ -17,7 +21,7 @@ export function ComingSoonPage() {
 
     if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
       setStatus("error");
-      setMessage("Παρακαλούμε εισάγετε έγκυρο email.");
+      setMessage(t("launchInvalidEmail"));
       return;
     }
 
@@ -28,29 +32,43 @@ export function ComingSoonPage() {
       const response = await fetch("/api/coming-soon-subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: trimmed }),
+        body: JSON.stringify({ email: trimmed, locale }),
       });
 
-      const payload = (await response.json()) as { error?: string };
+      const payload = (await response.json()) as {
+        error?: string;
+        discountCode?: string;
+        existing?: boolean;
+      };
 
       if (!response.ok) {
-        throw new Error(payload.error ?? "Η εγγραφή απέτυχε.");
+        throw new Error(payload.error ?? t("launchError"));
       }
 
       setStatus("success");
-      setMessage("Ευχαριστούμε — θα σας ενημερώσουμε για το launch.");
+      setMessage(
+        payload.existing
+          ? t("launchSuccessExisting", { code: payload.discountCode ?? "" })
+          : t("launchSuccessNew", { code: payload.discountCode ?? "" }),
+      );
       setEmail("");
     } catch (error) {
       setStatus("error");
       setMessage(
-        error instanceof Error ? error.message : "Κάτι πήγε στραβά. Δοκίμασε ξανά.",
+        error instanceof Error ? error.message : t("launchError"),
       );
     }
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#faf8f5] text-neutral-950">
-      <main className="flex flex-1 flex-col items-center justify-center px-6 py-16 text-center">
+    <div className="relative flex min-h-screen flex-col overflow-x-hidden bg-[#faf8f5] text-neutral-950">
+      <FloatingTulipBouquet prominence="hero" />
+
+      <div className="absolute right-6 top-6 z-20">
+        <LanguageSwitch variant="site" />
+      </div>
+
+      <main className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 py-16 text-center">
         <p className="text-[10px] uppercase tracking-[0.45em] text-neutral-400">
           magiwmagiw.gr
         </p>
@@ -64,20 +82,23 @@ export function ComingSoonPage() {
         </p>
 
         <p className="mt-10 max-w-md font-serif text-2xl leading-snug text-neutral-900 sm:text-3xl">
-          Κάτι μαγικό ετοιμάζεται.
+          {t("launchMagic")}
         </p>
-        <p className="mt-3 text-sm text-neutral-500">Σύντομα κοντά σας.</p>
+        <p className="mt-3 text-sm text-neutral-500">{t("launchSoon")}</p>
 
         <form
           onSubmit={handleSubmit}
           className="mt-12 w-full max-w-md"
           noValidate
         >
+          <p className="mb-2 font-serif text-lg text-neutral-900">
+            {t("launchDiscountOffer")}
+          </p>
           <label htmlFor="launch-email" className="sr-only">
-            Email για ενημέρωση launch
+            Email
           </label>
           <p className="mb-4 text-[10px] uppercase tracking-[0.28em] text-neutral-500">
-            Ενημερωθείτε πρώτοι για το launch
+            {t("launchSubscribeLabel")}
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">
             <input
@@ -96,12 +117,12 @@ export function ComingSoonPage() {
               disabled={status === "loading" || status === "success"}
               className="shrink-0 border border-neutral-900 bg-neutral-950 px-8 py-3.5 text-[10px] font-medium uppercase tracking-[0.28em] text-white transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {status === "loading" ? "..." : "Εγγραφή"}
+              {status === "loading" ? "..." : t("launchSubscribeButton")}
             </button>
           </div>
           {message && (
             <p
-              className={`mt-4 text-sm ${
+              className={`mt-4 text-sm leading-relaxed ${
                 status === "success" ? "text-neutral-700" : "text-red-700"
               }`}
               role={status === "error" ? "alert" : "status"}
@@ -112,7 +133,7 @@ export function ComingSoonPage() {
         </form>
       </main>
 
-      <footer className="border-t border-stone-200/80 px-6 py-8 text-center">
+      <footer className="relative z-10 border-t border-stone-200/80 px-6 py-8 text-center">
         <a
           href={INSTAGRAM_URL}
           target="_blank"
@@ -121,9 +142,7 @@ export function ComingSoonPage() {
         >
           Instagram · @magiwmagiw
         </a>
-        <p className="mt-4 text-xs text-neutral-400">
-          Athens · Ιδιαίτερα ρούχα · Atelier
-        </p>
+        <p className="mt-4 text-xs text-neutral-400">{t("launchFooterCity")}</p>
       </footer>
     </div>
   );

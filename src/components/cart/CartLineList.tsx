@@ -1,6 +1,7 @@
 "use client";
 
 import type { CartLine } from "@/components/cart/CartProvider";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import { formatPricePrecise } from "@/lib/utils/format";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,12 +15,14 @@ type CartLineListProps = {
 export function CartLineList({
   lines,
   onRemove,
-  emptyMessage = "Το καλάθι σου είναι άδειο.",
+  emptyMessage,
 }: CartLineListProps) {
+  const { t } = useLocale();
+
   if (lines.length === 0) {
     return (
       <p className="py-8 text-center text-sm leading-relaxed text-neutral-500">
-        {emptyMessage}
+        {emptyMessage ?? t("cartEmpty")}
       </p>
     );
   }
@@ -55,7 +58,7 @@ export function CartLineList({
               {line.productName}
             </Link>
             <p className="mt-1 text-xs uppercase tracking-[0.18em] text-neutral-500">
-              Μέγεθος · {line.size}
+              {t("cartSize", { size: line.size })}
             </p>
             <p className="mt-2 font-mono text-sm text-neutral-800">
               {formatPricePrecise(line.price_cents, line.currency)}
@@ -66,9 +69,9 @@ export function CartLineList({
             type="button"
             onClick={() => onRemove(line.id)}
             className="shrink-0 self-start text-[10px] uppercase tracking-[0.2em] text-neutral-400 transition hover:text-neutral-900"
-            aria-label={`Αφαίρεση ${line.productName}`}
+            aria-label={t("cartRemoveAria", { name: line.productName })}
           >
-            Αφαίρεση
+            {t("cartRemove")}
           </button>
         </li>
       ))}

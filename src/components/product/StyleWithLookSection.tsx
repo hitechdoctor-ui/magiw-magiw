@@ -1,6 +1,7 @@
 "use client";
 
 import { useCart } from "@/components/cart/CartProvider";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import type { ProductDetail } from "@/lib/types/database";
 import { formatPricePrecise } from "@/lib/utils/format";
@@ -21,6 +22,7 @@ export function StyleWithLookSection({
 }: StyleWithLookSectionProps) {
   const pieces = [current, partner];
   const { addLines } = useCart();
+  const { t } = useLocale();
   const [sizes, setSizes] = useState<Record<string, string>>({});
   const [bundleError, setBundleError] = useState(false);
   const [bundleAdded, setBundleAdded] = useState(false);
@@ -53,17 +55,19 @@ export function StyleWithLookSection({
   return (
     <section
       id="style-with-look"
-      className="mt-16 scroll-mt-28 border-t border-stone-200 pt-12 lg:mt-20 lg:pt-16"
+      className="mt-10 scroll-mt-24 border-t border-stone-200 pt-6 lg:mt-12 lg:pt-8"
     >
       <p className="text-[10px] uppercase tracking-[0.35em] text-neutral-400">
-        Evelina Collection · Complete look
+        {t("styleWithEyebrow")}
       </p>
       <h2 className="mt-3 font-serif text-2xl tracking-tight text-neutral-950 sm:text-3xl">
-        Ο συνδυασμός
+        {t("styleWithTitle")}
       </h2>
       <p className="mt-3 max-w-xl text-sm leading-relaxed text-neutral-600">
-        Το {current.name.toLowerCase()} με το {partner.name.toLowerCase()} — όπως
-        στο editorial styling της συλλογής.
+        {t("styleWithIntro", {
+          current: current.name,
+          partner: partner.name,
+        })}
       </p>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -88,7 +92,9 @@ export function StyleWithLookSection({
             </div>
             <div className="min-w-0 flex flex-col justify-center">
               <p className="text-[10px] uppercase tracking-[0.22em] text-neutral-400">
-                {piece.slug === current.slug ? "Αυτό το κομμάτι" : "Συνδύασέ το με"}
+                {piece.slug === current.slug
+                  ? t("styleWithThisPiece")
+                  : t("styleWithPairWith")}
               </p>
               <p className="mt-1 font-serif text-lg leading-snug text-neutral-950 group-hover:underline">
                 {piece.name}
@@ -103,10 +109,10 @@ export function StyleWithLookSection({
 
       <div className="mx-auto mt-6 max-w-3xl border border-stone-200 bg-white p-5 sm:p-6">
         <p className="text-[10px] uppercase tracking-[0.28em] text-neutral-500">
-          Bundle · Complete look
+          {t("bundleEyebrow")}
         </p>
         <p className="mt-2 font-serif text-lg text-neutral-950">
-          Πρόσθεσε και τα δύο κομμάτια στο καλάθι
+          {t("bundleTitle")}
         </p>
 
         <div className="mt-5 grid gap-6 sm:grid-cols-2">
@@ -138,7 +144,7 @@ export function StyleWithLookSection({
 
         {bundleError && (
           <p className="mt-4 text-xs text-red-700">
-            Επίλεξε μέγεθος και για τα δύο κομμάτια πριν την προσθήκη bundle.
+            {t("bundleSizeError")}
           </p>
         )}
 
@@ -149,13 +155,16 @@ export function StyleWithLookSection({
           className="mx-auto mt-5 block w-full max-w-md bg-neutral-950 py-4 text-[11px] font-medium uppercase tracking-[0.26em] text-white transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:bg-neutral-300"
         >
           {bundleAdded
-            ? "Προστέθηκε το bundle στο καλάθι"
-            : `Προσθήκη bundle στο καλάθι · ${formatPricePrecise(bundleTotalCents, currency)}`}
+            ? t("cartAddedBundle")
+            : t("bundleAdd", {
+                price: formatPricePrecise(bundleTotalCents, currency),
+              })}
         </button>
       </div>
 
-      <div className="mt-10 max-w-3xl">
+      <div className="mt-6 w-full">
         <ProductGallery
+          layout="stack"
           images={galleryImages}
           productName={`${current.name} + ${partner.name}`}
         />

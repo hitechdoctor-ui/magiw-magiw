@@ -1,6 +1,7 @@
 "use client";
 
 import { useCart } from "@/components/cart/CartProvider";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import { getProductById } from "@/lib/data/products";
 import type { FeedPost } from "@/lib/types/database";
 import { FeedPostCard } from "./FeedPostCard";
@@ -14,6 +15,7 @@ type InstagramFeedProps = {
 export function InstagramFeed({ posts }: InstagramFeedProps) {
   const [selectedPost, setSelectedPost] = useState<FeedPost | null>(null);
   const { addProduct } = useCart();
+  const { t } = useLocale();
 
   return (
     <>
@@ -21,15 +23,14 @@ export function InstagramFeed({ posts }: InstagramFeedProps) {
         <div className="mb-10 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.35em] text-neutral-500">
-              Shoppable Feed
+              {t("feedEyebrow")}
             </p>
             <h2 className="mt-2 font-serif text-3xl tracking-tight text-neutral-950 sm:text-4xl">
-              Ζήσε το look. Αγόρασε το τώρα.
+              {t("feedTitle")}
             </h2>
           </div>
           <p className="max-w-sm text-sm leading-relaxed text-neutral-600">
-            Κάθε post από το Instagram συνδέεται άμεσα με το προϊόν — scroll,
-            discover, shop.
+            {t("feedIntro")}
           </p>
         </div>
 
