@@ -1,5 +1,6 @@
 "use client";
 
+import { useCart } from "@/components/cart/CartProvider";
 import { ProductAccordion } from "@/components/product/ProductAccordion";
 import { SizeGuideModal } from "@/components/product/SizeGuideModal";
 import { VirtualTryOnModal } from "@/components/product/VirtualTryOnModal";
@@ -22,6 +23,7 @@ export function EditorialProductView({ product }: EditorialProductViewProps) {
   const [added, setAdded] = useState(false);
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
   const [tryOnOpen, setTryOnOpen] = useState(false);
+  const { addProduct } = useCart();
 
   const editorial = product.editorial;
   const collectionLine = editorial?.collectionLine ?? product.name;
@@ -39,6 +41,7 @@ export function EditorialProductView({ product }: EditorialProductViewProps) {
       setSizeError(true);
       return;
     }
+    addProduct(product, selectedSize);
     setAdded(true);
     setSizeError(false);
     window.setTimeout(() => setAdded(false), 2800);

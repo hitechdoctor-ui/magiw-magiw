@@ -1,6 +1,7 @@
 import { EditorialProductView } from "@/components/product/editorial/EditorialProductView";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { ProductPurchasePanel } from "@/components/product/ProductPurchasePanel";
+import { StyleWithLookSection } from "@/components/product/StyleWithLookSection";
 import { getAllProducts, getProductById } from "@/lib/data/products";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -44,6 +45,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
   }
 
   const hasTryOn = product.showVirtualTryOn === true;
+  const styleWithSlug = product.styleWith?.slug;
+  const styleWithPartner = styleWithSlug
+    ? getProductById(styleWithSlug)
+    : undefined;
+  const styleWithGallery =
+    product.styleWith?.galleryImages ??
+    (styleWithPartner
+      ? [...product.images, ...styleWithPartner.images]
+      : undefined);
 
   return (
     <div className="min-h-screen bg-[#faf8f5] text-neutral-900">
@@ -54,9 +64,20 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <ProductGallery images={product.images} productName={product.name} />
 
           <aside className="lg:sticky lg:top-24 lg:self-start">
-            <ProductPurchasePanel product={product} />
+            <ProductPurchasePanel
+              product={product}
+              styleWithPartner={styleWithPartner}
+            />
           </aside>
         </div>
+
+        {styleWithPartner && styleWithGallery && styleWithGallery.length > 0 && (
+          <StyleWithLookSection
+            current={product}
+            partner={styleWithPartner}
+            galleryImages={styleWithGallery}
+          />
+        )}
       </div>
     </div>
   );

@@ -48,12 +48,20 @@ export type ProductEditorialMeta = {
   slides?: EditorialLookbookSlide[];
 };
 
+export type ProductStyleWith = {
+  /** Slug of the piece that completes this look */
+  slug: string;
+  /** Full-outfit photos (both pieces styled together) */
+  galleryImages?: string[];
+};
+
 export type ProductDetail = Product & {
   images: string[];
   sku: string;
   pageLayout?: ProductPageLayout;
   editorial?: ProductEditorialMeta;
   statusLabel?: string;
+  styleWith?: ProductStyleWith;
   showVirtualTryOn?: boolean;
   /** English prompt for Replicate IDM-VTON `garment_des` (length, fit, fabric). */
   garmentDescription?: string;

@@ -1,5 +1,7 @@
 "use client";
 
+import { useCart } from "@/components/cart/CartProvider";
+import { getProductById } from "@/lib/data/products";
 import type { FeedPost } from "@/lib/types/database";
 import { FeedPostCard } from "./FeedPostCard";
 import { ProductModal } from "./ProductModal";
@@ -11,6 +13,7 @@ type InstagramFeedProps = {
 
 export function InstagramFeed({ posts }: InstagramFeedProps) {
   const [selectedPost, setSelectedPost] = useState<FeedPost | null>(null);
+  const { addProduct } = useCart();
 
   return (
     <>
@@ -45,7 +48,11 @@ export function InstagramFeed({ posts }: InstagramFeedProps) {
         <ProductModal
           post={selectedPost}
           onClose={() => setSelectedPost(null)}
-          onAddToCart={() => setSelectedPost(null)}
+          onAddToCart={(size) => {
+            const detail = getProductById(selectedPost.product.slug);
+            if (detail) addProduct(detail, size);
+            setSelectedPost(null);
+          }}
         />
       )}
     </>

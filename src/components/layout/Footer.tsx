@@ -1,7 +1,22 @@
+import Image from "next/image";
+
 export function Footer() {
   return (
-    <footer className="border-t border-neutral-200 bg-neutral-50">
-      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+    <footer className="relative border-t border-neutral-200 bg-neutral-50">
+      <div
+        className="tulip-float pointer-events-none absolute bottom-0 left-0 z-20 h-[min(48vh,300px)] w-[min(62vw,320px)] origin-bottom-left -scale-x-100 sm:h-[min(50vh,340px)] sm:w-[360px] lg:h-[min(52vh,380px)] lg:w-[400px]"
+        aria-hidden
+      >
+        <Image
+          src="/brand/tulips-bouquet.png"
+          alt=""
+          fill
+          className="object-contain object-left-bottom"
+          sizes="(max-width: 640px) 320px, 400px"
+        />
+      </div>
+
+      <div className="relative z-10 mx-auto flex max-w-6xl flex-col gap-4 px-4 py-10 pl-[min(44vw,12rem)] sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:pl-56 lg:pl-64">
         <p className="font-serif text-lg tracking-[0.15em] text-neutral-900">
           MAGIW MAGIW
         </p>

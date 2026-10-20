@@ -1,3 +1,4 @@
+import { AppProviders } from "@/components/providers/AppProviders";
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import "./globals.css";
@@ -48,7 +49,7 @@ export default function RootLayout({
   return (
     <html lang="el" className={`${dmSans.variable} ${cormorant.variable} h-full`}>
       <body className="min-h-full bg-neutral-950 font-sans text-neutral-950 antialiased">
-        {children}
+        <AppProviders>{children}</AppProviders>
       </body>
     </html>
   );

@@ -21,7 +21,7 @@ export function ProductAccordion({ sections, className }: ProductAccordionProps)
               +
             </span>
           </summary>
-          <p className="mt-3 text-sm leading-7 text-neutral-600">
+          <p className="mt-3 whitespace-pre-line text-sm leading-7 text-neutral-600">
             {section.content}
           </p>
         </details>

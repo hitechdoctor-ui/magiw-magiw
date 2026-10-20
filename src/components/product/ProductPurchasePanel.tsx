@@ -1,5 +1,6 @@
 "use client";
 
+import { useCart } from "@/components/cart/CartProvider";
 import { ProductAccordion } from "@/components/product/ProductAccordion";
 import { SizeGuideModal } from "@/components/product/SizeGuideModal";
 import { VirtualTryOnCta } from "@/components/product/VirtualTryOnCta";
@@ -11,14 +12,19 @@ import { useState } from "react";
 
 type ProductPurchasePanelProps = {
   product: ProductDetail;
+  styleWithPartner?: ProductDetail | null;
 };
 
-export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
+export function ProductPurchasePanel({
+  product,
+  styleWithPartner,
+}: ProductPurchasePanelProps) {
   const [selectedSize, setSelectedSize] = useState("");
   const [sizeError, setSizeError] = useState(false);
   const [added, setAdded] = useState(false);
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
   const [tryOnOpen, setTryOnOpen] = useState(false);
+  const { addProduct } = useCart();
 
   const handleAddToCart = () => {
     if (!selectedSize) {
@@ -26,6 +32,7 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
       return;
     }
 
+    addProduct(product, selectedSize);
     setAdded(true);
     setSizeError(false);
     window.setTimeout(() => setAdded(false), 2800);
@@ -111,11 +118,27 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
           )}
         </div>
 
+        {styleWithPartner && (
+          <button
+            type="button"
+            onClick={() =>
+              document
+                .getElementById("style-with-look")
+                ?.scrollIntoView({ behavior: "smooth", block: "start" })
+            }
+            className="mt-8 w-full border-2 border-neutral-900 bg-white py-4 text-[11px] font-medium uppercase tracking-[0.28em] text-neutral-900 transition hover:bg-neutral-950 hover:text-white"
+          >
+            Συνδύασέ το
+          </button>
+        )}
+
         <button
           type="button"
           onClick={handleAddToCart}
           disabled={product.stock === 0}
-          className="mt-8 w-full bg-neutral-950 py-4 text-[11px] font-medium uppercase tracking-[0.28em] text-white transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:bg-neutral-300"
+          className={`w-full bg-neutral-950 py-4 text-[11px] font-medium uppercase tracking-[0.28em] text-white transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:bg-neutral-300 ${
+            styleWithPartner ? "mt-3" : "mt-8"
+          }`}
         >
           {product.stock === 0
             ? "Εξαντλήθηκε"

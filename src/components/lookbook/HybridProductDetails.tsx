@@ -1,5 +1,6 @@
 "use client";
 
+import { useCart } from "@/components/cart/CartProvider";
 import { ProductAccordion } from "@/components/product/ProductAccordion";
 import { SizeGuideModal } from "@/components/product/SizeGuideModal";
 import type { ProductDetail } from "@/lib/types/database";
@@ -22,6 +23,7 @@ export function HybridProductDetails({
   const [sizeError, setSizeError] = useState(false);
   const [added, setAdded] = useState(false);
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
+  const { addProduct } = useCart();
 
   const sections = product.sections ?? [];
   const showTryOn = product.showVirtualTryOn === true;
@@ -31,6 +33,7 @@ export function HybridProductDetails({
       setSizeError(true);
       return;
     }
+    addProduct(product, selectedSize);
     setAdded(true);
     setSizeError(false);
     window.setTimeout(() => setAdded(false), 2800);

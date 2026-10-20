@@ -1,6 +1,12 @@
+"use client";
+
+import { CartIconButton } from "@/components/cart/CartIconButton";
+import { useCart } from "@/components/cart/CartProvider";
 import Link from "next/link";
 
 export function Header() {
+  const { count, openCart, hydrated } = useCart();
+
   return (
     <header className="sticky top-0 z-40 border-b border-neutral-200/80 bg-white/90 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-0 sm:h-16">
@@ -19,6 +25,13 @@ export function Header() {
           <Link href="/shop" className="transition hover:text-neutral-950">
             Συλλογή
           </Link>
+          <span className="h-3 w-px bg-neutral-300" aria-hidden />
+          <CartIconButton
+            count={count}
+            hydrated={hydrated}
+            onClick={openCart}
+            variant="site"
+          />
         </nav>
       </div>
     </header>

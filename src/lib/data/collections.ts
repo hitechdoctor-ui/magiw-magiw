@@ -16,6 +16,8 @@ export const COLLECTIONS: Record<CollectionKey, CollectionDefinition> = {
     description:
       "Runway-inspired looks · layered sets · limited drops από τη σειρά Angel Inspiration.",
     productSlugs: [
+      "demo-denim-jeans",
+      "demo-denim-shirt",
       "november-tulle-set",
       "evelina-shimmer-set",
       "angel-inspiration-set",

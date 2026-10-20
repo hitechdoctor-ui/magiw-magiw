@@ -2,7 +2,7 @@
   "name": "MAGIW MAGIW",
   "short_name": "MAGIW",
   "description": "Handmade Atelier & Custom Design",
-  "start_url": "/preview/lookbook",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "background_color": "#000000",

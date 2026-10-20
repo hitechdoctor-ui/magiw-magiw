@@ -343,7 +343,125 @@ export const novemberTulleSet: ProductDetail = {
   ],
 };
 
+const DEMO_DENIM_OUTFIT_GALLERY = [
+  "/images/products/demo-denim-jeans/01-front.jpg",
+  "/images/products/demo-denim-jeans/02-side.jpg",
+  "/images/products/demo-denim-jeans/03-side-shirt.jpg",
+  "/images/products/demo-denim-jeans/04-back.jpg",
+  "/images/products/demo-denim-jeans/05-shirt.jpg",
+  "/images/products/demo-denim-jeans/06-pocket.jpg",
+] as const;
+
+export const demoDenimJeans: ProductDetail = {
+  id: "f6000000-0000-0000-0000-000000000006",
+  name: "DEMO ΤΖΙΝ ΠΑΝΤΕΛΟΝΙ",
+  slug: "demo-denim-jeans",
+  sku: "MM-DJ-DEMO001",
+  description:
+    "Demo τζιν παντελόνι Evelina Collection · ψηλόμεσο, wide-leg σιλουέτα, ανοιχτό μπλε wash και raw hem. Editorial styling σε μαντόμα — ιδανικό για δοκιμή καταλόγου.",
+  price_cents: 10000,
+  currency: "EUR",
+  sizes: ["XS", "S", "M", "L", "XL"],
+  stock: 8,
+  is_active: true,
+  statusLabel: "Evelina Collection · Demo",
+  showVirtualTryOn: false,
+  styleWith: {
+    slug: "demo-denim-shirt",
+    galleryImages: [...DEMO_DENIM_OUTFIT_GALLERY],
+  },
+  images: [
+    "/images/products/demo-denim-jeans/01-front.jpg",
+    "/images/products/demo-denim-jeans/02-side.jpg",
+    "/images/products/demo-denim-jeans/03-side-shirt.jpg",
+    "/images/products/demo-denim-jeans/04-back.jpg",
+    "/images/products/demo-denim-jeans/05-shirt.jpg",
+    "/images/products/demo-denim-jeans/06-pocket.jpg",
+  ],
+  sizeGuide: {
+    rows: [
+      { size: "XS", bust: "—", waist: "62", hips: "86" },
+      { size: "S", bust: "—", waist: "66", hips: "90" },
+      { size: "M", bust: "—", waist: "70", hips: "94" },
+      { size: "L", bust: "—", waist: "74", hips: "98" },
+      { size: "XL", bust: "—", waist: "78", hips: "102" },
+    ],
+    customFitNote: "Demo μεγέθη · επικοινωνήστε για μήκος και ρύθμιση στη μέση.",
+  },
+  sections: [
+    {
+      id: "details",
+      title: "Λεπτομέρειες",
+      content:
+        "Ψηλόμεσο τζιν με crossover ζώνη, wide-leg κόψη και raw edge στο τελείωμα. Ελαφρύ stone wash · 100% βαμβακερό denim (demo specs).",
+    },
+    {
+      id: "care",
+      title: "Φροντίδα",
+      content:
+        "Πλύσιμο στο χέρι ή 30°C · Αποστροφή · Μην λευκαίνετε · Σιδερώστε χαμηλά.",
+    },
+  ],
+};
+
+export const demoDenimShirt: ProductDetail = {
+  id: "f6000000-0000-0000-0000-000000000007",
+  name: "Ασύμμετρο βαμβακερό πουκάμισο",
+  slug: "demo-denim-shirt",
+  sku: "MM-DS-DEMO001",
+  description:
+    "Ηρεμη κομψότητα, σύγχρονο layering · ασύμμετρο βαμβακερό πουκάμισο σε διχρωμία γαλάζιου και ρίγας, με rib top και wide-leg denim που ολοκληρώνουν το look.",
+  price_cents: 10000,
+  currency: "EUR",
+  sizes: ["XS", "S", "M", "L", "XL"],
+  stock: 8,
+  is_active: true,
+  statusLabel: "Evelina Collection · Demo",
+  showVirtualTryOn: false,
+  styleWith: {
+    slug: "demo-denim-jeans",
+    galleryImages: [...DEMO_DENIM_OUTFIT_GALLERY],
+  },
+  images: [
+    "/images/products/demo-denim-jeans/05-shirt.jpg",
+    "/images/products/demo-denim-jeans/03-side-shirt.jpg",
+    "/images/products/demo-denim-jeans/04-back.jpg",
+    "/images/products/demo-denim-jeans/01-front.jpg",
+  ],
+  sizeGuide: {
+    rows: [
+      { size: "XS", bust: "84", waist: "—", hips: "—" },
+      { size: "S", bust: "88", waist: "—", hips: "—" },
+      { size: "M", bust: "92", waist: "—", hips: "—" },
+      { size: "L", bust: "96", waist: "—", hips: "—" },
+      { size: "XL", bust: "100", waist: "—", hips: "—" },
+    ],
+    customFitNote: "Oversized cut · για πιο fitted εμφάνιση, επιλέξτε ένα νούμερο κάτω.",
+  },
+  sections: [
+    {
+      id: "pieces",
+      title: "Περιγραφή & Κομμάτια",
+      content:
+        "ΑΣΥΜΜΕΤΡΟ ΒΑΜΒΑΚΕΡΟ ΠΟΥΚΑΜΙΣΟ ΣΕ ΔΙΧΡΩΜΙΑ ΓΑΛΑΖΙΟΥ ΚΑΙ ΡΙΓΑΣ.\n\nRIB TOP ΣΕ ΑΠΑΛΟ ΓΑΛΑΖΙΟ ΓΙΑ ΚΑΘΑΡΗ ΒΑΣΗ.\n\nWIDE-LEG DENIM ΜΕ ΕΝΣΩΜΑΤΩΜΕΝΗ ΖΩΝΗ ΠΟΥ ΟΛΟΚΛΗΡΩΝΕΙ ΤΟ LOOK.",
+    },
+    {
+      id: "style",
+      title: "Σλόγκαν / Στυλ",
+      content: "ΗΡΕΜΗ ΚΟΜΨΩΤΗΤΑ, ΣΥΓΧΡΟΝΟ LAYERING.",
+    },
+    {
+      id: "care",
+      title: "Φροντίδα",
+      content:
+        "Πλύσιμο στο χέρι ή 30°C · Αποστροφή · Μην λευκαίνετε · Σιδερώστε χαμηλά.",
+    },
+  ],
+};
+
 export const FEATURED_PRODUCTS: ProductDetail[] = [
+  demoDenimJeans,
+  demoDenimShirt,
   novemberTulleSet,
   evelinaShimmerSet,
   angelInspirationSet,

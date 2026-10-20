@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none">
+  <circle cx="120" cy="120" r="112" stroke="#c9a962" stroke-width="1.2" opacity="0.85"/>
+  <circle cx="120" cy="120" r="104" stroke="#e8d5a3" stroke-width="0.6" opacity="0.45"/>
+  <path d="M40 128c18-22 42-34 80-34s62 12 80 34" stroke="#e8d5a3" stroke-width="0.8" opacity="0.5"/>
+  <path d="M48 132c16-14 36-22 72-22s56 8 72 22" stroke="#c9a962" stroke-width="1" opacity="0.35"/>
+  <path d="M120 52c-8 18-10 36-8 54 2 22 8 38 8 38s6-16 8-38c2-18 0-36-8-54z" fill="#faf6ef" opacity="0.92"/>
+  <path d="M120 52c-14 8-22 22-24 38-2 14 2 28 8 38 6-10 10-24 8-38-2-16-10-30-24-38z" fill="#ffffff" opacity="0.55"/>
+  <path d="M120 144c-6 10-14 16-24 18 8-6 14-14 18-24-4 2-10 4-18 6 8-2 14-8 18-18-4 10-10 16-18 18 10-2 18-8 24-18z" fill="#c9a962" opacity="0.75"/>
+  <text x="120" y="188" text-anchor="middle" fill="#e8d5a3" font-family="Georgia, serif" font-size="11" letter-spacing="3.5">MAGIW MAGIW</text>
+  <path d="M28 118c8-12 20-18 32-18M212 118c-8-12-20-18-32-18" stroke="#c9a962" stroke-width="0.9" opacity="0.6"/>
+  <path d="M22 120l14-6 4 8-18-2zM218 120l-14-6-4 8 18-2z" fill="#e8d5a3" opacity="0.5"/>
+</svg>
