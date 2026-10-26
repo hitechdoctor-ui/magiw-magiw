@@ -62,6 +62,16 @@ function buildInsertRow(
   };
 }
 
+export async function updateStoredProductGallery(
+  id: string,
+  imageUrls: string[],
+  colorImages: Record<string, string>,
+): Promise<StoredProduct | null> {
+  const withImages = await setProductImageUrls(id, imageUrls);
+  if (!withImages) return null;
+  return setProductColorImages(id, colorImages);
+}
+
 export async function setProductColorImages(
   id: string,
   colorImages: Record<string, string>,

@@ -19,7 +19,7 @@ export type GenerateProductInput = {
 export async function generateProductDraftFromPrompt(
   input: GenerateProductInput,
 ): Promise<AiProductDraft> {
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY?.trim();
   if (!apiKey) {
     throw new Error("openai_not_configured");
   }

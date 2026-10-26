@@ -1,6 +1,10 @@
 "use client";
 
 import {
+  AdminSortableImageGrid,
+  reorderByIndex,
+} from "@/components/admin/AdminSortableImageGrid";
+import {
   clearCopilotWorkbench,
   loadCopilotWorkbench,
   productAdminPreviewHref,
@@ -171,6 +175,9 @@ export function AiProductCopilot({
   const multiFileRef = useRef<HTMLInputElement>(null);
   const singleFileRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
+  const [savedGallery, setSavedGallery] = useState<string[]>([]);
+  const [galleryDirty, setGalleryDirty] = useState(false);
+  const [gallerySaving, setGallerySaving] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const pendingImagesRef = useRef(pendingImages);
   pendingImagesRef.current = pendingImages;
@@ -255,6 +262,17 @@ export function AiProductCopilot({
     });
   }, [messages, lastProduct, lastDraft, workbenchHydrated]);
 
+  useEffect(() => {
+    if (!lastProduct) {
+      setSavedGallery([]);
+      setGalleryDirty(false);
+      return;
+    }
+    if (!galleryDirty) {
+      setSavedGallery([...(lastProduct.image_urls ?? [])]);
+    }
+  }, [lastProduct, galleryDirty]);
+
   const loadDraftIntoWorkbench = (product: StoredProduct) => {
     setEditingProductId(product.id);
     setLastProduct(product);
@@ -299,6 +317,43 @@ export function AiProductCopilot({
       if (target) URL.revokeObjectURL(target.previewUrl);
       return prev.filter((item) => item.id !== id);
     });
+  };
+
+  const saveGalleryOrder = async () => {
+    if (!lastProduct || gallerySaving) return;
+    setGallerySaving(true);
+    setError(null);
+    try {
+      const response = await fetch(`/api/admin/products/${lastProduct.id}`, {
+        method: "PATCH",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image_urls: savedGallery }),
+      });
+      const data = (await response.json()) as {
+        product?: StoredProduct;
+        error?: string;
+      };
+      if (response.status === 401) {
+        window.location.assign("/admin");
+        return;
+      }
+      if (!response.ok || !data.product) {
+        setError("Δεν αποθηκεύτηκε η σειρά φωτογραφιών.");
+        return;
+      }
+      setLastProduct(data.product);
+      setSavedGallery([...(data.product.image_urls ?? [])]);
+      setGalleryDirty(false);
+      appendMessage(
+        "assistant",
+        "Ενημερώθηκε η σειρά / οι φωτογραφίες του προϊόντος — #1 είναι η κύρια στο Shop.",
+      );
+    } catch {
+      setError("Σφάλμα αποθήκευσης gallery.");
+    } finally {
+      setGallerySaving(false);
+    }
   };
 
   const appendFiles = (incoming: File[]) => {
@@ -375,7 +430,9 @@ export function AiProductCopilot({
       if (!response.ok) {
         const code = data.error ?? "generation_failed";
         if (code === "openai_not_configured") {
-          setError("Λείπει το OPENAI_API_KEY στο .env.");
+          setError(
+            "Λείπει το OPENAI_API_KEY online — πρόσθεσέ το στο Railway (service magiw-magiw → Variables → production) όπως το ADMIN_PASSWORD, μετά Redeploy. Το .env.local του laptop δεν ανεβαίνει στο site.",
+          );
         } else if (code === "image_too_large") {
           setError("Κάποια εικόνα ξεπερνά τα 4 MB — μίκρυνέ την και δοκίμασε ξανά.");
         } else {
@@ -578,39 +635,55 @@ export function AiProductCopilot({
             {pendingImages.length > 0 && (
               <div className="space-y-3">
                 <p className="text-xs text-neutral-600">
-                  {pendingImages.length} επιλεγμέν{pendingImages.length === 1 ? "η" : "ες"}{" "}
-                  — συνέχισε με «+ Μία ακόμη» μέχρι {MAX_UPLOAD_IMAGES}.
+                  {pendingImages.length} νέ{pendingImages.length === 1 ? "α" : "ες"} φωτογραφί
+                  {pendingImages.length === 1 ? "α" : "ες"} προς ανέβασμα — σύρε για σειρά (#1
+                  πρώτη στο upload).
                 </p>
-                <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                  {pendingImages.map((item, index) => (
-                    <li
-                      key={item.id}
-                      className="overflow-hidden rounded-sm border border-stone-200 bg-neutral-50"
-                    >
-                      <div className="relative aspect-[4/5] w-full bg-neutral-100">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={item.previewUrl}
-                          alt={`Επιλογή ${index + 1}`}
-                          className="h-full w-full object-cover object-center"
-                        />
-                      </div>
-                      <div className="space-y-1 p-2">
-                        <p className="truncate text-[10px] uppercase tracking-wider text-neutral-500">
-                          #{index + 1}
-                        </p>
-                        <p className="truncate text-xs text-neutral-800">{item.file.name}</p>
-                        <button
-                          type="button"
-                          onClick={() => removePendingImage(item.id)}
-                          className="text-[10px] uppercase tracking-[0.18em] text-neutral-500 hover:text-neutral-900"
-                        >
-                          Αφαίρεση
-                        </button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                <AdminSortableImageGrid
+                  items={pendingImages.map((item) => ({
+                    id: item.id,
+                    previewUrl: item.previewUrl,
+                    caption: item.file.name,
+                  }))}
+                  onReorder={(from, to) =>
+                    setPendingImages((prev) => reorderByIndex(prev, from, to))
+                  }
+                  onRemove={removePendingImage}
+                  coverHint="Σειρά πριν το «Δημιουργία / Ενημέρωση με AI» — η #1 ανεβαίνει πρώτη."
+                />
+              </div>
+            )}
+
+            {lastProduct && savedGallery.length > 0 && (
+              <div className="space-y-3 border-t border-stone-200 pt-4">
+                <p className="text-[10px] uppercase tracking-[0.28em] text-neutral-500">
+                  Αποθηκευμένες φωτογραφίες · {lastProduct.name}
+                </p>
+                <AdminSortableImageGrid
+                  items={savedGallery.map((url) => ({
+                    id: url,
+                    previewUrl: url,
+                    caption: url.split("/").pop() ?? url,
+                  }))}
+                  onReorder={(from, to) => {
+                    setSavedGallery((prev) => reorderByIndex(prev, from, to));
+                    setGalleryDirty(true);
+                  }}
+                  onRemove={(url) => {
+                    setSavedGallery((prev) => prev.filter((item) => item !== url));
+                    setGalleryDirty(true);
+                  }}
+                />
+                {galleryDirty && (
+                  <button
+                    type="button"
+                    onClick={() => void saveGalleryOrder()}
+                    disabled={gallerySaving}
+                    className="border border-neutral-900 px-4 py-2 text-[10px] uppercase tracking-[0.2em] hover:bg-neutral-950 hover:text-white disabled:opacity-50"
+                  >
+                    {gallerySaving ? "Αποθήκευση…" : "Αποθήκευση σειράς / διαγραφών"}
+                  </button>
+                )}
               </div>
             )}
           </div>

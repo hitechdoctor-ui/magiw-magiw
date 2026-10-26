@@ -3,6 +3,7 @@ import {
   deleteStoredProduct,
   getStoredProductBySlugOrId,
   setStoredProductActive,
+  updateStoredProductGallery,
 } from "@/lib/products/store";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
@@ -31,14 +32,39 @@ export async function PATCH(request: Request, context: RouteContext) {
   }
 
   const { id } = await context.params;
-  const body = (await request.json()) as { is_active?: boolean };
-  if (typeof body.is_active !== "boolean") {
-    return NextResponse.json({ error: "invalid_payload" }, { status: 400 });
-  }
+  const body = (await request.json()) as {
+    is_active?: boolean;
+    image_urls?: string[];
+  };
 
-  const product = await setStoredProductActive(id, body.is_active);
+  let product = await getStoredProductBySlugOrId(id);
   if (!product) {
     return NextResponse.json({ error: "not_found" }, { status: 404 });
+  }
+
+  if (body.image_urls !== undefined) {
+    if (
+      !Array.isArray(body.image_urls) ||
+      body.image_urls.some((url) => typeof url !== "string" || !url.trim())
+    ) {
+      return NextResponse.json({ error: "invalid_image_urls" }, { status: 400 });
+    }
+    const imageUrls = body.image_urls.map((url) => url.trim());
+    const nextColorImages: Record<string, string> = {};
+    for (const [color, url] of Object.entries(product.color_images ?? {})) {
+      if (imageUrls.includes(url)) nextColorImages[color] = url;
+    }
+    product =
+      (await updateStoredProductGallery(product.id, imageUrls, nextColorImages)) ??
+      product;
+  }
+
+  if (typeof body.is_active === "boolean") {
+    product = (await setStoredProductActive(product.id, body.is_active)) ?? product;
+  }
+
+  if (body.image_urls === undefined && typeof body.is_active !== "boolean") {
+    return NextResponse.json({ error: "invalid_payload" }, { status: 400 });
   }
 
   revalidatePath("/shop");

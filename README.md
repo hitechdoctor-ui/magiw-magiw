@@ -44,3 +44,12 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 3. **Redeploy** after saving env vars.
 
 Local dev uses `.env.local`; production uses only what you set on the host. See `.env.example`.
+
+**Railway:** open service **magiw-magiw** → **Variables** (environment **production**) → add:
+
+| Variable | Purpose |
+|----------|---------|
+| `ADMIN_PASSWORD` | Login at `/admin` |
+| `OPENAI_API_KEY` | AI Product Copilot (`sk-...` from [OpenAI API keys](https://platform.openai.com/api-keys)) |
+
+Save, then redeploy if Railway does not auto-redeploy.
