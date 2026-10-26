@@ -18,6 +18,7 @@ export type CartLine = {
   productSlug: string;
   productName: string;
   size: string;
+  color?: string;
   price_cents: number;
   currency: string;
   imageUrl?: string;
@@ -25,6 +26,7 @@ export type CartLine = {
 
 type AddLineOptions = {
   openCart?: boolean;
+  color?: string;
 };
 
 type CartContextValue = {
@@ -107,6 +109,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           productSlug: product.slug,
           productName: product.name,
           size,
+          color: options?.color,
           price_cents: product.price_cents,
           currency: product.currency,
           imageUrl: product.images[0],

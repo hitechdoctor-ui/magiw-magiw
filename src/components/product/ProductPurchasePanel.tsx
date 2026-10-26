@@ -7,6 +7,10 @@ import { SizeGuideModal } from "@/components/product/SizeGuideModal";
 import { VirtualTryOnCta } from "@/components/product/VirtualTryOnCta";
 import { VirtualTryOnModal } from "@/components/product/VirtualTryOnModal";
 import type { ProductDetail } from "@/lib/types/database";
+import {
+  colorSwatchHex,
+  colorSwatchNeedsBorder,
+} from "@/lib/products/color-swatches";
 import { formatPricePrecise } from "@/lib/utils/format";
 import Link from "next/link";
 import { useState } from "react";
@@ -14,27 +18,48 @@ import { useState } from "react";
 type ProductPurchasePanelProps = {
   product: ProductDetail;
   styleWithPartner?: ProductDetail | null;
+  selectedColor?: string;
+  onSelectedColorChange?: (color: string) => void;
 };
 
 export function ProductPurchasePanel({
   product,
   styleWithPartner,
+  selectedColor: selectedColorProp,
+  onSelectedColorChange,
 }: ProductPurchasePanelProps) {
   const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColorInternal, setSelectedColorInternal] = useState("");
+  const selectedColor = selectedColorProp ?? selectedColorInternal;
+  const setSelectedColor = (color: string) => {
+    onSelectedColorChange?.(color);
+    if (selectedColorProp === undefined) {
+      setSelectedColorInternal(color);
+    }
+  };
   const [sizeError, setSizeError] = useState(false);
+  const [colorError, setColorError] = useState(false);
   const [added, setAdded] = useState(false);
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
   const [tryOnOpen, setTryOnOpen] = useState(false);
   const { addProduct } = useCart();
   const { t } = useLocale();
 
+  const colorOptions = product.colors ?? [];
+
   const handleAddToCart = () => {
+    if (colorOptions.length > 0 && !selectedColor) {
+      setColorError(true);
+      return;
+    }
     if (!selectedSize) {
       setSizeError(true);
       return;
     }
 
-    addProduct(product, selectedSize);
+    addProduct(product, selectedSize, {
+      color: selectedColor || undefined,
+    });
     setAdded(true);
     setSizeError(false);
     window.setTimeout(() => setAdded(false), 2800);
@@ -80,7 +105,89 @@ export function ProductPurchasePanel({
           </div>
         )}
 
-        <div className="mt-10 border-t border-stone-200 pt-8">
+        {colorOptions.length > 0 && (
+          <div className="mt-10 border-t border-stone-200 pt-8">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-neutral-500">
+              {t("productColor")}
+            </p>
+            <div className="mt-4 flex flex-wrap gap-3">
+              {colorOptions.map((color) => {
+                const active = selectedColor === color;
+                const hex = colorSwatchHex(color);
+                const lightFill = colorSwatchNeedsBorder(hex);
+                return (
+                  <button
+                    key={color}
+                    type="button"
+                    onClick={() => {
+                      setSelectedColor(color);
+                      setColorError(false);
+                    }}
+                    aria-pressed={active}
+                    className={`flex min-w-[7.5rem] items-center gap-3 border-2 px-3 py-2.5 text-left text-sm transition ${
+                      active
+                        ? "border-neutral-900 bg-stone-50 shadow-sm"
+                        : "border-stone-200 bg-white text-neutral-600 hover:border-stone-400"
+                    }`}
+                    style={active ? { borderColor: hex } : undefined}
+                  >
+                    <span
+                      className={`inline-block h-7 w-7 shrink-0 rounded-full transition-transform ${
+                        active ? "scale-105 ring-2 ring-neutral-900 ring-offset-2" : ""
+                      }`}
+                      style={{
+                        backgroundColor: hex,
+                        border: lightFill
+                          ? "1px solid rgba(0,0,0,0.12)"
+                          : "1px solid rgba(255,255,255,0.35)",
+                      }}
+                      aria-hidden
+                    />
+                    <span
+                      className={
+                        active ? "font-medium text-neutral-950" : "text-neutral-700"
+                      }
+                    >
+                      {color}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            {selectedColor &&
+              colorOptions.length > 1 &&
+              !product.colorImages?.[selectedColor] && (
+                <p className="mt-3 text-xs text-amber-900">
+                  {t("productColorNoPhoto")}
+                </p>
+              )}
+            {selectedColor && (
+              <p className="mt-4 flex items-center gap-2 text-sm text-neutral-800">
+                <span
+                  className="inline-block h-4 w-4 rounded-full"
+                  style={{
+                    backgroundColor: colorSwatchHex(selectedColor),
+                    border: colorSwatchNeedsBorder(colorSwatchHex(selectedColor))
+                      ? "1px solid rgba(0,0,0,0.12)"
+                      : undefined,
+                  }}
+                  aria-hidden
+                />
+                <span>
+                  {t("productColorSelected")}:{" "}
+                  <strong className="font-medium">{selectedColor}</strong>
+                </span>
+              </p>
+            )}
+            {colorError && (
+              <p className="mt-3 text-xs text-red-700">{t("productColorError")}</p>
+            )}
+          </div>
+        )}
+
+        <div
+          className={`border-t border-stone-200 pt-8 ${colorOptions.length > 0 ? "mt-8" : "mt-10"}`}
+        >
           <div className="flex items-center justify-between gap-4">
             <p className="text-[10px] uppercase tracking-[0.3em] text-neutral-500">
               {t("productSize")}
@@ -145,7 +252,11 @@ export function ProductPurchasePanel({
           {product.stock === 0
             ? t("productSoldOut")
             : added
-              ? t("productAdded", { size: selectedSize })
+              ? t("productAdded", {
+                  size: selectedColor
+                    ? `${selectedSize} · ${selectedColor}`
+                    : selectedSize,
+                })
               : t("productAddToCart")}
         </button>
 
@@ -153,7 +264,9 @@ export function ProductPurchasePanel({
           <p className="mt-4 text-sm text-neutral-700" aria-live="polite">
             {t("cartAdded", {
               name: product.name,
-              size: selectedSize,
+              size: selectedColor
+                ? `${selectedSize} · ${selectedColor}`
+                : selectedSize,
               price: formatPricePrecise(product.price_cents, product.currency),
             })}
           </p>

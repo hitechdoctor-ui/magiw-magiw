@@ -1,44 +1,79 @@
 import { EditorialProductView } from "@/components/product/editorial/EditorialProductView";
-import { ProductGallery } from "@/components/product/ProductGallery";
-import { ProductPurchasePanel } from "@/components/product/ProductPurchasePanel";
-import { StyleWithLookSection } from "@/components/product/StyleWithLookSection";
-import { getAllProducts, getProductById } from "@/lib/data/products";
+import { ProductStandardView } from "@/components/product/ProductStandardView";
+import { getAllProducts } from "@/lib/data/products";
+import {
+  getAllProductsAsync,
+  getProductByIdAsync,
+  getProductDraftPreviewByIdAsync,
+} from "@/lib/data/products-server";
+import { isAdminAuthenticated } from "@/lib/admin/session";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 type ProductPageProps = {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ preview?: string }>;
 };
 
+export const dynamic = "force-dynamic";
+
 export async function generateStaticParams() {
-  return getAllProducts().map((product) => ({
-    id: product.slug,
-  }));
+  const [staticProducts, allProducts] = await Promise.all([
+    Promise.resolve(getAllProducts()),
+    getAllProductsAsync(),
+  ]);
+  const slugs = new Set([
+    ...staticProducts.map((p) => p.slug),
+    ...allProducts.map((p) => p.slug),
+  ]);
+  return Array.from(slugs).map((id) => ({ id }));
+}
+
+async function resolveProduct(id: string, previewDraft: boolean) {
+  const published = await getProductByIdAsync(id);
+  if (published) return { product: published, draftPreview: false as const };
+
+  if (previewDraft && (await isAdminAuthenticated())) {
+    const draft = await getProductDraftPreviewByIdAsync(id);
+    if (draft) return { product: draft, draftPreview: true as const };
+  }
+
+  return null;
 }
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: ProductPageProps): Promise<Metadata> {
   const { id } = await params;
-  const product = getProductById(id);
+  const preview = (await searchParams).preview === "draft";
+  const resolved = await resolveProduct(id, preview);
 
-  if (!product) {
+  if (!resolved) {
     return { title: "Product Not Found | MAGIW MAGIW" };
   }
 
+  const suffix = resolved.draftPreview ? " · Πρόχειρο" : "";
   return {
-    title: `${product.name} | MAGIW MAGIW`,
-    description: product.description ?? undefined,
+    title: `${resolved.product.name}${suffix} | MAGIW MAGIW`,
+    description: resolved.product.description ?? undefined,
+    robots: resolved.draftPreview ? { index: false, follow: false } : undefined,
   };
 }
 
-export default async function ProductPage({ params }: ProductPageProps) {
+export default async function ProductPage({
+  params,
+  searchParams,
+}: ProductPageProps) {
   const { id } = await params;
-  const product = getProductById(id);
+  const previewDraft = (await searchParams).preview === "draft";
+  const resolved = await resolveProduct(id, previewDraft);
 
-  if (!product) {
+  if (!resolved) {
     notFound();
   }
+
+  const { product, draftPreview } = resolved;
 
   if (product.pageLayout === "editorial") {
     return <EditorialProductView product={product} />;
@@ -47,7 +82,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const hasTryOn = product.showVirtualTryOn === true;
   const styleWithSlug = product.styleWith?.slug;
   const styleWithPartner = styleWithSlug
-    ? getProductById(styleWithSlug)
+    ? await getProductByIdAsync(styleWithSlug)
     : undefined;
   const styleWithGallery =
     product.styleWith?.galleryImages ??
@@ -57,28 +92,21 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <div className="min-h-screen bg-[#faf8f5] text-neutral-900">
-      <div
-        className={`mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-16 ${hasTryOn ? "pb-24 lg:pb-16" : ""}`}
-      >
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16 xl:gap-20">
-          <ProductGallery images={product.images} productName={product.name} />
-
-          <aside className="lg:sticky lg:top-24 lg:self-start">
-            <ProductPurchasePanel
-              product={product}
-              styleWithPartner={styleWithPartner}
-            />
-          </aside>
+      {draftPreview && (
+        <div className="border-b border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm text-amber-950">
+          <span className="font-medium">Προεπισκόπηση πρόχειρου</span> — δεν
+          είναι δημοσιευμένο στο Shop. Άφησε αυτή την καρτέλα ανοιχτή και
+          γύρνα στην καρτέλα{" "}
+          <strong className="font-medium">AI Copilot</strong> για δημοσίευση ή
+          επεξεργασία.
         </div>
-
-        {styleWithPartner && styleWithGallery && styleWithGallery.length > 0 && (
-          <StyleWithLookSection
-            current={product}
-            partner={styleWithPartner}
-            galleryImages={styleWithGallery}
-          />
-        )}
-      </div>
+      )}
+      <ProductStandardView
+        product={product}
+        styleWithPartner={styleWithPartner}
+        styleWithGallery={styleWithGallery}
+        hasTryOn={hasTryOn}
+      />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminNav } from "@/components/admin/AdminNav";
 import type { LaunchSubscriber } from "@/lib/subscribers/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -71,6 +72,7 @@ export function AdminSubscribersPanel() {
             {rows.length} εγγραφές · έκπτωση 5% ανά email
           </p>
         </div>
+        <AdminNav current="subscribers" />
         <div className="flex gap-2">
           <button
             type="button"

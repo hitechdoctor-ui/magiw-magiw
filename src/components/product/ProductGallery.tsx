@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const THUMB_LABELS = ["Μπροστά", "Πίσω", "Λεπτομέρεια"];
 
@@ -10,15 +10,28 @@ type ProductGalleryProps = {
   productName: string;
   /** Full-width stack of large frames (complete look / editorial) */
   layout?: "default" | "stack";
+  /** When set (e.g. color pick), show this image as the hero */
+  heroImage?: string;
 };
 
 export function ProductGallery({
   images,
   productName,
   layout = "default",
+  heroImage,
 }: ProductGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const activeImage = images[activeIndex] ?? images[0];
+
+  useEffect(() => {
+    if (!heroImage) return;
+    const idx = images.indexOf(heroImage);
+    if (idx >= 0) setActiveIndex(idx);
+  }, [heroImage, images]);
+
+  const activeImage =
+    heroImage && images.includes(heroImage)
+      ? heroImage
+      : (images[activeIndex] ?? images[0]);
 
   if (layout === "stack") {
     return (

@@ -43,7 +43,7 @@ function applyDiscount(subtotalCents: number, code: string) {
 }
 
 export function CheckoutFlow() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const { lines, removeLine, subtotalCents, currency, count, clearCart } =
     useCart();
 
@@ -51,6 +51,7 @@ export function CheckoutFlow() {
   const [draft, setDraft] = useState<CheckoutDraft>(emptyCheckoutDraft);
   const [hydrated, setHydrated] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     setDraft(loadDraft());
@@ -118,10 +119,37 @@ export function CheckoutFlow() {
     else if (step === "payment") setStep("review");
   };
 
-  const handlePlaceDemoOrder = () => {
-    clearCart();
-    sessionStorage.removeItem(CHECKOUT_DRAFT_KEY);
-    setStep("done");
+  const handlePlaceDemoOrder = async () => {
+    setSubmitting(true);
+    setError(null);
+    try {
+      const response = await fetch("/api/checkout/complete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          draft,
+          lines,
+          subtotalCents,
+          shippingCents,
+          discountCents,
+          totalCents,
+          currency,
+          locale,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("save_failed");
+      }
+
+      clearCart();
+      sessionStorage.removeItem(CHECKOUT_DRAFT_KEY);
+      setStep("done");
+    } catch {
+      setError(t("launchError"));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (!hydrated) {
@@ -205,7 +233,7 @@ export function CheckoutFlow() {
             <form
               onSubmit={(event: FormEvent) => {
                 event.preventDefault();
-                if (step === "payment") handlePlaceDemoOrder();
+                if (step === "payment") void handlePlaceDemoOrder();
                 else goNext();
               }}
               className="rounded-sm border border-stone-200 bg-white p-5 sm:p-6"
@@ -239,6 +267,9 @@ export function CheckoutFlow() {
                       onChange={(e) => update({ email: e.target.value })}
                       className={inputClass}
                     />
+                    <span className="mt-2 block normal-case text-xs leading-relaxed tracking-normal text-neutral-500">
+                      {t("checkoutEmailHint")}
+                    </span>
                   </label>
                   <label className={`${labelClass} sm:col-span-2`}>
                     {t("checkoutPhone")}
@@ -387,7 +418,9 @@ export function CheckoutFlow() {
                   className="flex-1 bg-neutral-950 py-4 text-[11px] font-medium uppercase tracking-[0.26em] text-white hover:bg-neutral-800"
                 >
                   {step === "payment"
-                    ? t("checkoutPlaceOrderDemo")
+                    ? submitting
+                      ? "..."
+                      : t("checkoutPlaceOrderDemo")
                     : t("checkoutContinue")}
                 </button>
               </div>

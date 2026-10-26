@@ -59,6 +59,12 @@ export function CartLineList({
             </Link>
             <p className="mt-1 text-xs uppercase tracking-[0.18em] text-neutral-500">
               {t("cartSize", { size: line.size })}
+              {line.color ? (
+                <>
+                  {" · "}
+                  {t("cartColor", { color: line.color })}
+                </>
+              ) : null}
             </p>
             <p className="mt-2 font-mono text-sm text-neutral-800">
               {formatPricePrecise(line.price_cents, line.currency)}

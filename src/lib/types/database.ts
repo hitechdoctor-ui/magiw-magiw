@@ -11,6 +11,9 @@ export type Product = {
   price_cents: number;
   currency: string;
   sizes: string[];
+  colors?: string[];
+  /** Per-color hero image URLs (AI / admin catalog) */
+  colorImages?: Record<string, string>;
   stock: number;
   is_active: boolean;
 };
