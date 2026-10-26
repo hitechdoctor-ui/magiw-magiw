@@ -1,17 +1,22 @@
+import {
+  getAdminPasswordFromEnv,
+  getAdminSessionSecretFromEnv,
+  isAdminPasswordConfigured,
+} from "@/lib/admin/credentials";
 import { createHmac, timingSafeEqual } from "crypto";
 import { cookies } from "next/headers";
 
 const COOKIE_NAME = "magiw_admin_session";
 
 function sessionToken() {
-  const password = process.env.ADMIN_PASSWORD;
-  const secret = process.env.ADMIN_SESSION_SECRET ?? password;
+  const password = getAdminPasswordFromEnv();
+  const secret = getAdminSessionSecretFromEnv();
   if (!password || !secret) return null;
   return createHmac("sha256", secret).update(password).digest("hex");
 }
 
 export function isAdminConfigured() {
-  return Boolean(process.env.ADMIN_PASSWORD);
+  return isAdminPasswordConfigured();
 }
 
 export async function isAdminAuthenticated() {

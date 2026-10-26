@@ -1,4 +1,8 @@
 import {
+  getAdminPasswordFromEnv,
+  requestIsSecure,
+} from "@/lib/admin/credentials";
+import {
   adminSessionCookieName,
   getAdminSessionCookieValue,
   isAdminConfigured,
@@ -14,8 +18,9 @@ export async function POST(request: Request) {
   }
 
   const body = (await request.json()) as { password?: string };
-  const password = typeof body.password === "string" ? body.password : "";
-  const expected = process.env.ADMIN_PASSWORD ?? "";
+  const password =
+    typeof body.password === "string" ? body.password.trim() : "";
+  const expected = getAdminPasswordFromEnv();
 
   try {
     const a = Buffer.from(password, "utf8");
@@ -36,7 +41,7 @@ export async function POST(request: Request) {
   response.cookies.set(adminSessionCookieName, token, {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: requestIsSecure(request),
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
   });

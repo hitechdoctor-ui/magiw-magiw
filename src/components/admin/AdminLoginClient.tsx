@@ -23,14 +23,14 @@ export function AdminLoginClient() {
 
       if (response.status === 503) {
         setError(
-          "Το admin δεν είναι ρυθμισμένο — λείπει ADMIN_PASSWORD στο .env.local (κάντε restart το npm run dev).",
+          "Το admin δεν είναι ρυθμισμένο online — πρόσθεσε ADMIN_PASSWORD στις Environment Variables του hosting (π.χ. Vercel → Settings → Environment Variables → Production) και κάνε Redeploy.",
         );
         return;
       }
 
       if (!response.ok) {
         setError(
-          "Λάθος κωδικός. Χρησιμοποιήστε τον κωδικό από το ADMIN_PASSWORD στο .env.local.",
+          "Λάθος κωδικός. Ο online κωδικός είναι αυτός του ADMIN_PASSWORD στο hosting (όχι απαραίτητα το .env.local του laptop). Χωρίς εισαγωγικά, χωρίς κενά στο τέλος — μετά redeploy.",
         );
         return;
       }

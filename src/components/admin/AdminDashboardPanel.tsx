@@ -1,4 +1,5 @@
 import { AdminNav } from "@/components/admin/AdminNav";
+import { AdminProductThumbnail } from "@/components/admin/AdminProductThumbnail";
 import { AdminStoredProductShopControls } from "@/components/admin/AdminStoredProductShopControls";
 import { listAllStoredProducts } from "@/lib/products/store";
 import { listCheckoutOrders } from "@/lib/orders/store";
@@ -90,9 +91,11 @@ export async function AdminDashboardPanel() {
             {recent.map((product) => (
               <li
                 key={product.id}
-                className="flex flex-wrap items-start justify-between gap-6 px-4 py-4"
+                className="flex flex-wrap items-start justify-between gap-4 px-4 py-4 sm:gap-6"
               >
-                <div className="min-w-0 flex-1">
+                <div className="flex min-w-0 flex-1 gap-4">
+                  <AdminProductThumbnail product={product} />
+                  <div className="min-w-0 flex-1">
                   <p className="font-medium text-neutral-950">{product.name}</p>
                   <p className="mt-0.5 text-xs text-neutral-500">
                     {product.sku} ·{" "}
@@ -100,6 +103,7 @@ export async function AdminDashboardPanel() {
                   </p>
                   <div className="mt-3 max-w-xs">
                     <AdminStoredProductShopControls product={product} compact />
+                  </div>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2">

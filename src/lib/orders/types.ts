@@ -3,7 +3,7 @@ import type { CheckoutDraft } from "@/lib/checkout/types";
 
 export type OrderLineItem = Pick<
   CartLine,
-  "productSlug" | "productName" | "size" | "price_cents" | "currency"
+  "productSlug" | "productName" | "size" | "price_cents" | "currency" | "color"
 >;
 
 export type CheckoutOrder = {
@@ -38,4 +38,6 @@ export type CreateOrderPayload = {
   totalCents: number;
   currency: string;
   locale: string;
+  /** demo_pending (checkout) · admin_manual (dashboard) */
+  status?: string;
 };

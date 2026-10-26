@@ -1,3 +1,4 @@
+import { AdminProductThumbnail } from "@/components/admin/AdminProductThumbnail";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { AdminStoredProductShopControls } from "@/components/admin/AdminStoredProductShopControls";
 import { getAllProducts } from "@/lib/data/products";
@@ -52,8 +53,15 @@ export async function AdminCatalogPanel() {
               {stored.map((product) => (
                 <tr key={product.id} className="border-b border-stone-100 last:border-0">
                   <td className="px-4 py-3">
-                    <p className="font-medium text-neutral-950">{product.name}</p>
-                    <p className="mt-0.5 font-mono text-xs text-neutral-500">{product.slug}</p>
+                    <div className="flex items-start gap-3">
+                      <AdminProductThumbnail product={product} />
+                      <div className="min-w-0">
+                        <p className="font-medium text-neutral-950">{product.name}</p>
+                        <p className="mt-0.5 font-mono text-xs text-neutral-500">
+                          {product.slug}
+                        </p>
+                      </div>
+                    </div>
                   </td>
                   <td className="px-4 py-3 font-mono text-xs">{product.sku}</td>
                   <td className="px-4 py-3 font-mono text-sm">

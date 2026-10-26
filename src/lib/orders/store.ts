@@ -43,10 +43,11 @@ function toRow(payload: CreateOrderPayload): Omit<CheckoutOrder, "id" | "created
       productSlug: line.productSlug,
       productName: line.productName,
       size: line.size,
+      color: line.color,
       price_cents: line.price_cents,
       currency: line.currency,
     })),
-    status: "demo_pending",
+    status: payload.status ?? "demo_pending",
     locale: payload.locale,
   };
 }

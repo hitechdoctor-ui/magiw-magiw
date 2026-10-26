@@ -7,6 +7,8 @@ import {
   listActiveStoredProducts,
 } from "@/lib/products/store";
 import { isStaticProductDeleted } from "@/lib/products/static-catalog-overrides";
+import type { AdminOrderProductOption } from "@/lib/orders/admin-create";
+import { productToOrderOption } from "@/lib/orders/admin-create";
 import { storedProductToDetail } from "@/lib/products/to-product-detail";
 
 export async function getProductByIdAsync(
@@ -59,4 +61,19 @@ export async function getAllProductsAsync(): Promise<ProductDetail[]> {
   }
 
   return Array.from(merged.values());
+}
+
+/** Products available for manual admin orders (non-deleted static + active DB). */
+export async function getAdminOrderProductOptions(): Promise<
+  AdminOrderProductOption[]
+> {
+  const merged = await getAllProductsAsync();
+  const options = [];
+
+  for (const product of merged) {
+    if (await isStaticProductDeleted(product.slug)) continue;
+    options.push(productToOrderOption(product));
+  }
+
+  return options.sort((a, b) => a.name.localeCompare(b.name, "el"));
 }

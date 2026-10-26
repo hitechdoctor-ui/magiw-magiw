@@ -34,3 +34,13 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+### Admin login online (`/admin`)
+
+`.env.local` on your laptop is **not** uploaded to GitHub. On the host (e.g. Vercel → **Settings → Environment Variables**):
+
+1. Add `ADMIN_PASSWORD` with your admin password (plain text, no quotes).
+2. Scope **Production** (and Preview if you use preview URLs).
+3. **Redeploy** after saving env vars.
+
+Local dev uses `.env.local`; production uses only what you set on the host. See `.env.example`.
