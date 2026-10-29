@@ -158,7 +158,7 @@ function FeaturedCollectionsDesktop() {
       ref={sectionRef}
       className="maya-fc-section relative z-10 hidden bg-black md:block"
       style={{ height: `${100 + PIN_VH}vh` }}
-      aria-label="Featured collections"
+      aria-label={copy.ariaLabel}
     >
       <div
         className="sticky top-0 h-[100dvh] min-h-[600px] overflow-hidden"
@@ -479,7 +479,7 @@ function FeaturedCollectionsMobile() {
     <section
       className="relative bg-black px-5 py-14 md:hidden"
       style={{ color: tab.scheme.text }}
-      aria-label="Featured collections"
+      aria-label={copy.ariaLabel}
     >
       <div
         className="pointer-events-none absolute inset-0"

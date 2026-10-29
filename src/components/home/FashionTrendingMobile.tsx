@@ -3,6 +3,8 @@
 import {
   TRENDING_FALLBACK_PRODUCTS,
 } from "@/components/home/FashionTrendingLayers";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { LANDING_COPY } from "@/lib/maya/landingCopy";
 import type { ProductDetail } from "@/lib/types/database";
 import { formatPricePrecise } from "@/lib/utils/format";
 import Image from "next/image";
@@ -50,16 +52,18 @@ function MobileProductCard({ product }: { product: ProductDetail }) {
 export function FashionTrendingMobile({
   products = [],
 }: FashionTrendingMobileProps) {
+  const { locale } = useLocale();
+  const copy = LANDING_COPY[locale].trending;
   const rail =
     products.length > 0 ? products.slice(0, 8) : TRENDING_FALLBACK_PRODUCTS;
 
   return (
     <section
       className="bg-[#eceae5] px-4 py-12 text-neutral-950 md:hidden"
-      aria-label="Trending products"
+      aria-label={copy.ariaLabel}
     >
       <h2 className="text-center font-sans text-xl font-semibold uppercase tracking-[0.12em]">
-        Trending Products
+        {copy.mobileTitle}
       </h2>
       <ul className="mt-8 flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {rail.map((product) => (
@@ -71,7 +75,7 @@ export function FashionTrendingMobile({
           href="/shop"
           className="text-[10px] font-medium uppercase tracking-[0.26em] text-neutral-600"
         >
-          View all →
+          {copy.viewAll}
         </Link>
       </div>
     </section>

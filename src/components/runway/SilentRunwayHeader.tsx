@@ -20,7 +20,7 @@ export function SilentRunwayHeader({
   return (
     <header className="pointer-events-none fixed inset-x-0 top-0 z-50 flex items-center justify-between px-5 pt-[max(1rem,env(safe-area-inset-top))] sm:px-8">
       <Link
-        href="/?preview=true"
+        href="/"
         className="pointer-events-auto block h-11 w-11 shrink-0 sm:h-12 sm:w-12"
         aria-label="MAGIW MAGIW"
       >

@@ -1,24 +1,29 @@
 "use client";
 
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { LANDING_COPY } from "@/lib/maya/landingCopy";
 import { COLLECTION_CAROUSEL_SLIDES } from "@/lib/maya/collectionCarouselSlides";
 import Image from "next/image";
 import Link from "next/link";
 
 export function MayaCollectionCarouselMobile() {
+  const { locale } = useLocale();
+  const copy = LANDING_COPY[locale].carousel;
   return (
-    <section className="bg-[#eceae5] px-5 py-14 text-neutral-950 md:hidden">
+    <section className="bg-[#eceae5] px-5 py-14 text-neutral-950 md:hidden" aria-label={copy.ariaLabel}>
       <h2 className="font-sans text-2xl font-semibold uppercase leading-tight tracking-[0.06em]">
         <span className="text-stroke-neutral block text-transparent [-webkit-text-stroke:1px_#171717]">
-          Fashion
+          {copy.headingStroke}
         </span>
-        That flows with the seasons
+        {copy.headingRest}
       </h2>
       <p className="mt-4 max-w-md text-sm leading-relaxed text-neutral-600">
-        Explore our latest collections — editorial sets and atelier pieces for
-        every season.
+        {copy.lede}
       </p>
       <ul className="mt-8 flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {COLLECTION_CAROUSEL_SLIDES.map((slide) => (
+        {COLLECTION_CAROUSEL_SLIDES.map((baseSlide) => {
+          const slide = { ...baseSlide, ...copy.slides[baseSlide.id] };
+          return (
           <li
             key={slide.id}
             className="w-[min(78vw,20rem)] shrink-0 snap-center"
@@ -48,7 +53,8 @@ export function MayaCollectionCarouselMobile() {
               </Link>
             </div>
           </li>
-        ))}
+          );
+        })}
       </ul>
     </section>
   );

@@ -5,7 +5,9 @@ import {
   measureBannerSliderMetrics,
   type BannerSliderMetrics,
 } from "@/lib/maya/bannerSliderMotion";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import { taglineFont } from "@/lib/fonts/tagline-font";
+import { LANDING_COPY } from "@/lib/maya/landingCopy";
 import {
   motion,
   useTransform,
@@ -18,21 +20,10 @@ import "@/styles/maya-hero-bridge.css";
 const HERO_VIDEO =
   "https://maya-theme-empower.myshopify.com/cdn/shop/videos/c/vp/ccb5f1aa2ff34c53bc208ff136a9df7f/ccb5f1aa2ff34c53bc208ff136a9df7f.HD-1080p-4.8Mbps-43896143.mp4?v=0";
 
-const MARQUEE_TEXT = "ELEGANCE • STYLE • LUXURY • FOREVER • ";
-
-const DEDICATION_TITLE = "Αφιέρωση";
-
-const DEDICATION_LINES = [
-  DEDICATION_TITLE,
-  "Μια ιδέα εμπνευσμένη από ψηλά! Έρχεται και αφιερώνεται στον αδερφό μου Γεράσιμο Παπαγιαννόπουλο. Ο πρώτος που πίστεψε στην ιδέα αυτή και σε εμένα... ΤΟ MAGIW MAGIW είναι ιδέα!",
-  "Χτίζεται και μετρά χρόνια πριν την υλοποίησή του. Με την γνώση και την αγάπη για δημιουργία, βασισμένα στην μελέτη πρώτης ύλης, σχεδιασμού και κατασκευής...",
-  "Θα καλύψει με τις σειρές του: την γυναίκα με σειρά Evelina's, τον άνδρα με σειρά Gino, και παιδί με σειρά Evelina's kids and baby.",
-] as const;
-
 const COLLECTION_LINKS = [
-  { href: "/shop#atelier", label: "Men Collections", image: "/maya-ref/latest_img-1.webp" },
-  { href: "/shop#editorial", label: "Woman Collections", image: "/maya-ref/Text_Img1-1.webp" },
-  { href: "/shop", label: "Popular Collections", image: "/maya-ref/Text_Img1-2.webp" },
+  { href: "/shop#atelier", key: "men", image: "/maya-ref/latest_img-1.webp" },
+  { href: "/shop#editorial", key: "women", image: "/maya-ref/Text_Img1-1.webp" },
+  { href: "/shop", key: "popular", image: "/maya-ref/Text_Img1-2.webp" },
 ] as const;
 
 function ExploreArrowIcon() {
@@ -46,14 +37,14 @@ function ExploreArrowIcon() {
   );
 }
 
-function MarqueeBlocks() {
+function MarqueeBlocks({ text }: { text: string }) {
   return (
     <>
       {Array.from({ length: 7 }).map((_, index) => (
         <div key={index} className="marquee-block">
           <div className="marquee-block-item text-item">
             <div className="marquee-text body-font" data-marquee-text-banner-slider="true">
-              {MARQUEE_TEXT}
+              {text}
             </div>
           </div>
         </div>
@@ -72,6 +63,9 @@ export type MayaHeroSectionProps = {
 };
 
 export function MayaHeroSection({ scrollProgress }: MayaHeroSectionProps) {
+  const { locale } = useLocale();
+  const copy = LANDING_COPY[locale];
+  const dedicationLines = [copy.dedication.title, ...copy.dedication.blocks];
   const mainRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const overlayContentRef = useRef<HTMLDivElement>(null);
@@ -112,7 +106,7 @@ export function MayaHeroSection({ scrollProgress }: MayaHeroSectionProps) {
     <section
       id="shopify-section-template--18773151187141__banner_slider_8P7zYG"
       className="maya-banner-section shopify-section banner-slider-section h-full"
-      aria-label="Hero banner"
+      aria-label={copy.hero.ariaLabel}
     >
       <div className="section-wrapper section-spacing scheme-scheme-6d9411dd-7dd7-4d41-89c8-bdb3669f100e section-solid section-height">
         <div
@@ -160,12 +154,11 @@ export function MayaHeroSection({ scrollProgress }: MayaHeroSectionProps) {
                             className="slideshow-heading heading-font h2"
                             data-slider-banner-content-heading="true"
                           >
-                            TIMELESS FASHION <br /> ESSENCE
+                            {copy.hero.titleLines[0]} <br /> {copy.hero.titleLines[1]}
                           </h2>
                           <p className="slideshow-description body-font text-sm">
-                            Discover fashion that transcends trends. Elevate style with classic, elegant,{" "}
-                            <br />
-                            and enduring designs.
+                            {copy.hero.descriptionLines[0]} <br />
+                            {copy.hero.descriptionLines[1]}
                           </p>
                           <div className="slideshow-button">
                             <Link
@@ -177,7 +170,7 @@ export function MayaHeroSection({ scrollProgress }: MayaHeroSectionProps) {
                                   <ExploreArrowIcon />
                                 </span>
                               </span>
-                              <span className="button button-text">EXPLORE NOW</span>
+                              <span className="button button-text">{copy.hero.cta}</span>
                             </Link>
                           </div>
                         </div>
@@ -208,8 +201,8 @@ export function MayaHeroSection({ scrollProgress }: MayaHeroSectionProps) {
               style={{ x: marqueeX }}
             >
               <div className="marquee-block-node-inner" data-speed="15" data-direction="left">
-                <MarqueeBlocks />
-                <MarqueeBlocks />
+                <MarqueeBlocks text={copy.hero.marquee} />
+                <MarqueeBlocks text={copy.hero.marquee} />
               </div>
             </motion.div>
 
@@ -223,7 +216,7 @@ export function MayaHeroSection({ scrollProgress }: MayaHeroSectionProps) {
                 data-banner-media-text-lines="true"
                 role="doc-subtitle"
               >
-                {DEDICATION_LINES.map((line, index) => (
+                {dedicationLines.map((line, index) => (
                   <StoryLine key={line.slice(0, 24)} index={index} progress={lineReveal}>
                     {line}
                   </StoryLine>
@@ -234,10 +227,12 @@ export function MayaHeroSection({ scrollProgress }: MayaHeroSectionProps) {
                 <div className="media-text-icons-inner">
                   {COLLECTION_LINKS.map((item, index) => (
                     <CollectionPill
-                      key={item.label}
+                      key={item.key}
                       index={index}
                       progress={lineReveal}
-                      {...item}
+                      href={item.href}
+                      image={item.image}
+                      label={copy.collectionPills[item.key]}
                     />
                   ))}
                 </div>

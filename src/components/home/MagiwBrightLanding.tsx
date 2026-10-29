@@ -9,14 +9,9 @@ import { MayaHeroPinSection } from "@/components/home/MayaHeroPinSection";
 import type { ProductDetail } from "@/lib/types/database";
 import { LanguageSwitch } from "@/components/i18n/LanguageSwitch";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { LANDING_COPY } from "@/lib/maya/landingCopy";
 import { taglineFont } from "@/lib/fonts/tagline-font";
 import Link from "next/link";
-
-const STORY_BLOCKS = [
-  "Μια ιδέα εμπνευσμένη από ψηλά! Έρχεται και αφιερώνεται στον αδερφό μου Γεράσιμο Παπαγιαννόπουλο. Ο πρώτος που πίστεψε στην ιδέα αυτή και σε εμένα... ΤΟ MAGIW MAGIW είναι ιδέα!",
-  "Χτίζεται και μετρά χρόνια πριν την υλοποίησή του. Με την γνώση και την αγάπη για δημιουργία, βασισμένα στην μελέτη πρώτης ύλης, σχεδιασμού και κατασκευής...",
-  "Θα καλύψει με τις σειρές του: την γυναίκα με σειρά Evelina's, τον άνδρα με σειρά Gino, και παιδί με σειρά Evelina's kids and baby.",
-];
 
 type MagiwBrightLandingProps = {
   featuredProducts?: ProductDetail[];
@@ -26,7 +21,8 @@ export function MagiwBrightLanding({
   featuredProducts = [],
 }: MagiwBrightLandingProps) {
   const { count, openCart, hydrated } = useCart();
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
+  const copy = LANDING_COPY[locale];
 
   return (
     <div className="relative min-h-screen overflow-x-clip bg-neutral-950 text-white">
@@ -39,8 +35,8 @@ export function MagiwBrightLanding({
         </Link>
 
         <nav className="hidden items-center justify-center gap-6 font-sans text-[11px] uppercase tracking-[0.14em] text-white/85 md:flex">
-          <Link href="/?preview=true" className="transition hover:text-white">
-            Home
+          <Link href="/" className="transition hover:text-white">
+            {copy.nav.home}
           </Link>
           <Link href="/shop" className="transition hover:text-white">
             {t("navCollection")}
@@ -52,7 +48,7 @@ export function MagiwBrightLanding({
 
         <nav className="flex flex-wrap items-center justify-end gap-x-3 gap-y-2 font-sans text-[11px] tracking-[0.06em] text-white/75 sm:text-xs">
           <Link href="/shop" className="transition hover:text-white md:hidden">
-            Shop
+            {copy.nav.shop}
           </Link>
           <LanguageSwitch variant="runway" />
           <CartIconButton
@@ -77,10 +73,10 @@ export function MagiwBrightLanding({
           <p
             className={`${taglineFont.className} text-center text-[clamp(1.25rem,3.6vw,1.55rem)] font-normal italic text-[#8a7348]`}
           >
-            Αφιέρωση
+            {copy.dedication.title}
           </p>
           <div className="mt-8 space-y-7">
-            {STORY_BLOCKS.map((paragraph) => (
+            {copy.dedication.blocks.map((paragraph) => (
               <p
                 key={paragraph.slice(0, 24)}
                 className={`${taglineFont.className} text-[clamp(1.1rem,3.2vw,1.45rem)] font-normal italic leading-[1.85] text-[#8a7348]`}

@@ -1,6 +1,8 @@
 "use client";
 
 import { motion, useTransform, type MotionValue } from "framer-motion";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { LANDING_COPY } from "@/lib/maya/landingCopy";
 import type { ProductDetail } from "@/lib/types/database";
 import { formatPricePrecise } from "@/lib/utils/format";
 import Image from "next/image";
@@ -174,6 +176,8 @@ export function FashionTrendingLayers({
   phase,
   products = [],
 }: FashionTrendingLayersProps) {
+  const { locale } = useLocale();
+  const copy = LANDING_COPY[locale].trending;
   const rail =
     products.length > 0 ? products.slice(0, 8) : TRENDING_FALLBACK_PRODUCTS;
 
@@ -257,7 +261,7 @@ export function FashionTrendingLayers({
                   href="/shop"
                   className="pointer-events-auto text-[10px] font-medium uppercase tracking-[0.26em] text-neutral-600 transition hover:text-neutral-950"
                 >
-                  View all →
+                  {copy.viewAll}
                 </Link>
               </div>
             </motion.div>
@@ -266,13 +270,13 @@ export function FashionTrendingLayers({
               className={`relative z-10 ${titleClassName}`}
               style={{ x: leftX, opacity: wordFade }}
             >
-              Trending
+              {copy.wordLeft}
             </motion.span>
             <motion.span
               className={`relative z-10 ${titleClassName}`}
               style={{ x: rightX, opacity: wordFade }}
             >
-              Products
+              {copy.wordRight}
             </motion.span>
           </div>
         </div>

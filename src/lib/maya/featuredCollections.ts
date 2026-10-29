@@ -53,12 +53,14 @@ export function localizeFeaturedTab(
 }
 
 /** Greek caps are written without tonos (as in print capitals). */
-export const FEATURED_COLLECTIONS_COPY: Record<Locale, { heading: string; lede: string }> = {
+export const FEATURED_COLLECTIONS_COPY: Record<Locale, { ariaLabel: string; heading: string; lede: string }> = {
   el: {
+    ariaLabel: "Επιλεγμένες συλλογές",
     heading: "ΣΤΥΛ ΦΤΙΑΓΜΕΝΟ ΜΕ ΑΓΑΠΗ",
     lede: "Τρεις σειρές, μία ιδέα. Ανακάλυψε τη σειρά που σου ταιριάζει — για εκείνη, για εκείνον και για τα μικρά μας — και άφησε το MAGIW MAGIW να σε ντύσει με στυλ.",
   },
   en: {
+    ariaLabel: "Featured collections",
     heading: "STYLE CRAFTED WITH LOVE",
     lede: "Three series, one idea. Discover the series that suits you — for her, for him and for our little ones — and let MAGIW MAGIW dress you with style.",
   },

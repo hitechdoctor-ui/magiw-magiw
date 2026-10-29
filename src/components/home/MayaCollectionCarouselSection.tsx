@@ -1,5 +1,7 @@
 "use client";
 
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { LANDING_COPY } from "@/lib/maya/landingCopy";
 import { MayaCollectionCarouselMobile } from "@/components/home/MayaCollectionCarouselMobile";
 import {
   COLLECTION_CAROUSEL_SLIDES,
@@ -70,6 +72,12 @@ function MayaCollectionCarouselDesktop() {
   const railRef = useRef<HTMLDivElement>(null);
   const layoutRef = useRef<HTMLDivElement>(null);
   const [travelPx, setTravelPx] = useState(0);
+  const { locale } = useLocale();
+  const copy = LANDING_COPY[locale].carousel;
+  const slides = COLLECTION_CAROUSEL_SLIDES.map((slide) => ({
+    ...slide,
+    ...copy.slides[slide.id],
+  }));
 
   useLayoutEffect(() => {
     const measure = () => {
@@ -122,7 +130,7 @@ function MayaCollectionCarouselDesktop() {
       ref={sectionRef}
       className="maya-cc-section relative z-10 -mt-[18vh] hidden bg-[#eceae5] md:block"
       style={{ height: sectionHeight }}
-      aria-label="Collections carousel"
+      aria-label={copy.ariaLabel}
     >
       <div className="sticky top-0 flex h-[100dvh] min-h-[560px] flex-col justify-center overflow-hidden pb-[34vh]">
         <div ref={layoutRef} className="maya-cc-layout">
@@ -131,16 +139,15 @@ function MayaCollectionCarouselDesktop() {
             style={{ opacity: headerOpacity, scale: headerScale }}
           >
             <h2 className="maya-cc-heading">
-              <span className="maya-cc-heading-stroke">Fashion</span> that flows
-              with the seasons
+              <span className="maya-cc-heading-stroke">{copy.headingStroke}</span>{" "}
+              {copy.headingRest}
             </h2>
             <p className="maya-cc-lede">
-              Explore our latest collection of timeless fashion. From classic
-              styles to modern trends, find the perfect look for every season.
+              {copy.lede}
             </p>
             <div className="maya-cc-header-actions">
               <Link href="/shop" className="maya-cc-explore">
-                Explore more
+                {copy.explore}
               </Link>
             </div>
           </motion.header>
@@ -151,13 +158,13 @@ function MayaCollectionCarouselDesktop() {
               className="maya-cc-track"
               style={{ x: listX }}
             >
-              {COLLECTION_CAROUSEL_SLIDES.map((slide, index) => (
+              {slides.map((slide, index) => (
                 <CarouselSlideCard
                   key={slide.id}
                   slide={slide}
                   index={index}
                   progress={scrollYProgress}
-                  slideCount={COLLECTION_CAROUSEL_SLIDES.length}
+                  slideCount={slides.length}
                 />
               ))}
             </motion.ul>
