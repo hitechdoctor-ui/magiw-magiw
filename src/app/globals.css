@@ -182,3 +182,32 @@ html.lookbook-active body {
   transform: translateY(0);
   opacity: 1;
 }
+
+@keyframes hero-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-hero-marquee {
+  animation: hero-marquee 42s linear infinite;
+}
+
+.animate-hero-marquee-reverse {
+  animation: hero-marquee 52s linear infinite reverse;
+}
+
+.hero-marquee-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(23, 23, 23, 0.85);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero-marquee,
+  .animate-hero-marquee-reverse {
+    animation: none;
+  }
+}

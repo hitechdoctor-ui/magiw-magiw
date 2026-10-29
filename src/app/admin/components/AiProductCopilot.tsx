@@ -420,6 +420,7 @@ export function AiProductCopilot({
         error?: string;
         product?: StoredProduct;
         draft?: AiProductDraft;
+        storage_warning?: string;
       };
 
       if (response.status === 401) {
@@ -435,6 +436,10 @@ export function AiProductCopilot({
           );
         } else if (code === "image_too_large") {
           setError("Κάποια εικόνα ξεπερνά τα 4 MB — μίκρυνέ την και δοκίμασε ξανά.");
+        } else if (code === "image_upload_failed") {
+          setError(
+            "Αποτυχία αποθήκευσης φωτογραφίας στο Supabase Storage — έλεγξε ότι τρέχει το migration 010 (bucket product-images) και τα Supabase env στο Railway.",
+          );
         } else {
           setError("Δεν δημιουργήθηκε προϊόν. Δοκιμάστε ξανά με πιο συγκεκριμένο brief.");
         }
@@ -455,6 +460,12 @@ export function AiProductCopilot({
             : `Έτοιμο: «${data.product.name}» (${data.product.slug}). Αποθηκεύτηκε ως πρόχειρο — δημοσιεύστε όταν είστε έτοιμοι.`,
         );
         setEditingProductId(data.product.id);
+        if (data.storage_warning === "ephemeral_disk") {
+          appendMessage(
+            "assistant",
+            "Προσοχή: οι φωτό αποθηκεύτηκαν στον προσωρινό δίσκο του server (Railway) — μπορεί να μην φαίνονται μετά από redeploy. Όρισε NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY και ξανανέβασε τις φωτογραφίες.",
+          );
+        }
       }
 
       clearSelectedImages();

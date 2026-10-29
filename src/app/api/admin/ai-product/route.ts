@@ -1,7 +1,10 @@
 import { buildProductEditUserPrompt } from "@/lib/ai/build-edit-prompt";
 import { generateProductDraftFromPrompt } from "@/lib/ai/generate-product-draft";
 import { isAdminAuthenticated } from "@/lib/admin/session";
-import { saveProductUploadImage } from "@/lib/products/save-upload-image";
+import {
+  saveProductUploadImage,
+  usesPersistentProductImageStorage,
+} from "@/lib/products/save-upload-image";
 import {
   colorImageFromDraft,
   mergeColorImagesForProduct,
@@ -180,14 +183,23 @@ export async function POST(request: Request) {
       if (withColors) savedProduct = withColors;
     }
 
+    const hadUploads = uploads.length > 0;
+
     return NextResponse.json({
       ok: true,
       draft,
       product: savedProduct,
       mode: existing ? "update" : "create",
+      storage_warning:
+        hadUploads && !usesPersistentProductImageStorage()
+          ? "ephemeral_disk"
+          : undefined,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "unknown";
+    if (message === "image_upload_failed") {
+      return NextResponse.json({ error: "image_upload_failed" }, { status: 502 });
+    }
     if (message === "image_too_large") {
       return NextResponse.json({ error: "image_too_large" }, { status: 400 });
     }

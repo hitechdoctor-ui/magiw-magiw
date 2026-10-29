@@ -1,0 +1,168 @@
+.maya-cc-section {
+  --maya-cc-gap: clamp(1.25rem, 3vw, 3.5rem);
+}
+
+.maya-cc-layout {
+  display: flex;
+  align-items: center;
+  gap: var(--maya-cc-gap);
+  width: 100%;
+  max-width: 100%;
+  padding-inline: clamp(1.25rem, 4vw, 5rem);
+}
+
+.maya-cc-header {
+  flex: 0 0 min(36vw, 22rem);
+  transform-origin: left center;
+}
+
+.maya-cc-heading {
+  font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
+  font-size: clamp(1.65rem, 3.2vw, 2.75rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #171717;
+}
+
+.maya-cc-heading-stroke {
+  display: block;
+  color: transparent;
+  -webkit-text-stroke: 1px #171717;
+}
+
+.maya-cc-lede {
+  margin-top: 1.25rem;
+  max-width: 22rem;
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  color: #525252;
+}
+
+.maya-cc-header-actions {
+  margin-top: 1.75rem;
+}
+
+.maya-cc-explore {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid #171717;
+  padding: 0.65rem 1.35rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #171717;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.maya-cc-explore:hover {
+  background: #171717;
+  color: #fff;
+}
+
+.maya-cc-rail-wrap {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: visible;
+}
+
+.maya-cc-track {
+  display: flex;
+  width: max-content;
+  gap: clamp(1.5rem, 3vw, 3rem);
+  will-change: transform;
+}
+
+.maya-cc-slide {
+  width: clamp(18rem, 47.5vw, 42rem);
+  flex-shrink: 0;
+}
+
+.maya-cc-card {
+  position: relative;
+}
+
+.maya-cc-media {
+  position: relative;
+  aspect-ratio: 14 / 10;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  border: 6px solid #fff;
+  background: #d4d4d4;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+}
+
+.maya-cc-overlay {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+}
+
+.maya-cc-overlay-text {
+  position: absolute;
+  bottom: 2.5rem;
+  left: -0.5rem;
+  max-width: 11rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.92);
+  padding: 0.85rem 1rem;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: #262626;
+}
+
+.maya-cc-caption {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.maya-cc-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #171717;
+}
+
+.maya-cc-cta {
+  flex-shrink: 0;
+  border-radius: 9999px;
+  border: 1px solid #171717;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #171717;
+}
+
+.maya-cc-progress-track {
+  position: relative;
+  width: min(90%, 56rem);
+  height: 3px;
+  margin: 1.5rem auto 0;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.maya-cc-progress-fill {
+  height: 100%;
+  transform-origin: left center;
+  background: #171717;
+}
+
+@media (min-width: 1024px) {
+  .maya-cc-header {
+    flex-basis: min(32vw, 24rem);
+  }
+
+  .maya-cc-slide {
+    width: clamp(20rem, 42vw, 38rem);
+  }
+}

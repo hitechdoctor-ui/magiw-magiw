@@ -53,3 +53,5 @@ Local dev uses `.env.local`; production uses only what you set on the host. See 
 | `OPENAI_API_KEY` | AI Product Copilot (`sk-...` from [OpenAI API keys](https://platform.openai.com/api-keys)) |
 
 Save, then redeploy if Railway does not auto-redeploy.
+
+**Product photos online:** uploads go to **Supabase Storage** (bucket `product-images`) when Supabase env vars are set. Without them, Railway only keeps files on ephemeral disk — URLs like `/images/products/...` break after redeploy (broken image icons in admin). Run Supabase migration `010_product_images_storage.sql`, set the Supabase variables on Railway, redeploy, then **re-upload** photos for each product.
