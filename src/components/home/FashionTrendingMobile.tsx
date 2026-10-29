@@ -4,7 +4,7 @@ import {
   TRENDING_FALLBACK_PRODUCTS,
 } from "@/components/home/FashionTrendingLayers";
 import { useLocale } from "@/components/i18n/LocaleProvider";
-import { LANDING_COPY } from "@/lib/maya/landingCopy";
+import { LANDING_COPY } from "@/lib/landing/landingCopy";
 import type { ProductDetail } from "@/lib/types/database";
 import { formatPricePrecise } from "@/lib/utils/format";
 import Image from "next/image";

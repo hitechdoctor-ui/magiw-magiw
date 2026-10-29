@@ -7,7 +7,7 @@ export type FeaturedCollectionProduct = {
 };
 
 export type FeaturedCollectionScheme = {
-  /** Radial glow behind the section (Maya `--body-background-gradient`). */
+  /** Radial glow behind the section. */
   gradient: string;
   background: string;
   heading: string;

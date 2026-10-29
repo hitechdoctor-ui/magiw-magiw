@@ -7,7 +7,7 @@ import {
   FEATURED_DEFAULT_TAB,
   localizeFeaturedTab,
   type LocalizedFeaturedTab,
-} from "@/lib/maya/featuredCollections";
+} from "@/lib/landing/featuredCollections";
 import {
   motion,
   useMotionValueEvent,
@@ -28,9 +28,9 @@ function useLocalizedFeatured() {
   return { tabs, copy: FEATURED_COLLECTIONS_COPY[locale] };
 }
 
-/** Maya: pin length = 150% of the viewport. */
+/** Pin length = 150% of the viewport. */
 const PIN_VH = 150;
-/** Maya timeline = 4 equal steps; thresholds below are fractions of the pin. */
+/** Timeline = 4 equal steps; thresholds below are fractions of the pin. */
 const STAGE_MOVE_END = 0.25;
 const STAGE_PILL_END = 0.5;
 const STAGE_GRID_AT = 0.75;
@@ -55,7 +55,7 @@ function ArrowIcon() {
   );
 }
 
-/** Word → chars split (Maya SplitText). `heading` flips each char in; `type` fades chars in fast. */
+/** Word → chars split. `heading` flips each char in; `type` fades chars in fast. */
 function SplitChars({
   text,
   show,
@@ -108,7 +108,7 @@ function SplitChars({
 }
 
 function tabOrder(active: number, count: number) {
-  /** Active tab always sits in the middle slot (Maya rotates the tab list on click). */
+  /** Active tab always sits in the middle slot (tab list rotates on click). */
   const mid = Math.floor(count / 2);
   return Array.from({ length: count }, (_, slot) => (active + slot - mid + count * 2) % count);
 }
@@ -156,7 +156,7 @@ function FeaturedCollectionsDesktop() {
   return (
     <section
       ref={sectionRef}
-      className="maya-fc-section relative z-10 hidden bg-black md:block"
+      className="landing-fc-section relative z-10 hidden bg-black md:block"
       style={{ height: `${100 + PIN_VH}vh` }}
       aria-label={copy.ariaLabel}
     >
@@ -585,7 +585,7 @@ function FeaturedCollectionsMobile() {
   );
 }
 
-export function MayaFeaturedCollectionsSection() {
+export function LandingFeaturedCollectionsSection() {
   return (
     <>
       <FeaturedCollectionsMobile />

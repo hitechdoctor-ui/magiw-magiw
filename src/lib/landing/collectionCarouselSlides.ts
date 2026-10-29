@@ -9,7 +9,7 @@ export type CollectionCarouselSlide = {
   cta: string;
 };
 
-/** Maya «Collection carousel» — reference `collectionCarousel()` in theme `engine.js`. */
+/** Horizontal collection carousel for the MAGIW MAGIW landing. */
 export const COLLECTION_CAROUSEL_SLIDES: CollectionCarouselSlide[] = [
   {
     id: "evening",

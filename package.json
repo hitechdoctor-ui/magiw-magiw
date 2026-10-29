@@ -28,5 +28,6 @@
   "devDependencies": {
     "eslint": "^9",
     "eslint-config-next": "16.2.6"
-  }
+  },
+  "author": "HitechDoctor"
 }

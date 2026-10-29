@@ -13,7 +13,7 @@ export function isAdminPasswordConfigured(): boolean {
   return getAdminPasswordFromEnv().length > 0;
 }
 
-/** HTTPS behind Vercel/Netlify/proxy — needed for Secure cookies to stick. */
+/** HTTPS behind reverse proxy — needed for Secure cookies to stick. */
 export function requestIsSecure(request: Request): boolean {
   const forwarded = request.headers.get("x-forwarded-proto");
   if (forwarded) {

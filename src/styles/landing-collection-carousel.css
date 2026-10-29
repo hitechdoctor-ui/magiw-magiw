@@ -1,22 +1,22 @@
-.maya-cc-section {
-  --maya-cc-gap: clamp(1.25rem, 3vw, 3.5rem);
+.landing-cc-section {
+  --landing-cc-gap: clamp(1.25rem, 3vw, 3.5rem);
 }
 
-.maya-cc-layout {
+.landing-cc-layout {
   display: flex;
   align-items: center;
-  gap: var(--maya-cc-gap);
+  gap: var(--landing-cc-gap);
   width: 100%;
   max-width: 100%;
   padding-inline: clamp(1.25rem, 4vw, 5rem);
 }
 
-.maya-cc-header {
+.landing-cc-header {
   flex: 0 0 min(36vw, 22rem);
   transform-origin: left center;
 }
 
-.maya-cc-heading {
+.landing-cc-heading {
   font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
   font-size: clamp(1.65rem, 3.2vw, 2.75rem);
   font-weight: 600;
@@ -26,13 +26,13 @@
   color: #171717;
 }
 
-.maya-cc-heading-stroke {
+.landing-cc-heading-stroke {
   display: block;
   color: transparent;
   -webkit-text-stroke: 1px #171717;
 }
 
-.maya-cc-lede {
+.landing-cc-lede {
   margin-top: 1.25rem;
   max-width: 22rem;
   font-size: 0.8125rem;
@@ -40,11 +40,11 @@
   color: #525252;
 }
 
-.maya-cc-header-actions {
+.landing-cc-header-actions {
   margin-top: 1.75rem;
 }
 
-.maya-cc-explore {
+.landing-cc-explore {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -59,34 +59,34 @@
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.maya-cc-explore:hover {
+.landing-cc-explore:hover {
   background: #171717;
   color: #fff;
 }
 
-.maya-cc-rail-wrap {
+.landing-cc-rail-wrap {
   flex: 1 1 auto;
   min-width: 0;
   overflow: visible;
 }
 
-.maya-cc-track {
+.landing-cc-track {
   display: flex;
   width: max-content;
   gap: clamp(1.5rem, 3vw, 3rem);
   will-change: transform;
 }
 
-.maya-cc-slide {
+.landing-cc-slide {
   width: clamp(18rem, 47.5vw, 42rem);
   flex-shrink: 0;
 }
 
-.maya-cc-card {
+.landing-cc-card {
   position: relative;
 }
 
-.maya-cc-media {
+.landing-cc-media {
   position: relative;
   aspect-ratio: 14 / 10;
   overflow: hidden;
@@ -96,13 +96,13 @@
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
 }
 
-.maya-cc-overlay {
+.landing-cc-overlay {
   pointer-events: none;
   position: absolute;
   inset: 0;
 }
 
-.maya-cc-overlay-text {
+.landing-cc-overlay-text {
   position: absolute;
   bottom: 2.5rem;
   left: -0.5rem;
@@ -116,7 +116,7 @@
   color: #262626;
 }
 
-.maya-cc-caption {
+.landing-cc-caption {
   margin-top: 1rem;
   display: flex;
   align-items: center;
@@ -124,7 +124,7 @@
   gap: 0.75rem;
 }
 
-.maya-cc-title {
+.landing-cc-title {
   font-size: 0.8125rem;
   font-weight: 600;
   letter-spacing: 0.08em;
@@ -132,7 +132,7 @@
   color: #171717;
 }
 
-.maya-cc-cta {
+.landing-cc-cta {
   flex-shrink: 0;
   border-radius: 9999px;
   border: 1px solid #171717;
@@ -143,7 +143,7 @@
   color: #171717;
 }
 
-.maya-cc-progress-track {
+.landing-cc-progress-track {
   position: relative;
   width: min(90%, 56rem);
   height: 3px;
@@ -151,18 +151,18 @@
   background: rgba(0, 0, 0, 0.12);
 }
 
-.maya-cc-progress-fill {
+.landing-cc-progress-fill {
   height: 100%;
   transform-origin: left center;
   background: #171717;
 }
 
 @media (min-width: 1024px) {
-  .maya-cc-header {
+  .landing-cc-header {
     flex-basis: min(32vw, 24rem);
   }
 
-  .maya-cc-slide {
+  .landing-cc-slide {
     width: clamp(20rem, 42vw, 38rem);
   }
 }

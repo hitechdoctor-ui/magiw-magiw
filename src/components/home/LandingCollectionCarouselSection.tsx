@@ -1,12 +1,12 @@
 "use client";
 
 import { useLocale } from "@/components/i18n/LocaleProvider";
-import { LANDING_COPY } from "@/lib/maya/landingCopy";
-import { MayaCollectionCarouselMobile } from "@/components/home/MayaCollectionCarouselMobile";
+import { LANDING_COPY } from "@/lib/landing/landingCopy";
+import { LandingCollectionCarouselMobile } from "@/components/home/LandingCollectionCarouselMobile";
 import {
   COLLECTION_CAROUSEL_SLIDES,
   type CollectionCarouselSlide,
-} from "@/lib/maya/collectionCarouselSlides";
+} from "@/lib/landing/collectionCarouselSlides";
 import {
   motion,
   useScroll,
@@ -16,7 +16,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useLayoutEffect, useRef, useState } from "react";
-import "@/styles/maya-collection-carousel.css";
+import "@/styles/landing-collection-carousel.css";
 
 const SCROLL_TAIL_PX = 50;
 
@@ -39,9 +39,9 @@ function CarouselSlideCard({
   });
 
   return (
-    <li className="maya-cc-slide">
-      <div className="maya-cc-card">
-        <div className="maya-cc-media">
+    <li className="landing-cc-slide">
+      <div className="landing-cc-card">
+        <div className="landing-cc-media">
           <Image
             src={slide.image}
             alt={slide.title}
@@ -52,13 +52,13 @@ function CarouselSlideCard({
             priority={index === 0}
           />
         </div>
-        <motion.div className="maya-cc-overlay" style={{ opacity: overlayOpacity }}>
-          <p className="maya-cc-overlay-text">{slide.tagline}</p>
+        <motion.div className="landing-cc-overlay" style={{ opacity: overlayOpacity }}>
+          <p className="landing-cc-overlay-text">{slide.tagline}</p>
         </motion.div>
       </div>
-      <div className="maya-cc-caption">
-        <h3 className="maya-cc-title">{slide.title}</h3>
-        <Link href={slide.href} className="maya-cc-cta">
+      <div className="landing-cc-caption">
+        <h3 className="landing-cc-title">{slide.title}</h3>
+        <Link href={slide.href} className="landing-cc-cta">
           {slide.cta}
         </Link>
       </div>
@@ -66,7 +66,7 @@ function CarouselSlideCard({
   );
 }
 
-function MayaCollectionCarouselDesktop() {
+function LandingCollectionCarouselDesktop() {
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLUListElement>(null);
   const railRef = useRef<HTMLDivElement>(null);
@@ -128,34 +128,34 @@ function MayaCollectionCarouselDesktop() {
   return (
     <section
       ref={sectionRef}
-      className="maya-cc-section relative z-10 -mt-[18vh] hidden bg-[#eceae5] md:block"
+      className="landing-cc-section relative z-10 -mt-[18vh] hidden bg-[#eceae5] md:block"
       style={{ height: sectionHeight }}
       aria-label={copy.ariaLabel}
     >
       <div className="sticky top-0 flex h-[100dvh] min-h-[560px] flex-col justify-center overflow-hidden pb-[34vh]">
-        <div ref={layoutRef} className="maya-cc-layout">
+        <div ref={layoutRef} className="landing-cc-layout">
           <motion.header
-            className="maya-cc-header"
+            className="landing-cc-header"
             style={{ opacity: headerOpacity, scale: headerScale }}
           >
-            <h2 className="maya-cc-heading">
-              <span className="maya-cc-heading-stroke">{copy.headingStroke}</span>{" "}
+            <h2 className="landing-cc-heading">
+              <span className="landing-cc-heading-stroke">{copy.headingStroke}</span>{" "}
               {copy.headingRest}
             </h2>
-            <p className="maya-cc-lede">
+            <p className="landing-cc-lede">
               {copy.lede}
             </p>
-            <div className="maya-cc-header-actions">
-              <Link href="/shop" className="maya-cc-explore">
+            <div className="landing-cc-header-actions">
+              <Link href="/shop" className="landing-cc-explore">
                 {copy.explore}
               </Link>
             </div>
           </motion.header>
 
-          <div ref={railRef} className="maya-cc-rail-wrap">
+          <div ref={railRef} className="landing-cc-rail-wrap">
             <motion.ul
               ref={trackRef}
-              className="maya-cc-track"
+              className="landing-cc-track"
               style={{ x: listX }}
             >
               {slides.map((slide, index) => (
@@ -171,9 +171,9 @@ function MayaCollectionCarouselDesktop() {
           </div>
         </div>
 
-        <div className="maya-cc-progress-track" aria-hidden>
+        <div className="landing-cc-progress-track" aria-hidden>
           <motion.div
-            className="maya-cc-progress-fill"
+            className="landing-cc-progress-fill"
             style={{ scaleX: progressScale }}
           />
         </div>
@@ -182,11 +182,11 @@ function MayaCollectionCarouselDesktop() {
   );
 }
 
-export function MayaCollectionCarouselSection() {
+export function LandingCollectionCarouselSection() {
   return (
     <>
-      <MayaCollectionCarouselMobile />
-      <MayaCollectionCarouselDesktop />
+      <LandingCollectionCarouselMobile />
+      <LandingCollectionCarouselDesktop />
     </>
   );
 }

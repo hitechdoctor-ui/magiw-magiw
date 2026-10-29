@@ -26,6 +26,11 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "MAGIW MAGIW",
   description: "Handmade Atelier & Custom Design · magiwmagiw.gr",
+  applicationName: "MAGIW MAGIW",
+  authors: [{ name: "HitechDoctor" }],
+  creator: "HitechDoctor",
+  publisher: "MAGIW MAGIW",
+  generator: "HitechDoctor",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,

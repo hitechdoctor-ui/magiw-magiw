@@ -35,6 +35,7 @@ export function Footer() {
             Instagram
           </a>
           <p className="text-sm text-neutral-500">{t("footerTagline")}</p>
+          <p className="text-[10px] uppercase tracking-[0.18em] text-neutral-400">{t("footerCreator")}</p>
         </div>
       </div>
     </footer>

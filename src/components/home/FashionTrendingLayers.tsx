@@ -2,7 +2,7 @@
 
 import { motion, useTransform, type MotionValue } from "framer-motion";
 import { useLocale } from "@/components/i18n/LocaleProvider";
-import { LANDING_COPY } from "@/lib/maya/landingCopy";
+import { LANDING_COPY } from "@/lib/landing/landingCopy";
 import type { ProductDetail } from "@/lib/types/database";
 import { formatPricePrecise } from "@/lib/utils/format";
 import Image from "next/image";
@@ -199,7 +199,7 @@ export function FashionTrendingLayers({
   const productReveal = (p: number) =>
     smootherstep(Math.min(1, Math.max(0, p / productsOpenEnd)));
 
-  /** Closed = one word at center; open = split to edges (Maya step sequence). */
+  /** Closed = one word at center; open = split to edges. */
   const openSpreadVw = 40;
 
   const leftX = useTransform(phase, (p) => {

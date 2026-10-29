@@ -1,6 +1,6 @@
-@import "./maya-banner-slider.theme.css";
+@import "./landing-banner-slider.theme.css";
 
-.maya-banner-section {
+.landing-banner-section {
   --top-spacing: 0px;
   --bottom-spacing: 0px;
   --media-height: 100vh;
@@ -25,43 +25,43 @@
   color: #fff;
 }
 
-.maya-banner-section [data-id="banner-image-media-banner_Rd86Em"] .media-overlay {
+.landing-banner-section [data-id="banner-image-media-banner_Rd86Em"] .media-overlay {
   --image-overlay-opacity: 0.4;
 }
 
 @media only screen and (max-width: 767px) {
-  .maya-banner-section {
+  .landing-banner-section {
     --media-height: 600px;
     --marquee-text-size: 70px;
     --overlay-content-lift: 0vh;
   }
 }
 
-.maya-banner-section .section-wrapper {
+.landing-banner-section .section-wrapper {
   height: var(--media-height);
   min-height: 560px;
   padding: 0;
   width: 100%;
 }
 
-.maya-banner-section .banner-slider-main {
+.landing-banner-section .banner-slider-main {
   height: var(--media-height);
   min-height: 560px;
 }
 
-.maya-banner-section .banner-overlay.is-scroll-driven {
+.landing-banner-section .banner-overlay.is-scroll-driven {
   transform: none;
   will-change: transform;
 }
 
-.maya-banner-section .slideshow-content {
+.landing-banner-section .slideshow-content {
   position: absolute;
   inset: 0;
   z-index: 2;
   pointer-events: none;
 }
 
-.maya-banner-section .slideshow-content-wrapper {
+.landing-banner-section .slideshow-content-wrapper {
   position: absolute;
   height: 100%;
   display: flex;
@@ -69,15 +69,15 @@
   padding: 0 clamp(1.25rem, 4vw, 4rem);
 }
 
-.maya-banner-section .slideshow-content-wrapper.center-left {
+.landing-banner-section .slideshow-content-wrapper.center-left {
   left: 0;
 }
 
-.maya-banner-section .slideshow-content-inner {
+.landing-banner-section .slideshow-content-inner {
   pointer-events: auto;
 }
 
-.maya-banner-section .slideshow-heading {
+.landing-banner-section .slideshow-heading {
   font-size: clamp(1.65rem, 4.2vw, 3rem);
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -85,25 +85,25 @@
   text-transform: uppercase;
 }
 
-.maya-banner-section .slideshow-description {
+.landing-banner-section .slideshow-description {
   margin-top: 1.25rem;
   max-width: 28rem;
   line-height: 1.65;
   color: rgba(255, 255, 255, 0.88);
 }
 
-.maya-banner-section .slideshow-button {
+.landing-banner-section .slideshow-button {
   margin-top: 2rem;
 }
 
-.maya-banner-section .button-element {
+.landing-banner-section .button-element {
   display: inline-flex;
   align-items: center;
   text-decoration: none;
   color: var(--button-text);
 }
 
-.maya-banner-section .button-element .button-icon {
+.landing-banner-section .button-element .button-icon {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -113,11 +113,11 @@
   border: 1px solid var(--button-border);
 }
 
-.maya-banner-section .button-element .svg-wrapper {
+.landing-banner-section .button-element .svg-wrapper {
   width: 18px;
 }
 
-.maya-banner-section .button-element .button-text {
+.landing-banner-section .button-element .button-text {
   padding: 0 1.25rem 0 0.75rem;
   font-size: 11px;
   font-weight: 500;
@@ -125,24 +125,24 @@
   text-transform: uppercase;
 }
 
-.maya-banner-section .media.d-media-fixed {
+.landing-banner-section .media.d-media-fixed {
   position: absolute;
   inset: 0;
 }
 
-.maya-banner-section .media video {
+.landing-banner-section .media video {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.maya-banner-section .banner-overlay-content {
+.landing-banner-section .banner-overlay-content {
   top: 46%;
   max-width: min(34rem, 90vw);
   transform: translateY(calc(-50% - var(--overlay-content-lift)));
 }
 
-.maya-banner-section .media-overlay-text.dedication-copy {
+.landing-banner-section .media-overlay-text.dedication-copy {
   max-width: 30rem;
   margin-inline: auto;
   padding-inline: 0.75rem;
@@ -154,33 +154,33 @@
   color: rgba(255, 255, 255, 0.92);
 }
 
-.maya-banner-section .media-overlay-text.dedication-copy > div:first-child {
+.landing-banner-section .media-overlay-text.dedication-copy > div:first-child {
   font-size: clamp(1.22rem, 3.1vw, 1.72rem);
   line-height: 1.35;
   margin-bottom: 0.5rem;
   color: rgba(255, 255, 255, 0.97);
 }
 
-.maya-banner-section .media-overlay-text.dedication-copy > div:not(:first-child) {
+.landing-banner-section .media-overlay-text.dedication-copy > div:not(:first-child) {
   margin-bottom: 0.45rem;
 }
 
-.maya-banner-section .banner-overlay-content .media-text-icons-wrapper {
+.landing-banner-section .banner-overlay-content .media-text-icons-wrapper {
   padding-block-start: 30px;
 }
 
-.maya-banner-section .marquee-block-node-inner {
+.landing-banner-section .marquee-block-node-inner {
   display: flex;
   width: max-content;
-  animation: maya-hero-marquee-scroll var(--marquee-speed) linear infinite;
+  animation: landing-hero-marquee-scroll var(--marquee-speed) linear infinite;
 }
 
-.maya-banner-section .marquee-block {
+.landing-banner-section .marquee-block {
   flex-shrink: 0;
   padding-inline: calc(var(--marquee-gap) / 2);
 }
 
-.maya-banner-section .marquee-text {
+.landing-banner-section .marquee-text {
   font-size: var(--marquee-text-size);
   line-height: 0.95;
   font-weight: 600;
@@ -189,13 +189,13 @@
   white-space: nowrap;
 }
 
-.maya-banner-section .media-overlay-text.dedication-copy > div {
+.landing-banner-section .media-overlay-text.dedication-copy > div {
   display: block;
   text-align: center;
   text-wrap: pretty;
 }
 
-@keyframes maya-hero-marquee-scroll {
+@keyframes landing-hero-marquee-scroll {
   from {
     transform: translateX(0);
   }
@@ -205,7 +205,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .maya-banner-section .marquee-block-node-inner {
+  .landing-banner-section .marquee-block-node-inner {
     animation: none;
   }
 }

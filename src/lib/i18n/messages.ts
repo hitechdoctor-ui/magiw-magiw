@@ -73,6 +73,7 @@ const messages = {
       "Επίλεξε μέγεθος και για τα δύο κομμάτια πριν την προσθήκη bundle.",
     bundleAdd: "Προσθήκη bundle στο καλάθι · {price}",
     footerTagline: "Ιδιαίτερα ρούχα · Shoppable Instagram Feed · Athens",
+    footerCreator: "Δημιουργός: HitechDoctor",
     feedEyebrow: "Shoppable Feed",
     feedTitle: "Ζήσε το look. Αγόρασε το τώρα.",
     feedIntro:
@@ -201,6 +202,7 @@ const messages = {
     bundleSizeError: "Select a size for both pieces before adding the bundle.",
     bundleAdd: "Add bundle to bag · {price}",
     footerTagline: "Distinctive apparel · Shoppable Instagram feed · Athens",
+    footerCreator: "Created by HitechDoctor",
     feedEyebrow: "Shoppable Feed",
     feedTitle: "Live the look. Shop it now.",
     feedIntro:

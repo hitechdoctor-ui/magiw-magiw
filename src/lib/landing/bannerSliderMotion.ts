@@ -1,4 +1,4 @@
-/** Port of `bannerSlider()` in Maya theme `engine.js` (GSAP ScrollTrigger). */
+/** Scroll-driven hero banner motion (pinned scrub). */
 
 export type BannerSliderMetrics = {
   sectionHeight: number;

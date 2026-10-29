@@ -4,10 +4,10 @@ import {
   bannerSliderFrame,
   measureBannerSliderMetrics,
   type BannerSliderMetrics,
-} from "@/lib/maya/bannerSliderMotion";
+} from "@/lib/landing/bannerSliderMotion";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { taglineFont } from "@/lib/fonts/tagline-font";
-import { LANDING_COPY } from "@/lib/maya/landingCopy";
+import { LANDING_COPY } from "@/lib/landing/landingCopy";
 import {
   motion,
   useTransform,
@@ -15,15 +15,15 @@ import {
 } from "framer-motion";
 import Link from "next/link";
 import { useLayoutEffect, useRef, useState } from "react";
-import "@/styles/maya-hero-bridge.css";
+import "@/styles/landing-hero-bridge.css";
 
 const HERO_VIDEO =
-  "https://maya-theme-empower.myshopify.com/cdn/shop/videos/c/vp/ccb5f1aa2ff34c53bc208ff136a9df7f/ccb5f1aa2ff34c53bc208ff136a9df7f.HD-1080p-4.8Mbps-43896143.mp4?v=0";
+  "/landing-ref/hero-banner.mp4";
 
 const COLLECTION_LINKS = [
-  { href: "/shop#atelier", key: "men", image: "/maya-ref/latest_img-1.webp" },
-  { href: "/shop#editorial", key: "women", image: "/maya-ref/Text_Img1-1.webp" },
-  { href: "/shop", key: "popular", image: "/maya-ref/Text_Img1-2.webp" },
+  { href: "/shop#atelier", key: "men", image: "/landing-ref/latest_img-1.webp" },
+  { href: "/shop#editorial", key: "women", image: "/landing-ref/Text_Img1-1.webp" },
+  { href: "/shop", key: "popular", image: "/landing-ref/Text_Img1-2.webp" },
 ] as const;
 
 function ExploreArrowIcon() {
@@ -58,11 +58,11 @@ const DEFAULT_METRICS: BannerSliderMetrics = {
   overlayContentHeight: 400,
 };
 
-export type MayaHeroSectionProps = {
+export type LandingHeroSectionProps = {
   scrollProgress: MotionValue<number>;
 };
 
-export function MayaHeroSection({ scrollProgress }: MayaHeroSectionProps) {
+export function LandingHeroSection({ scrollProgress }: LandingHeroSectionProps) {
   const { locale } = useLocale();
   const copy = LANDING_COPY[locale];
   const dedicationLines = [copy.dedication.title, ...copy.dedication.blocks];
@@ -104,8 +104,8 @@ export function MayaHeroSection({ scrollProgress }: MayaHeroSectionProps) {
 
   return (
     <section
-      id="shopify-section-template--18773151187141__banner_slider_8P7zYG"
-      className="maya-banner-section shopify-section banner-slider-section h-full"
+      id="landing-hero"
+      className="landing-banner-section banner-slider-section h-full"
       aria-label={copy.hero.ariaLabel}
     >
       <div className="section-wrapper section-spacing scheme-scheme-6d9411dd-7dd7-4d41-89c8-bdb3669f100e section-solid section-height">
@@ -113,7 +113,7 @@ export function MayaHeroSection({ scrollProgress }: MayaHeroSectionProps) {
           ref={mainRef}
           className="banner-slider-main"
           data-banner-slide-component="true"
-          data-section="template--18773151187141__banner_slider_8P7zYG"
+          data-section="landing-hero"
           data-block-size="1"
           data-section-index="1"
         >
@@ -135,7 +135,7 @@ export function MayaHeroSection({ scrollProgress }: MayaHeroSectionProps) {
                           muted
                           autoPlay
                           loop
-                          poster="/maya-ref/90d688b4a4ed4c3b82874021945dc4f9.thumbnail.0000000000.jpg"
+                          poster="/landing-ref/90d688b4a4ed4c3b82874021945dc4f9.thumbnail.0000000000.jpg"
                           aria-label="slide-show-banner-video"
                         >
                           <source src={HERO_VIDEO} type="video/mp4" />
@@ -179,7 +179,7 @@ export function MayaHeroSection({ scrollProgress }: MayaHeroSectionProps) {
                   </div>
                 </div>
               </div>
-              <div className="swiper-pagination swiper-pagination-template--18773151187141__banner_slider_8P7zYG" />
+              <div className="swiper-pagination landing-hero-pagination" />
             </div>
           </div>
 

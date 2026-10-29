@@ -16,4 +16,4 @@ create index launch_subscribers_created_at_idx
 
 alter table public.launch_subscribers enable row level security;
 
--- No public policies: inserts/reads go through Next.js API with service role only.
+-- No public policies: inserts/reads go through the app API with service role only.

@@ -1,8 +1,8 @@
 "use client";
 
-import { MayaHeroPinSection } from "@/components/home/MayaHeroPinSection";
+import { LandingHeroPinSection } from "@/components/home/LandingHeroPinSection";
 
-/** Standalone hero (legacy). Prefer `MayaHeroPinSection` on the homepage. */
+/** Standalone hero (legacy). Prefer `LandingHeroPinSection` on the homepage. */
 export function FashionHeroSection() {
-  return <MayaHeroPinSection />;
+  return <LandingHeroPinSection />;
 }

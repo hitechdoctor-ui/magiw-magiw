@@ -1,8 +1,8 @@
 "use client";
 
-import { MayaHeroPinSection } from "@/components/home/MayaHeroPinSection";
+import { LandingHeroPinSection } from "@/components/home/LandingHeroPinSection";
 
-/** @deprecated Use `MayaHeroPinSection` — hero is a pinned section (Maya `bannerSlider`). */
+/** @deprecated Use `LandingHeroPinSection` — hero is a pinned section. */
 export function FashionHeroLayers() {
-  return <MayaHeroPinSection />;
+  return <LandingHeroPinSection />;
 }

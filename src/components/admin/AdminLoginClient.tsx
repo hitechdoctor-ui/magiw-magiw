@@ -23,7 +23,7 @@ export function AdminLoginClient() {
 
       if (response.status === 503) {
         setError(
-          "Το admin δεν είναι ρυθμισμένο online — πρόσθεσε ADMIN_PASSWORD στις Environment Variables του hosting (π.χ. Vercel → Settings → Environment Variables → Production) και κάνε Redeploy.",
+          "Το admin δεν είναι ρυθμισμένο online — πρόσθεσε ADMIN_PASSWORD στις Environment Variables του hosting και κάνε Redeploy.",
         );
         return;
       }

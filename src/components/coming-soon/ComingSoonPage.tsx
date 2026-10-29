@@ -143,6 +143,9 @@ export function ComingSoonPage() {
           Instagram · @magiwmagiw
         </a>
         <p className="mt-4 text-xs text-neutral-400">{t("launchFooterCity")}</p>
+        <p className="mt-2 text-[10px] uppercase tracking-[0.2em] text-neutral-400">
+          HitechDoctor
+        </p>
       </footer>
     </div>
   );

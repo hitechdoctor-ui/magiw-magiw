@@ -1,12 +1,12 @@
 "use client";
 
 import { useLocale } from "@/components/i18n/LocaleProvider";
-import { LANDING_COPY } from "@/lib/maya/landingCopy";
-import { COLLECTION_CAROUSEL_SLIDES } from "@/lib/maya/collectionCarouselSlides";
+import { LANDING_COPY } from "@/lib/landing/landingCopy";
+import { COLLECTION_CAROUSEL_SLIDES } from "@/lib/landing/collectionCarouselSlides";
 import Image from "next/image";
 import Link from "next/link";
 
-export function MayaCollectionCarouselMobile() {
+export function LandingCollectionCarouselMobile() {
   const { locale } = useLocale();
   const copy = LANDING_COPY[locale].carousel;
   return (

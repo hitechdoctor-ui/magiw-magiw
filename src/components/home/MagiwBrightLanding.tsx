@@ -3,13 +3,13 @@
 import { CartIconButton } from "@/components/cart/CartIconButton";
 import { useCart } from "@/components/cart/CartProvider";
 import { FashionLandingSequence } from "@/components/home/FashionLandingSequence";
-import { MayaCollectionCarouselSection } from "@/components/home/MayaCollectionCarouselSection";
-import { MayaFeaturedCollectionsSection } from "@/components/home/MayaFeaturedCollectionsSection";
-import { MayaHeroPinSection } from "@/components/home/MayaHeroPinSection";
+import { LandingCollectionCarouselSection } from "@/components/home/LandingCollectionCarouselSection";
+import { LandingFeaturedCollectionsSection } from "@/components/home/LandingFeaturedCollectionsSection";
+import { LandingHeroPinSection } from "@/components/home/LandingHeroPinSection";
 import type { ProductDetail } from "@/lib/types/database";
 import { LanguageSwitch } from "@/components/i18n/LanguageSwitch";
 import { useLocale } from "@/components/i18n/LocaleProvider";
-import { LANDING_COPY } from "@/lib/maya/landingCopy";
+import { LANDING_COPY } from "@/lib/landing/landingCopy";
 import { taglineFont } from "@/lib/fonts/tagline-font";
 import Link from "next/link";
 
@@ -60,10 +60,10 @@ export function MagiwBrightLanding({
         </nav>
       </header>
 
-      <MayaHeroPinSection />
+      <LandingHeroPinSection />
       <FashionLandingSequence featuredProducts={featuredProducts} />
-      <MayaCollectionCarouselSection />
-      <MayaFeaturedCollectionsSection />
+      <LandingCollectionCarouselSection />
+      <LandingFeaturedCollectionsSection />
 
       <section
         id="brand-story"
@@ -85,6 +85,9 @@ export function MagiwBrightLanding({
               </p>
             ))}
           </div>
+          <p className="mt-10 text-center text-[10px] uppercase tracking-[0.2em] text-[#8a7348]/70">
+            HitechDoctor
+          </p>
         </div>
       </section>
     </div>
