@@ -169,6 +169,27 @@
   padding-block-start: 30px;
 }
 
+.landing-banner-section .media-text-icons-items,
+.landing-banner-section .media-overlay-icon-text {
+  color: #3a3a3a;
+}
+
+@media (min-width: 768px) {
+  .landing-banner-section .banner-overlay-content .media-text-icons-wrapper {
+    display: flex;
+    justify-content: center;
+  }
+
+  .landing-banner-section .banner-overlay-content .media-text-icons-inner {
+    flex-shrink: 0;
+  }
+
+  .landing-banner-section .media-overlay-icon-text {
+    font-size: 14px;
+    white-space: nowrap;
+  }
+}
+
 .landing-banner-section .marquee-block-node-inner {
   display: flex;
   width: max-content;
