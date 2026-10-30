@@ -1,8 +1,6 @@
 import { EditorialProductView } from "@/components/product/editorial/EditorialProductView";
 import { ProductStandardView } from "@/components/product/ProductStandardView";
-import { getAllProducts } from "@/lib/data/products";
 import {
-  getAllProductsAsync,
   getProductByIdAsync,
   getProductDraftPreviewByIdAsync,
 } from "@/lib/data/products-server";
@@ -15,19 +13,9 @@ type ProductPageProps = {
   searchParams: Promise<{ preview?: string }>;
 };
 
+/** Always render on demand — never hit Supabase during `next build`. */
 export const dynamic = "force-dynamic";
-
-export async function generateStaticParams() {
-  const [staticProducts, allProducts] = await Promise.all([
-    Promise.resolve(getAllProducts()),
-    getAllProductsAsync(),
-  ]);
-  const slugs = new Set([
-    ...staticProducts.map((p) => p.slug),
-    ...allProducts.map((p) => p.slug),
-  ]);
-  return Array.from(slugs).map((id) => ({ id }));
-}
+export const dynamicParams = true;
 
 async function resolveProduct(id: string, previewDraft: boolean) {
   const published = await getProductByIdAsync(id);

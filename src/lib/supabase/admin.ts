@@ -1,21 +1,29 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import {
+  getSupabaseServiceRoleKey,
+  getSupabaseUrl,
+  isAdminStorageConfigured,
+} from "@/lib/supabase/config";
 
-export function createAdminClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+export { isAdminStorageConfigured };
+
+export function createAdminClient(): SupabaseClient | null {
+  const url = getSupabaseUrl();
+  const serviceKey = getSupabaseServiceRoleKey();
 
   if (!url || !serviceKey) {
     return null;
   }
 
-  return createClient(url, serviceKey, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
-}
-
-export function isAdminStorageConfigured() {
-  return Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL &&
-      process.env.SUPABASE_SERVICE_ROLE_KEY,
-  );
+  try {
+    return createClient(url, serviceKey, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+  } catch (error) {
+    console.warn(
+      "[createAdminClient] skipped invalid Supabase config:",
+      error instanceof Error ? error.message : error,
+    );
+    return null;
+  }
 }
