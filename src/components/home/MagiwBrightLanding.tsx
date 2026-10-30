@@ -12,7 +12,6 @@ import type { ProductDetail } from "@/lib/types/database";
 import { LanguageSwitch } from "@/components/i18n/LanguageSwitch";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { LANDING_COPY } from "@/lib/landing/landingCopy";
-import { taglineFont } from "@/lib/fonts/tagline-font";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -94,7 +93,7 @@ export function MagiwBrightLanding({
           <Link href="/shop" className="transition hover:text-white">
             {t("navCollection")}
           </Link>
-          <Link href="#brand-story" className="transition hover:text-white">
+          <Link href="#landing-hero" className="transition hover:text-white">
             {t("navOurStory")}
           </Link>
         </nav>
@@ -118,32 +117,6 @@ export function MagiwBrightLanding({
       <LandingCollectionCarouselSection />
       <LandingFeaturedCollectionsSection />
       <LandingDesignedGridSection products={featuredProducts} />
-
-      <section
-        id="brand-story"
-        className="relative scroll-mt-8 bg-[#f3eee4] px-6 py-24 text-[#5c4a32] sm:px-10"
-      >
-        <div className="mx-auto max-w-2xl rounded-sm bg-white/55 px-6 py-10 backdrop-blur-sm sm:px-10">
-          <p
-            className={`${taglineFont.className} text-center text-[clamp(1.25rem,3.6vw,1.55rem)] font-normal italic text-[#8a7348]`}
-          >
-            {copy.dedication.title}
-          </p>
-          <div className="mt-8 space-y-7">
-            {copy.dedication.blocks.map((paragraph) => (
-              <p
-                key={paragraph.slice(0, 24)}
-                className={`${taglineFont.className} text-[clamp(1.1rem,3.2vw,1.45rem)] font-normal italic leading-[1.85] text-[#8a7348]`}
-              >
-                {paragraph}
-              </p>
-            ))}
-          </div>
-          <p className="mt-10 text-center text-[10px] uppercase tracking-[0.2em] text-[#8a7348]/70">
-            HitechDoctor
-          </p>
-        </div>
-      </section>
 
       <LandingHelpCenterSection />
     </div>
