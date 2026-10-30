@@ -197,7 +197,7 @@
   bottom: calc(100% + var(--announcement-height, 0px));
   width: min(40vw, 340px);
   height: auto;
-  transform: translate(-50%, calc(74% + 13rem));
+  transform: translate(-50%, calc(74% + 6.5rem));
   pointer-events: none;
   user-select: none;
 }
