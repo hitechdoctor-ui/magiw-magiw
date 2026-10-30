@@ -144,11 +144,11 @@ const smoothstep = (t: number) => {
 };
 
 /** Phase where the cards reach their row slots (still turned). */
-const SPREAD_END = 0.55;
+const SPREAD_END = 0.5;
 /** Phase where the turned cards start opening flat. */
-const FLATTEN_START = 0.66;
+const FLATTEN_START = 0.72;
 /** Bookshelf turn held between spreading and opening. */
-const SHELF_ANGLE = 30;
+const SHELF_ANGLE = 40;
 
 function ProductRailCardContent({ product }: { product: ProductDetail }) {
   const image = product.images[0];
