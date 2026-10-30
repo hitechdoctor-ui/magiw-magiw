@@ -3,20 +3,8 @@
 import { FashionTrendingLayers } from "@/components/home/FashionTrendingLayers";
 import { FashionTrendingMobile } from "@/components/home/FashionTrendingMobile";
 import type { ProductDetail } from "@/lib/types/database";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useScroll, useSpring } from "framer-motion";
 import { useRef } from "react";
-
-/** Trending starts while hero still pinned — avoids half-screen black under pills. */
-/**
- * Pin length = SEQUENCE_HEIGHT_VH − 100 (sticky). Raise it to keep trending pinned
- * longer with products fully open, before the carousel appears.
- */
-const SEQUENCE_HEIGHT_VH = 170;
-
-/** Opening animation expressed in absolute vh of scroll (unchanged feel from the 128vh tuning). */
-const OPEN_START_VH = 10.24;
-const OPEN_END_VH = 56.32;
-const PANEL_ENTER_VH = 30.72;
 
 type FashionLandingSequenceProps = {
   featuredProducts?: ProductDetail[];
@@ -27,25 +15,16 @@ export function FashionLandingSequence({
 }: FashionLandingSequenceProps) {
   const sectionRef = useRef<HTMLElement>(null);
 
+  /** Not pinned: the split runs while the block scrolls in (top at 55% → bottom at 65% of the viewport). */
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start start", "end start"],
+    offset: ["start 0.55", "end 0.65"],
   });
-
-  /** Phase hits 1 by ~half the section — lower scroll = already fully open. */
-  /** Keep phase at 0 while panel enters — titles start closed, then split on scroll. */
-  const trendPhase = useTransform(
-    scrollYProgress,
-    [OPEN_START_VH / SEQUENCE_HEIGHT_VH, OPEN_END_VH / SEQUENCE_HEIGHT_VH, 1],
-    [0, 1, 1],
-  );
-  const trendPanelY = useTransform(scrollYProgress, (p) => {
-    const t = Math.min(
-      1,
-      Math.max(0, p / (PANEL_ENTER_VH / SEQUENCE_HEIGHT_VH)),
-    );
-    const x = t * t * (3 - 2 * t);
-    return `${100 - x * 100}%`;
+  const phase = useSpring(scrollYProgress, {
+    stiffness: 90,
+    damping: 26,
+    mass: 0.6,
+    restDelta: 0.0005,
   });
 
   return (
@@ -54,20 +33,9 @@ export function FashionLandingSequence({
 
       <section
         ref={sectionRef}
-        className="relative z-10 -mt-[94vh] hidden bg-transparent md:block"
-        style={{ height: `${SEQUENCE_HEIGHT_VH}vh` }}
+        className="relative z-10 hidden bg-[#eceae5] md:block"
       >
-        <div className="sticky top-0 h-[100dvh] min-h-[560px] overflow-hidden">
-          <motion.div
-            className="absolute inset-0 z-20 bg-[#eceae5] will-change-transform [transform:translateZ(0)]"
-            style={{ y: trendPanelY }}
-          >
-            <FashionTrendingLayers
-              phase={trendPhase}
-              products={featuredProducts}
-            />
-          </motion.div>
-        </div>
+        <FashionTrendingLayers phase={phase} products={featuredProducts} />
       </section>
     </>
   );

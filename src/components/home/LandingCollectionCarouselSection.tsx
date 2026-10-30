@@ -128,7 +128,7 @@ function LandingCollectionCarouselDesktop() {
   return (
     <section
       ref={sectionRef}
-      className="landing-cc-section relative z-10 -mt-[18vh] hidden bg-[#eceae5] md:block"
+      className="landing-cc-section relative z-10 hidden bg-[#eceae5] md:block"
       style={{ height: sectionHeight }}
       aria-label={copy.ariaLabel}
     >
