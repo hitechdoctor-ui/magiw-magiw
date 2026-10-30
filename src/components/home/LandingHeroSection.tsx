@@ -55,8 +55,8 @@ function MarqueeBlocks({ text }: { text: string }) {
   );
 }
 
-/** Reveal value at which the last collection pill has fully appeared (see `CollectionPill`). */
-const PILLS_FULLY_SHOWN = 0.45 + 2 * 0.12 + 0.25;
+/** Reveal value at which the first collection pill has fully appeared (see `CollectionPill`). */
+const CONFETTI_AT = 0.45 + 0.25;
 
 const DEFAULT_METRICS: BannerSliderMetrics = {
   sectionHeight: 800,
@@ -109,7 +109,7 @@ export function LandingHeroSection({ scrollProgress }: LandingHeroSectionProps) 
 
   const burstFiredRef = useRef(false);
   useMotionValueEvent(lineReveal, "change", (p) => {
-    if (p >= PILLS_FULLY_SHOWN && !burstFiredRef.current) {
+    if (p >= CONFETTI_AT && !burstFiredRef.current) {
       burstFiredRef.current = true;
       void burstSideConfetti();
     }
