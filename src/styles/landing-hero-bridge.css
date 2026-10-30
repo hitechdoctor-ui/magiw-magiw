@@ -31,9 +31,31 @@
 
 @media only screen and (max-width: 767px) {
   .landing-banner-section {
-    --media-height: 600px;
+    --media-height: 100%;
     --marquee-text-size: 70px;
     --overlay-content-lift: 0vh;
+  }
+
+  .landing-banner-section .section-wrapper,
+  .landing-banner-section .banner-slider-main {
+    height: 100%;
+    min-height: 100%;
+  }
+
+  /* The theme makes this relative only on phones, which collapses the
+     absolute video to 0 because the box has no in-flow height. */
+  .landing-banner-section .main-banner-slider-inner {
+    position: static;
+    height: 100%;
+  }
+
+  .landing-banner-section .banner-slider-main:has(.marquee-text) .slideshow-content {
+    height: 100%;
+  }
+
+  /* The dedication is a static block under the hero on phones. */
+  .landing-banner-section .banner-overlay {
+    display: none;
   }
 }
 
