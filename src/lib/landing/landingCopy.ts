@@ -59,7 +59,7 @@ export const LANDING_COPY: Record<Locale, LandingCopy> = {
         "με κλασικά, κομψά και διαχρονικά σχέδια.",
       ],
       cta: "ΑΝΑΚΑΛΥΨΕ ΤΗ ΣΥΛΛΟΓΗ",
-      marquee: "ΕΛΕΓΑΝΤΖΑ • ΣΤΥΛ • ΠΟΛΥΤΕΛΕΙΑ • ΓΙΑ ΠΑΝΤΑ • ",
+      marquee: "ELEGANCE • STYLE • LUXURY • FOREVER • ",
     },
     dedication: {
       title: "Αφιέρωση",
