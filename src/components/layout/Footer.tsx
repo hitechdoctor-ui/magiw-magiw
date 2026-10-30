@@ -1,10 +1,12 @@
 "use client";
 
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { LEGAL_PAGES, LEGAL_SLUGS } from "@/lib/legal/legalPages";
 import Image from "next/image";
+import Link from "next/link";
 
 export function Footer() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
 
   return (
     <footer className="relative border-t border-neutral-200 bg-neutral-50">
@@ -35,6 +37,13 @@ export function Footer() {
             Instagram
           </a>
           <p className="text-sm text-neutral-500">{t("footerTagline")}</p>
+          <nav className="flex flex-wrap gap-x-4 gap-y-1 text-[10px] uppercase tracking-[0.18em] text-neutral-500 sm:justify-end">
+            {LEGAL_SLUGS.map((slug) => (
+              <Link key={slug} href={`/legal/${slug}`} className="transition hover:text-neutral-900">
+                {LEGAL_PAGES[locale][slug].navLabel}
+              </Link>
+            ))}
+          </nav>
           <p className="text-[10px] uppercase tracking-[0.18em] text-neutral-400">{t("footerCreator")}</p>
         </div>
       </div>

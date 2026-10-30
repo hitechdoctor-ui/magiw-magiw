@@ -1,4 +1,5 @@
 import type { Locale } from "@/lib/i18n/types";
+import { COMPANY, FREE_SHIPPING_FROM_EUR, RETURN_DAYS, SHIPPING_FLAT_EUR } from "@/lib/legal/company";
 
 /**
  * All visible texts of the home landing (hero, trending, carousel, dedication) in both languages.
@@ -36,6 +37,14 @@ export type LandingCopy = {
     headingSolid: string;
     overlay: string;
     collections: [string, string, string];
+  };
+  helpCenter: {
+    ariaLabel: string;
+    title: string;
+    intro: string;
+    items: { question: string; answer: string; link?: { href: string; label: string } }[];
+    legalLinksLabel: string;
+    copyright: string;
   };
 };
 
@@ -103,6 +112,45 @@ export const LANDING_COPY: Record<Locale, LandingCopy> = {
       overlay: "ΓΙΑ ΕΣΕΝΑ",
       collections: ["Δες τη σειρά Gino", "Δες τη σειρά Evelina's", "Δες τη σειρά για παιδί & μωρό"],
     },
+    helpCenter: {
+      ariaLabel: "Κέντρο εξυπηρέτησης",
+      title: "Κέντρο Εξυπηρέτησης",
+      intro:
+        "Καλώς ήρθες! Είμαστε εδώ για κάθε απορία σου. Για παραγγελίες, αποστολές, επιστροφές ή λεπτομέρειες προϊόντων, θα βρεις όλες τις απαντήσεις ακριβώς εδώ.",
+      items: [
+        {
+          question: "Ποια είναι η πολιτική επιστροφών και αλλαγών;",
+          answer: `Έχεις ${RETURN_DAYS} ημέρες από την παραλαβή για να επιστρέψεις ή να αλλάξεις ένα προϊόν, χωρίς να δώσεις εξήγηση. Το προϊόν πρέπει να είναι αφόρετο, με τις ετικέτες του. Η πρώτη αλλαγή μεγέθους γίνεται χωρίς χρέωση.`,
+          link: { href: "/legal/returns", label: "Δες την πολιτική επιστροφών" },
+        },
+        {
+          question: "Τι κάνω αν παρέλαβα ελαττωματικό ή λάθος προϊόν;",
+          answer: `Στείλε μας φωτογραφίες στο ${COMPANY.email} μέσα σε 3 ημέρες από την παραλαβή. Αναλαμβάνουμε εμείς όλα τα έξοδα για αντικατάσταση ή επιστροφή χρημάτων.`,
+        },
+        {
+          question: "Πώς παρακολουθώ την παραγγελία μου;",
+          answer:
+            "Μόλις φύγει η παραγγελία σου, θα λάβεις email με τον αριθμό αποστολής. Με αυτόν βλέπεις σε πραγματικό χρόνο πού βρίσκεται το δέμα σου.",
+        },
+        {
+          question: "Πόσο κοστίζει και πόσο χρόνο κάνει η αποστολή;",
+          answer: `Η αποστολή κοστίζει ${SHIPPING_FLAT_EUR} € σε όλη την Ελλάδα και είναι δωρεάν για αγορές από ${FREE_SHIPPING_FROM_EUR} € και πάνω. Παράδοση σε 1–4 εργάσιμες ημέρες.`,
+          link: { href: "/legal/shipping", label: "Δες τις αποστολές" },
+        },
+        {
+          question: "Ποιους τρόπους πληρωμής δέχεστε;",
+          answer:
+            "Κάρτα (Visa, Mastercard, Maestro), Apple Pay, Google Pay, αντικαταβολή και τραπεζική κατάθεση. Οι πληρωμές με κάρτα γίνονται με ασφάλεια, χωρίς να αποθηκεύουμε τα στοιχεία σου.",
+          link: { href: "/legal/payments", label: "Δες τους τρόπους πληρωμής" },
+        },
+        {
+          question: "Μπορώ να αλλάξω ή να ακυρώσω την παραγγελία μου;",
+          answer: `Ναι, όσο δεν έχει αποσταλεί. Γράψε μας στο ${COMPANY.email} ή πάρε τηλέφωνο στο ${COMPANY.phone} με τον αριθμό παραγγελίας σου και θα το τακτοποιήσουμε αμέσως.`,
+        },
+      ],
+      legalLinksLabel: "Νομικές πληροφορίες",
+      copyright: "Με αγάπη από την Αθήνα",
+    },
   },
   en: {
     nav: { home: "Home", shop: "Shop" },
@@ -166,6 +214,45 @@ export const LANDING_COPY: Record<Locale, LandingCopy> = {
       headingSolid: "DESIGNED",
       overlay: "FOR YOU",
       collections: ["View the Gino series", "View the Evelina's series", "View the kids & baby series"],
+    },
+    helpCenter: {
+      ariaLabel: "Customer help center",
+      title: "Customer Help Center",
+      intro:
+        "Welcome! We're here for any question you may have. Whether you need help with orders, shipping, returns or product details, you'll find all the answers right here.",
+      items: [
+        {
+          question: "What is your return and exchange policy?",
+          answer: `You have ${RETURN_DAYS} days from delivery to return or exchange an item, no reason needed. Items must be unworn, with tags attached. Your first size exchange is free.`,
+          link: { href: "/legal/returns", label: "Read the returns policy" },
+        },
+        {
+          question: "What if I received a damaged or incorrect item?",
+          answer: `Send photos to ${COMPANY.email} within 3 days of delivery. We cover all costs for a replacement or a refund.`,
+        },
+        {
+          question: "How can I track my order?",
+          answer:
+            "As soon as your order ships, you'll receive an email with the tracking number, so you can follow your parcel in real time.",
+        },
+        {
+          question: "How much does shipping cost and how long does it take?",
+          answer: `Shipping is €${SHIPPING_FLAT_EUR} anywhere in Greece and free on orders of €${FREE_SHIPPING_FROM_EUR} or more. Delivery takes 1–4 business days.`,
+          link: { href: "/legal/shipping", label: "Read about shipping" },
+        },
+        {
+          question: "What payment methods do you accept?",
+          answer:
+            "Card (Visa, Mastercard, Maestro), Apple Pay, Google Pay, cash on delivery and bank transfer. Card payments are secure and we never store your details.",
+          link: { href: "/legal/payments", label: "See payment methods" },
+        },
+        {
+          question: "Can I modify or cancel my order after placing it?",
+          answer: `Yes, as long as it hasn't shipped. Email ${COMPANY.email} or call ${COMPANY.phone} with your order number and we'll sort it out right away.`,
+        },
+      ],
+      legalLinksLabel: "Legal information",
+      copyright: "Made with love in Athens",
     },
   },
 };

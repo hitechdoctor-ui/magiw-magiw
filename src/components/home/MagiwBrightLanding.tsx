@@ -6,6 +6,7 @@ import { FashionLandingSequence } from "@/components/home/FashionLandingSequence
 import { LandingCollectionCarouselSection } from "@/components/home/LandingCollectionCarouselSection";
 import { LandingDesignedGridSection } from "@/components/home/LandingDesignedGridSection";
 import { LandingFeaturedCollectionsSection } from "@/components/home/LandingFeaturedCollectionsSection";
+import { LandingHelpCenterSection } from "@/components/home/LandingHelpCenterSection";
 import { LandingHeroPinSection } from "@/components/home/LandingHeroPinSection";
 import type { ProductDetail } from "@/lib/types/database";
 import { LanguageSwitch } from "@/components/i18n/LanguageSwitch";
@@ -143,6 +144,8 @@ export function MagiwBrightLanding({
           </p>
         </div>
       </section>
+
+      <LandingHelpCenterSection />
     </div>
   );
 }

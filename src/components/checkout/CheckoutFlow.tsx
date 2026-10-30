@@ -3,7 +3,11 @@
 import { CartLineList } from "@/components/cart/CartLineList";
 import { useCart } from "@/components/cart/CartProvider";
 import { useLocale } from "@/components/i18n/LocaleProvider";
-import { CHECKOUT_DRAFT_KEY, CHECKOUT_SHIPPING_CENTS } from "@/lib/checkout/constants";
+import {
+  CHECKOUT_DRAFT_KEY,
+  CHECKOUT_FREE_SHIPPING_FROM_CENTS,
+  CHECKOUT_SHIPPING_CENTS,
+} from "@/lib/checkout/constants";
 import {
   emptyCheckoutDraft,
   type CheckoutDraft,
@@ -66,7 +70,10 @@ export function CheckoutFlow() {
     () => applyDiscount(subtotalCents, draft.discountCode),
     [subtotalCents, draft.discountCode],
   );
-  const shippingCents = count > 0 ? CHECKOUT_SHIPPING_CENTS : 0;
+  const shippingCents =
+    count > 0 && subtotalCents < CHECKOUT_FREE_SHIPPING_FROM_CENTS
+      ? CHECKOUT_SHIPPING_CENTS
+      : 0;
   const totalCents = Math.max(
     0,
     subtotalCents + shippingCents - discountCents,
