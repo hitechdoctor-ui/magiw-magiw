@@ -4,6 +4,7 @@ import { CartIconButton } from "@/components/cart/CartIconButton";
 import { useCart } from "@/components/cart/CartProvider";
 import { FashionLandingSequence } from "@/components/home/FashionLandingSequence";
 import { LandingCollectionCarouselSection } from "@/components/home/LandingCollectionCarouselSection";
+import { LandingDesignedGridSection } from "@/components/home/LandingDesignedGridSection";
 import { LandingFeaturedCollectionsSection } from "@/components/home/LandingFeaturedCollectionsSection";
 import { LandingHeroPinSection } from "@/components/home/LandingHeroPinSection";
 import type { ProductDetail } from "@/lib/types/database";
@@ -64,6 +65,7 @@ export function MagiwBrightLanding({
       <FashionLandingSequence featuredProducts={featuredProducts} />
       <LandingCollectionCarouselSection />
       <LandingFeaturedCollectionsSection />
+      <LandingDesignedGridSection products={featuredProducts} />
 
       <section
         id="brand-story"

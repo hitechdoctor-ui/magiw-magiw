@@ -30,6 +30,13 @@ export type LandingCopy = {
     explore: string;
     slides: Record<string, { title: string; tagline: string; cta: string }>;
   };
+  designedGrid: {
+    ariaLabel: string;
+    headingStroke: string;
+    headingSolid: string;
+    overlay: string;
+    collections: [string, string, string];
+  };
 };
 
 export const LANDING_COPY: Record<Locale, LandingCopy> = {
@@ -89,6 +96,13 @@ export const LANDING_COPY: Record<Locale, LandingCopy> = {
         },
       },
     },
+    designedGrid: {
+      ariaLabel: "Μόδα σχεδιασμένη για εσένα",
+      headingStroke: "ΜΟΔΑ",
+      headingSolid: "ΣΧΕΔΙΑΣΜΕΝΗ",
+      overlay: "ΓΙΑ ΕΣΕΝΑ",
+      collections: ["Δες τη σειρά Gino", "Δες τη σειρά Evelina's", "Δες τη σειρά για παιδί & μωρό"],
+    },
   },
   en: {
     nav: { home: "Home", shop: "Shop" },
@@ -145,6 +159,13 @@ export const LANDING_COPY: Record<Locale, LandingCopy> = {
           cta: "Shop now",
         },
       },
+    },
+    designedGrid: {
+      ariaLabel: "Fashion designed for you",
+      headingStroke: "FASHION",
+      headingSolid: "DESIGNED",
+      overlay: "FOR YOU",
+      collections: ["View the Gino series", "View the Evelina's series", "View the kids & baby series"],
     },
   },
 };
