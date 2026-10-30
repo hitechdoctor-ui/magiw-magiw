@@ -1,5 +1,4 @@
-import { EditorialProductView } from "@/components/product/editorial/EditorialProductView";
-import { ProductStandardView } from "@/components/product/ProductStandardView";
+import { ProductShowcaseView } from "@/components/product/showcase/ProductShowcaseView";
 import {
   getProductByIdAsync,
   getProductDraftPreviewByIdAsync,
@@ -63,10 +62,6 @@ export default async function ProductPage({
 
   const { product, draftPreview } = resolved;
 
-  if (product.pageLayout === "editorial") {
-    return <EditorialProductView product={product} />;
-  }
-
   const hasTryOn = product.showVirtualTryOn === true;
   const styleWithSlug = product.styleWith?.slug;
   const styleWithPartner = styleWithSlug
@@ -79,7 +74,7 @@ export default async function ProductPage({
       : undefined);
 
   return (
-    <div className="min-h-screen bg-[#faf8f5] text-neutral-900">
+    <div className="min-h-screen bg-white text-neutral-900">
       {draftPreview && (
         <div className="border-b border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm text-amber-950">
           <span className="font-medium">Προεπισκόπηση πρόχειρου</span> — δεν
@@ -89,7 +84,7 @@ export default async function ProductPage({
           επεξεργασία.
         </div>
       )}
-      <ProductStandardView
+      <ProductShowcaseView
         product={product}
         styleWithPartner={styleWithPartner}
         styleWithGallery={styleWithGallery}
