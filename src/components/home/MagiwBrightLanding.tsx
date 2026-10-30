@@ -13,6 +13,52 @@ import { useLocale } from "@/components/i18n/LocaleProvider";
 import { LANDING_COPY } from "@/lib/landing/landingCopy";
 import { taglineFont } from "@/lib/fonts/tagline-font";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+
+/** Scroll distance (px) that counts as a deliberate up/down move. */
+const SCROLL_INTENT_PX = 6;
+const TOP_ZONE_PX = 24;
+
+/** Menu hides while scrolling down and comes back as soon as the user scrolls up. */
+function useRevealOnScrollUp() {
+  const [visible, setVisible] = useState(true);
+  const [atTop, setAtTop] = useState(true);
+
+  useEffect(() => {
+    let lastY = window.scrollY;
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      const y = window.scrollY;
+      const top = y <= TOP_ZONE_PX;
+      setAtTop(top);
+      if (top) {
+        setVisible(true);
+      } else if (y < lastY - SCROLL_INTENT_PX) {
+        setVisible(true);
+      } else if (y > lastY + SCROLL_INTENT_PX) {
+        setVisible(false);
+      } else {
+        return;
+      }
+      lastY = y;
+    };
+
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  return { visible, atTop };
+}
 
 type MagiwBrightLandingProps = {
   featuredProducts?: ProductDetail[];
@@ -24,10 +70,15 @@ export function MagiwBrightLanding({
   const { count, openCart, hydrated } = useCart();
   const { t, locale } = useLocale();
   const copy = LANDING_COPY[locale];
+  const { visible: headerVisible, atTop: headerAtTop } = useRevealOnScrollUp();
 
   return (
     <div className="relative min-h-screen overflow-x-clip bg-neutral-950 text-white">
-      <header className="absolute inset-x-0 top-0 z-50 grid grid-cols-[1fr_auto_1fr] items-center gap-3 px-5 pb-4 pt-[max(1.25rem,env(safe-area-inset-top))] sm:px-10 lg:px-14">
+      <header
+        className={`fixed inset-x-0 top-0 z-50 grid grid-cols-[1fr_auto_1fr] items-center gap-3 px-5 pb-4 pt-[max(1.25rem,env(safe-area-inset-top))] transition-[transform,background-color,backdrop-filter] duration-300 ease-out sm:px-10 lg:px-14 ${
+          headerAtTop ? "bg-transparent" : "bg-neutral-950/80 backdrop-blur-md"
+        } ${headerVisible ? "translate-y-0" : "-translate-y-full"}`}
+      >
         <Link
           href="/"
           className="font-sans text-lg font-semibold uppercase tracking-[0.28em] text-white sm:text-xl"
