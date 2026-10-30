@@ -8,8 +8,10 @@ import {
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { taglineFont } from "@/lib/fonts/tagline-font";
 import { LANDING_COPY } from "@/lib/landing/landingCopy";
+import { burstSideConfetti } from "@/lib/landing/burstConfetti";
 import {
   motion,
+  useMotionValueEvent,
   useTransform,
   type MotionValue,
 } from "framer-motion";
@@ -52,6 +54,9 @@ function MarqueeBlocks({ text }: { text: string }) {
     </>
   );
 }
+
+/** Reveal value at which the last collection pill has fully appeared (see `CollectionPill`). */
+const PILLS_FULLY_SHOWN = 0.45 + 2 * 0.12 + 0.25;
 
 const DEFAULT_METRICS: BannerSliderMetrics = {
   sectionHeight: 800,
@@ -101,6 +106,14 @@ export function LandingHeroSection({ scrollProgress }: LandingHeroSectionProps) 
   const introOpacity = useTransform(frame, (f) => f.introOpacity);
 
   const lineReveal = useTransform(scrollProgress, [0.42, 0.92], [0, 1]);
+
+  const burstFiredRef = useRef(false);
+  useMotionValueEvent(lineReveal, "change", (p) => {
+    if (p >= PILLS_FULLY_SHOWN && !burstFiredRef.current) {
+      burstFiredRef.current = true;
+      void burstSideConfetti();
+    }
+  });
 
   return (
     <section
