@@ -138,6 +138,18 @@ const easeOut = (t: number) => {
   return 1 - (1 - x) * (1 - x);
 };
 
+const smoothstep = (t: number) => {
+  const x = Math.min(1, Math.max(0, t));
+  return x * x * (3 - 2 * x);
+};
+
+/** Phase where the cards reach their row slots (still turned). */
+const SPREAD_END = 0.55;
+/** Phase where the turned cards start opening flat. */
+const FLATTEN_START = 0.66;
+/** Bookshelf turn held between spreading and opening. */
+const SHELF_ANGLE = 30;
+
 function ProductRailCardContent({ product }: { product: ProductDetail }) {
   const image = product.images[0];
   const href =
@@ -188,11 +200,18 @@ function TrendingCard({
   /** Closed = every card stacked on the row center, turned away in depth. */
   const stackX = -(index - (count - 1) / 2) * step;
 
-  const x = useTransform(phase, (p) => stackX * (1 - easeOut(p)));
-  const z = useTransform(phase, (p) => index * 10 * (1 - easeOut(p)));
-  const rotateY = useTransform(phase, (p) => 70 * (1 - easeOut(p)));
-  const scale = useTransform(phase, (p) => 0.5 + 0.5 * easeOut(p));
-  const opacity = useTransform(phase, (p) => easeOut(p));
+  /** Spread first while still turned like books on a shelf, then open flat at the end. */
+  const spread = (p: number) => easeOut(p / SPREAD_END);
+  const x = useTransform(phase, (p) => stackX * (1 - spread(p)));
+  const z = useTransform(phase, (p) => index * 10 * (1 - spread(p)));
+  const rotateY = useTransform(phase, (p) => {
+    if (p < SPREAD_END) {
+      return 70 - (70 - SHELF_ANGLE) * spread(p);
+    }
+    return SHELF_ANGLE * (1 - smoothstep((p - FLATTEN_START) / (1 - FLATTEN_START)));
+  });
+  const scale = useTransform(phase, (p) => 0.5 + 0.5 * spread(p));
+  const opacity = useTransform(phase, (p) => easeOut(p / 0.45));
 
   return (
     <motion.li
@@ -203,6 +222,7 @@ function TrendingCard({
         rotateY,
         scale,
         opacity,
+        transformPerspective: 1000,
         transformStyle: "preserve-3d",
         willChange: "transform, opacity",
       }}
@@ -275,7 +295,6 @@ export function FashionTrendingLayers({
           style={{
             width: `min(90vw, ${rail.length * 11}rem)`,
             gridTemplateColumns: `repeat(${rail.length}, minmax(0, 1fr))`,
-            perspective: 1000,
             transformStyle: "preserve-3d",
           }}
         >
