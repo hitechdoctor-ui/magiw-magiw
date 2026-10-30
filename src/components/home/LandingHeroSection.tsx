@@ -15,6 +15,7 @@ import {
   useTransform,
   type MotionValue,
 } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import { useLayoutEffect, useRef, useState } from "react";
 import "@/styles/landing-hero-bridge.css";
@@ -206,6 +207,14 @@ export function LandingHeroSection({ scrollProgress }: LandingHeroSectionProps) 
               ["--overlay-content-height" as string]: overlayContentHeight,
             }}
           >
+            <Image
+              src="/brand/magiw-angel-mark.png"
+              alt=""
+              width={419}
+              height={551}
+              aria-hidden
+              className="banner-overlay-emblem"
+            />
             <motion.div
               className="banner-overlay-marquee marquee-block-node autoplay-infinite marquee-x rtl-direction scheme-scheme-4861db02-33da-4a19-a243-54306bc3e5d3"
               data-banner-slider-marquee="true"

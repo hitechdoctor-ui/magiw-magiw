@@ -190,6 +190,22 @@
   }
 }
 
+.landing-banner-section .banner-overlay-emblem {
+  position: absolute;
+  z-index: 0;
+  left: 50%;
+  bottom: calc(100% + var(--announcement-height, 0px));
+  width: min(40vw, 340px);
+  height: auto;
+  transform: translate(-50%, 58%);
+  pointer-events: none;
+  user-select: none;
+}
+
+.landing-banner-section .banner-overlay-marquee {
+  z-index: 1;
+}
+
 .landing-banner-section .marquee-block-node-inner {
   display: flex;
   width: max-content;
