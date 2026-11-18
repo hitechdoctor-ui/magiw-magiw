@@ -130,3 +130,32 @@ export async function listSubscribers(): Promise<LaunchSubscriber[]> {
 
   return readLocalSubscribers();
 }
+
+/** Looks up a launch discount code. Returns its percent, or null if unknown. */
+export async function findDiscountPercentByCode(
+  code: string,
+): Promise<number | null> {
+  const normalized = code.trim().toUpperCase();
+  if (!normalized || normalized.length > 40) return null;
+
+  if (isAdminStorageConfigured()) {
+    const admin = createAdminClient();
+    if (!admin) return null;
+
+    const { data, error } = await admin
+      .from("launch_subscribers")
+      .select("discount_percent")
+      .eq("discount_code", normalized)
+      .maybeSingle();
+
+    if (error) {
+      console.error("[findDiscountPercentByCode]", error);
+      return null;
+    }
+    return data ? (data.discount_percent ?? DISCOUNT_PERCENT) : null;
+  }
+
+  const rows = await readLocalSubscribers();
+  const found = rows.find((row) => row.discount_code.toUpperCase() === normalized);
+  return found ? found.discount_percent : null;
+}

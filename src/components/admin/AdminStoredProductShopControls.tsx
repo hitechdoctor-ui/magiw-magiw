@@ -30,7 +30,7 @@ export function AdminStoredProductShopControls({
         body: JSON.stringify({ is_active: isActive }),
       });
       if (response.status === 401) {
-        window.location.assign("/admin");
+        router.replace("/admin");
         return;
       }
       if (!response.ok) {
@@ -56,7 +56,7 @@ export function AdminStoredProductShopControls({
         credentials: "same-origin",
       });
       if (response.status === 401) {
-        window.location.assign("/admin");
+        router.replace("/admin");
         return;
       }
       if (!response.ok) {

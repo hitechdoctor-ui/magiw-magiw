@@ -40,6 +40,7 @@ export default async function AdminProductsPage({
 
       <div className="mt-10">
         <AiProductCopilot
+          key={`${editId}|${startFresh}`}
           editProductId={editId || undefined}
           startFresh={startFresh}
         />

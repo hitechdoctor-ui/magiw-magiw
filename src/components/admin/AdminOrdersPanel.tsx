@@ -34,8 +34,26 @@ export function AdminOrdersPanel({ products }: AdminOrdersPanelProps) {
   }, [router]);
 
   useEffect(() => {
-    void loadOrders();
-  }, [loadOrders]);
+    let cancelled = false;
+    fetch("/api/admin/orders", { credentials: "same-origin" })
+      .then(async (response) => {
+        if (cancelled) return;
+        if (response.status === 401) {
+          router.replace("/admin");
+          return;
+        }
+        const data = (await response.json()) as { orders: CheckoutOrder[] };
+        if (cancelled) return;
+        setOrders(data.orders ?? []);
+        setLoading(false);
+      })
+      .catch(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [router]);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">

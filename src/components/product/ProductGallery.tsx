@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const THUMB_LABELS = ["Μπροστά", "Πίσω", "Λεπτομέρεια"];
 
@@ -21,12 +21,15 @@ export function ProductGallery({
   heroImage,
 }: ProductGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [syncedHero, setSyncedHero] = useState<string | undefined>(undefined);
 
-  useEffect(() => {
-    if (!heroImage) return;
-    const idx = images.indexOf(heroImage);
+  // Follow the selected color's hero image (adjust state during render,
+  // React's recommended alternative to a syncing effect).
+  if (heroImage !== syncedHero) {
+    setSyncedHero(heroImage);
+    const idx = heroImage ? images.indexOf(heroImage) : -1;
     if (idx >= 0) setActiveIndex(idx);
-  }, [heroImage, images]);
+  }
 
   const activeImage =
     heroImage && images.includes(heroImage)

@@ -1,4 +1,5 @@
 import { AppProviders } from "@/components/providers/AppProviders";
+import { SITE } from "@/lib/site";
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import "./globals.css";
@@ -17,15 +18,52 @@ const cormorant = Cormorant_Garamond({
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
   viewportFit: "cover",
   themeColor: "#000000",
 };
 
 export const metadata: Metadata = {
-  title: "MAGIW MAGIW",
-  description: "Handmade Atelier & Custom Design · magiwmagiw.gr",
+  metadataBase: new URL(SITE.url),
+  title: {
+    default: "MAGIW MAGIW · Χειροποίητο Atelier Μόδας",
+    template: "%s | MAGIW MAGIW",
+  },
+  description: SITE.description,
+  keywords: [
+    "MAGIW MAGIW",
+    "χειροποίητα ρούχα",
+    "atelier μόδας",
+    "custom design",
+    "γυναικεία ρούχα",
+    "ανδρικά ρούχα",
+    "παιδικά ρούχα",
+    "ελληνική μόδα",
+  ],
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: SITE.name,
+    locale: SITE.locale,
+    alternateLocale: ["en_US"],
+    url: "/",
+    title: "MAGIW MAGIW · Χειροποίητο Atelier Μόδας",
+    description: SITE.description,
+    images: [{ url: SITE.ogImage, alt: "MAGIW MAGIW" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "MAGIW MAGIW · Χειροποίητο Atelier Μόδας",
+    description: SITE.description,
+    images: [SITE.ogImage],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+  },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+  },
   applicationName: "MAGIW MAGIW",
   authors: [{ name: "HitechDoctor" }],
   creator: "HitechDoctor",

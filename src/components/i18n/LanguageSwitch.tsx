@@ -17,7 +17,7 @@ export function LanguageSwitch({
   variant = "site",
   className = "",
 }: LanguageSwitchProps) {
-  const { locale, toggleLocale, t } = useLocale();
+  const { toggleLocale, t } = useLocale();
 
   return (
     <button

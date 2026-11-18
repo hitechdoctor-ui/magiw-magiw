@@ -4,6 +4,7 @@ import {
   getProductDraftPreviewByIdAsync,
 } from "@/lib/data/products-server";
 import { isAdminAuthenticated } from "@/lib/admin/session";
+import { JsonLd, productJsonLd } from "@/lib/seo/json-ld";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -37,14 +38,27 @@ export async function generateMetadata({
   const resolved = await resolveProduct(id, preview);
 
   if (!resolved) {
-    return { title: "Product Not Found | MAGIW MAGIW" };
+    return { title: "Δεν βρέθηκε", robots: { index: false, follow: false } };
   }
 
-  const suffix = resolved.draftPreview ? " · Πρόχειρο" : "";
+  const { product, draftPreview } = resolved;
+  const suffix = draftPreview ? " · Πρόχειρο" : "";
+  const description = product.description?.slice(0, 160) ?? undefined;
+  const canonical = `/product/${product.slug}`;
+  const images = product.images.slice(0, 4).map((url) => ({ url, alt: product.name }));
   return {
-    title: `${resolved.product.name}${suffix} | MAGIW MAGIW`,
-    description: resolved.product.description ?? undefined,
-    robots: resolved.draftPreview ? { index: false, follow: false } : undefined,
+    title: `${product.name}${suffix}`,
+    description,
+    alternates: { canonical },
+    openGraph: {
+      type: "website",
+      url: canonical,
+      title: product.name,
+      description,
+      images,
+    },
+    twitter: { card: "summary_large_image", title: product.name, description },
+    robots: draftPreview ? { index: false, follow: false } : undefined,
   };
 }
 
@@ -75,6 +89,7 @@ export default async function ProductPage({
 
   return (
     <div className="min-h-screen bg-white text-neutral-900">
+      {!draftPreview && <JsonLd data={productJsonLd(product)} />}
       {draftPreview && (
         <div className="border-b border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm text-amber-950">
           <span className="font-medium">Προεπισκόπηση πρόχειρου</span> — δεν

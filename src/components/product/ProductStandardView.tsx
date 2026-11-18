@@ -19,7 +19,6 @@ export function ProductStandardView({
   styleWithGallery,
   hasTryOn = false,
 }: ProductStandardViewProps) {
-  const colorOptions = product.colors ?? [];
   const [selectedColor, setSelectedColor] = useState("");
 
   const heroImage = useMemo(() => {

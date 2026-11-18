@@ -3,11 +3,13 @@
 import { CartLineList } from "@/components/cart/CartLineList";
 import { useCart } from "@/components/cart/CartProvider";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { CHECKOUT_DRAFT_KEY } from "@/lib/checkout/constants";
 import {
-  CHECKOUT_DRAFT_KEY,
-  CHECKOUT_FREE_SHIPPING_FROM_CENTS,
-  CHECKOUT_SHIPPING_CENTS,
-} from "@/lib/checkout/constants";
+  discountCentsFor,
+  looksLikeLaunchDiscountCode,
+  shippingCentsFor,
+  totalCentsFor,
+} from "@/lib/checkout/pricing-rules";
 import {
   emptyCheckoutDraft,
   type CheckoutDraft,
@@ -15,35 +17,22 @@ import {
 } from "@/lib/checkout/types";
 import { formatPricePrecise } from "@/lib/utils/format";
 import Link from "next/link";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { useHydrated, useStoredState } from "@/lib/hooks/useStoredState";
+import { FormEvent, useMemo, useState } from "react";
 
 const STEPS: CheckoutStep[] = ["contact", "shipping", "review", "payment"];
 
-function loadDraft(): CheckoutDraft {
-  if (typeof window === "undefined") return emptyCheckoutDraft();
-  try {
-    const raw = sessionStorage.getItem(CHECKOUT_DRAFT_KEY);
-    if (!raw) return emptyCheckoutDraft();
-    return { ...emptyCheckoutDraft(), ...JSON.parse(raw) };
-  } catch {
-    return emptyCheckoutDraft();
-  }
+const EMPTY_DRAFT: CheckoutDraft = emptyCheckoutDraft();
+
+function parseDraft(raw: string): CheckoutDraft {
+  const parsed: unknown = JSON.parse(raw);
+  if (!parsed || typeof parsed !== "object") return EMPTY_DRAFT;
+  return { ...EMPTY_DRAFT, ...(parsed as Partial<CheckoutDraft>) };
 }
 
-function saveDraft(draft: CheckoutDraft) {
-  try {
-    sessionStorage.setItem(CHECKOUT_DRAFT_KEY, JSON.stringify(draft));
-  } catch {
-    /* ignore */
-  }
-}
-
+/** UI preview only — the server re-validates the code and recomputes every amount. */
 function applyDiscount(subtotalCents: number, code: string) {
-  const normalized = code.trim().toUpperCase();
-  if (normalized.startsWith("MAGIW5-") && normalized.length >= 10) {
-    return Math.round(subtotalCents * 0.05);
-  }
-  return 0;
+  return looksLikeLaunchDiscountCode(code) ? discountCentsFor(subtotalCents, 5) : 0;
 }
 
 export function CheckoutFlow() {
@@ -52,32 +41,21 @@ export function CheckoutFlow() {
     useCart();
 
   const [step, setStep] = useState<CheckoutStep>("contact");
-  const [draft, setDraft] = useState<CheckoutDraft>(emptyCheckoutDraft);
-  const [hydrated, setHydrated] = useState(false);
+  const [draft, setDraft] = useStoredState<CheckoutDraft>(
+    CHECKOUT_DRAFT_KEY,
+    EMPTY_DRAFT,
+    { storage: "session", parse: parseDraft },
+  );
+  const hydrated = useHydrated();
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-
-  useEffect(() => {
-    setDraft(loadDraft());
-    setHydrated(true);
-  }, []);
-
-  useEffect(() => {
-    if (hydrated) saveDraft(draft);
-  }, [draft, hydrated]);
 
   const discountCents = useMemo(
     () => applyDiscount(subtotalCents, draft.discountCode),
     [subtotalCents, draft.discountCode],
   );
-  const shippingCents =
-    count > 0 && subtotalCents < CHECKOUT_FREE_SHIPPING_FROM_CENTS
-      ? CHECKOUT_SHIPPING_CENTS
-      : 0;
-  const totalCents = Math.max(
-    0,
-    subtotalCents + shippingCents - discountCents,
-  );
+  const shippingCents = shippingCentsFor(subtotalCents, count);
+  const totalCents = totalCentsFor(subtotalCents, shippingCents, discountCents);
 
   const stepLabels: Record<CheckoutStep, string> = {
     contact: t("checkoutStepContact"),
@@ -133,16 +111,8 @@ export function CheckoutFlow() {
       const response = await fetch("/api/checkout/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          draft,
-          lines,
-          subtotalCents,
-          shippingCents,
-          discountCents,
-          totalCents,
-          currency,
-          locale,
-        }),
+        // Amounts are computed on the server from the catalog.
+        body: JSON.stringify({ draft, lines, locale }),
       });
 
       if (!response.ok) {
@@ -150,7 +120,7 @@ export function CheckoutFlow() {
       }
 
       clearCart();
-      sessionStorage.removeItem(CHECKOUT_DRAFT_KEY);
+      setDraft(EMPTY_DRAFT);
       setStep("done");
     } catch {
       setError(t("launchError"));

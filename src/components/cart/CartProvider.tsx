@@ -1,11 +1,11 @@
 "use client";
 
+import { useHydrated, useStoredState } from "@/lib/hooks/useStoredState";
 import type { ProductDetail } from "@/lib/types/database";
 import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -51,32 +51,31 @@ type CartContextValue = {
 
 const CartContext = createContext<CartContextValue | null>(null);
 
+const EMPTY_CART: CartLine[] = [];
+
+function parseStoredCart(raw: string): CartLine[] {
+  const parsed: unknown = JSON.parse(raw);
+  if (!Array.isArray(parsed)) return EMPTY_CART;
+  return parsed.filter(
+    (line): line is CartLine =>
+      Boolean(line) &&
+      typeof line === "object" &&
+      typeof (line as CartLine).id === "string" &&
+      typeof (line as CartLine).productSlug === "string" &&
+      typeof (line as CartLine).price_cents === "number",
+  );
+}
+
 function newLineId(slug: string, size: string) {
   return `${slug}-${size}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [lines, setLines] = useState<CartLine[]>([]);
-  const [hydrated, setHydrated] = useState(false);
+  const [lines, setLines] = useStoredState<CartLine[]>(STORAGE_KEY, EMPTY_CART, {
+    parse: parseStoredCart,
+  });
+  const hydrated = useHydrated();
   const [cartOpen, setCartOpen] = useState(false);
-
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw) as CartLine[];
-        if (Array.isArray(parsed)) setLines(parsed);
-      }
-    } catch {
-      /* ignore corrupt storage */
-    }
-    setHydrated(true);
-  }, []);
-
-  useEffect(() => {
-    if (!hydrated) return;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(lines));
-  }, [lines, hydrated]);
 
   const openCart = useCallback(() => setCartOpen(true), []);
 
@@ -85,7 +84,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setLines((prev) => [...prev, { ...line, id: newLineId(line.productSlug, line.size) }]);
       if (options?.openCart !== false) setCartOpen(true);
     },
-    [],
+    [setLines],
   );
 
   const addLines = useCallback(
@@ -99,7 +98,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       ]);
       if (options?.openCart !== false) setCartOpen(true);
     },
-    [],
+    [setLines],
   );
 
   const addProduct = useCallback(
@@ -122,9 +121,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const removeLine = useCallback((id: string) => {
     setLines((prev) => prev.filter((line) => line.id !== id));
-  }, []);
+  }, [setLines]);
 
-  const clearCart = useCallback(() => setLines([]), []);
+  const clearCart = useCallback(() => setLines(EMPTY_CART), [setLines]);
 
   const currency = lines[0]?.currency ?? "EUR";
   const subtotalCents = lines.reduce((sum, line) => sum + line.price_cents, 0);

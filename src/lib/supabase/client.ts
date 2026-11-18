@@ -14,7 +14,6 @@ export function createClient() {
 
   try {
     // Throws if url is not a valid http(s) URL.
-    // eslint-disable-next-line no-new
     new URL(url);
   } catch {
     throw new Error("NEXT_PUBLIC_SUPABASE_URL must be a valid HTTP or HTTPS URL.");

@@ -15,9 +15,13 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: LegalPageProps): Promise<Metadata> {
   const { slug } = await params;
-  if (!isLegalSlug(slug)) return { title: "MAGIW MAGIW" };
+  if (!isLegalSlug(slug)) return { title: "Νομικές πληροφορίες" };
   const doc = LEGAL_PAGES.el[slug];
-  return { title: `${doc.title} | MAGIW MAGIW`, description: doc.summary };
+  return {
+    title: doc.title,
+    description: doc.summary,
+    alternates: { canonical: `/legal/${slug}` },
+  };
 }
 
 export default async function LegalPage({ params }: LegalPageProps) {

@@ -1,10 +1,12 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { LanguageSwitch } from "@/components/i18n/LanguageSwitch";
 import { FormEvent, useState } from "react";
 
 export function AdminLoginClient() {
   const [password, setPassword] = useState("");
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -28,6 +30,13 @@ export function AdminLoginClient() {
         return;
       }
 
+      if (response.status === 429) {
+        setError(
+          "Πολλές λανθασμένες προσπάθειες. Περίμενε 15 λεπτά και δοκίμασε ξανά.",
+        );
+        return;
+      }
+
       if (!response.ok) {
         setError(
           "Λάθος κωδικός. Ο online κωδικός είναι αυτός του ADMIN_PASSWORD στο hosting (όχι απαραίτητα το .env.local του laptop). Χωρίς εισαγωγικά, χωρίς κενά στο τέλος — μετά redeploy.",
@@ -35,7 +44,8 @@ export function AdminLoginClient() {
         return;
       }
 
-      window.location.assign("/admin/dashboard");
+      router.replace("/admin/dashboard");
+      router.refresh();
     } catch {
       setError("Σφάλμα σύνδεσης.");
     } finally {

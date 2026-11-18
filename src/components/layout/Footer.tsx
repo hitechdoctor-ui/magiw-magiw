@@ -1,5 +1,6 @@
 "use client";
 
+import { SITE } from "@/lib/site";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { LEGAL_PAGES, LEGAL_SLUGS } from "@/lib/legal/legalPages";
 import Image from "next/image";
@@ -29,7 +30,7 @@ export function Footer() {
         </p>
         <div className="flex flex-col items-start gap-2 sm:items-end">
           <a
-            href="https://instagram.com"
+            href={SITE.instagramUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="text-[10px] uppercase tracking-[0.25em] text-neutral-500 transition hover:text-neutral-900"

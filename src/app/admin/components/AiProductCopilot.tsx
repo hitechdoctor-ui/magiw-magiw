@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import {
   AdminSortableImageGrid,
   reorderByIndex,
@@ -159,6 +160,7 @@ export function AiProductCopilot({
   editProductId,
   startFresh = false,
 }: AiProductCopilotProps) {
+  const router = useRouter();
   const [messages, setMessages] = useState<ChatMessage[]>([STARTER]);
   const [input, setInput] = useState("");
   const [pendingImages, setPendingImages] = useState<PendingImage[]>([]);
@@ -180,7 +182,9 @@ export function AiProductCopilot({
   const [gallerySaving, setGallerySaving] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const pendingImagesRef = useRef(pendingImages);
-  pendingImagesRef.current = pendingImages;
+  useEffect(() => {
+    pendingImagesRef.current = pendingImages;
+  }, [pendingImages]);
 
   useEffect(() => {
     return () => {
@@ -191,15 +195,9 @@ export function AiProductCopilot({
   }, []);
 
   useEffect(() => {
-    if (startFresh) {
-      clearCopilotWorkbench();
-      setEditingProductId(null);
-      setLastProduct(null);
-      setLastDraft(null);
-      setMessages([STARTER]);
-      setInput("");
-      setError(null);
-    }
+    // The page remounts this component (via `key`) when ?new / ?edit change,
+    // so React state already starts fresh; only clear the persisted copy here.
+    if (startFresh) clearCopilotWorkbench();
 
     const saved = startFresh ? null : loadCopilotWorkbench();
 
@@ -250,7 +248,6 @@ export function AiProductCopilot({
         }
       }
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount / edit / fresh only
   }, [editProductId, startFresh]);
 
   useEffect(() => {
@@ -262,16 +259,24 @@ export function AiProductCopilot({
     });
   }, [messages, lastProduct, lastDraft, workbenchHydrated]);
 
-  useEffect(() => {
+  // Keep the editable gallery in sync with the loaded product unless the
+  // admin has unsaved reordering (state adjusted during render, no effect).
+  const [gallerySyncedFrom, setGallerySyncedFrom] = useState<{
+    product: StoredProduct | null;
+    dirty: boolean;
+  }>({ product: null, dirty: false });
+  if (
+    gallerySyncedFrom.product !== lastProduct ||
+    gallerySyncedFrom.dirty !== galleryDirty
+  ) {
+    setGallerySyncedFrom({ product: lastProduct, dirty: galleryDirty });
     if (!lastProduct) {
       setSavedGallery([]);
-      setGalleryDirty(false);
-      return;
-    }
-    if (!galleryDirty) {
+      if (galleryDirty) setGalleryDirty(false);
+    } else if (!galleryDirty) {
       setSavedGallery([...(lastProduct.image_urls ?? [])]);
     }
-  }, [lastProduct, galleryDirty]);
+  }
 
   const loadDraftIntoWorkbench = (product: StoredProduct) => {
     setEditingProductId(product.id);
@@ -302,7 +307,7 @@ export function AiProductCopilot({
     setError(null);
     clearSelectedImages();
     if (typeof window !== "undefined") {
-      window.location.assign("/admin/products?new=1");
+      router.push("/admin/products?new=1");
     }
   };
 
@@ -335,7 +340,7 @@ export function AiProductCopilot({
         error?: string;
       };
       if (response.status === 401) {
-        window.location.assign("/admin");
+        router.replace("/admin");
         return;
       }
       if (!response.ok || !data.product) {
@@ -424,7 +429,7 @@ export function AiProductCopilot({
       };
 
       if (response.status === 401) {
-        window.location.href = "/admin";
+        router.replace("/admin");
         return;
       }
 
@@ -494,7 +499,7 @@ export function AiProductCopilot({
         error?: string;
       };
       if (response.status === 401) {
-        window.location.assign("/admin");
+        router.replace("/admin");
         return;
       }
       if (!response.ok || !data.product) {

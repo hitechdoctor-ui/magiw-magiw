@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import type { AdminOrderProductOption } from "@/lib/orders/admin-create";
 import { formatPricePrecise } from "@/lib/utils/format";
 import { FormEvent, useMemo, useState } from "react";
@@ -34,6 +35,7 @@ export function AdminCreateOrderForm({
   onCreated,
   onCancel,
 }: AdminCreateOrderFormProps) {
+  const router = useRouter();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -124,7 +126,7 @@ export function AdminCreateOrderForm({
 
       const data = (await response.json()) as { error?: string; ok?: boolean };
       if (response.status === 401) {
-        window.location.assign("/admin");
+        router.replace("/admin");
         return;
       }
       if (!response.ok) {

@@ -9,13 +9,13 @@ import {
   translate,
   type MessageKey,
 } from "@/lib/i18n/messages";
+import { useHydrated, useStoredState } from "@/lib/hooks/useStoredState";
 import {
   createContext,
   useCallback,
   useContext,
   useEffect,
   useMemo,
-  useState,
   type ReactNode,
 } from "react";
 
@@ -29,43 +29,36 @@ type LocaleContextValue = {
 
 const LocaleContext = createContext<LocaleContextValue | null>(null);
 
-function readStoredLocale(): Locale {
-  if (typeof window === "undefined") return DEFAULT_LOCALE;
-  try {
-    const stored = localStorage.getItem(LOCALE_STORAGE_KEY);
-    if (stored === "en" || stored === "el") return stored;
-  } catch {
-    /* ignore */
-  }
-  return DEFAULT_LOCALE;
+function parseLocale(raw: string): Locale {
+  return raw === "en" || raw === "el" ? raw : DEFAULT_LOCALE;
+}
+
+function serializeLocale(locale: Locale): string {
+  return locale;
 }
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(DEFAULT_LOCALE);
-  const [hydrated, setHydrated] = useState(false);
+  const [locale, setLocaleState] = useStoredState<Locale>(
+    LOCALE_STORAGE_KEY,
+    DEFAULT_LOCALE,
+    { parse: parseLocale, serialize: serializeLocale },
+  );
+  const hydrated = useHydrated();
 
   useEffect(() => {
-    setLocaleState(readStoredLocale());
-    setHydrated(true);
-  }, []);
-
-  useEffect(() => {
-    if (!hydrated) return;
     document.documentElement.lang = locale;
-    try {
-      localStorage.setItem(LOCALE_STORAGE_KEY, locale);
-    } catch {
-      /* ignore */
-    }
-  }, [locale, hydrated]);
+  }, [locale]);
 
-  const setLocale = useCallback((next: Locale) => {
-    setLocaleState(next);
-  }, []);
+  const setLocale = useCallback(
+    (next: Locale) => {
+      setLocaleState(next);
+    },
+    [setLocaleState],
+  );
 
   const toggleLocale = useCallback(() => {
     setLocaleState((prev) => (prev === "el" ? "en" : "el"));
-  }, []);
+  }, [setLocaleState]);
 
   const t = useCallback(
     (key: MessageKey, vars?: Record<string, string | number>) =>

@@ -4,7 +4,8 @@ import { getPublishedCatalogExtras } from "@/lib/data/products-server";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Συλλογή | MAGIW MAGIW",
+  title: "Συλλογή",
+  alternates: { canonical: "/shop" },
   description: "Editorial και Atelier συλλογές MAGIW MAGIW.",
 };
 

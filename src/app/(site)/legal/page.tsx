@@ -2,7 +2,8 @@ import { LegalHubView } from "@/components/legal/LegalDocumentView";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Νομικές πληροφορίες | MAGIW MAGIW",
+  title: "Νομικές πληροφορίες",
+  alternates: { canonical: "/legal" },
   description: "Όροι χρήσης, απόρρητο, cookies, επιστροφές, αποστολές, πληρωμές και στοιχεία επιχείρησης.",
 };
 

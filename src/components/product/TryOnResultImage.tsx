@@ -1,7 +1,7 @@
 "use client";
 
 import { portraitDisplayRotation } from "@/lib/utils/normalize-user-image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type TryOnResultImageProps = {
   src: string;
@@ -10,10 +10,13 @@ type TryOnResultImageProps = {
 
 export function TryOnResultImage({ src, alt }: TryOnResultImageProps) {
   const [rotationDeg, setRotationDeg] = useState(0);
+  const [rotationFor, setRotationFor] = useState(src);
 
-  useEffect(() => {
+  // New image → reset manual rotation (state adjusted during render).
+  if (rotationFor !== src) {
+    setRotationFor(src);
     setRotationDeg(0);
-  }, [src]);
+  }
 
   return (
     <div className="relative mx-auto mt-3 w-full max-w-sm">

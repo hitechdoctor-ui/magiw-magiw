@@ -1,13 +1,23 @@
 import { MagiwAtelierHome } from "@/components/home/MagiwAtelierHome";
+import {
+  JsonLd,
+  organizationJsonLd,
+  websiteJsonLd,
+} from "@/lib/seo/json-ld";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "MAGIW MAGIW",
-  description: "Handmade Atelier & Custom Design · magiwmagiw.gr",
+  alternates: { canonical: "/" },
 };
 
 export default function Home() {
-  return <MagiwAtelierHome />;
+  return (
+    <>
+      <JsonLd data={organizationJsonLd()} />
+      <JsonLd data={websiteJsonLd()} />
+      <MagiwAtelierHome />
+    </>
+  );
 }

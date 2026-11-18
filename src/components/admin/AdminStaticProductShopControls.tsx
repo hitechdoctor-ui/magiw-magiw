@@ -39,7 +39,7 @@ export function AdminStaticProductShopControls({
         body: JSON.stringify({ visible_in_eshop: show }),
       });
       if (response.status === 401) {
-        window.location.assign("/admin");
+        router.replace("/admin");
         return;
       }
       if (!response.ok) {
@@ -65,7 +65,7 @@ export function AdminStaticProductShopControls({
         credentials: "same-origin",
       });
       if (response.status === 401) {
-        window.location.assign("/admin");
+        router.replace("/admin");
         return;
       }
       if (!response.ok) {
