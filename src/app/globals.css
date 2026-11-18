@@ -8,8 +8,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-dm-sans);
-  --font-serif: var(--font-cormorant);
+  --font-sans: var(--font-brand-sans);
+  --font-serif: var(--font-brand-serif);
 }
 
 body {
@@ -127,7 +127,7 @@ html.lookbook-active body {
 }
 
 .font-serif {
-  font-family: var(--font-cormorant), Georgia, "Times New Roman", serif;
+  font-family: var(--font-brand-serif), Georgia, "Times New Roman", serif;
 }
 
 .post-media {

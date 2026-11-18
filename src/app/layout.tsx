@@ -1,18 +1,27 @@
 import { AppProviders } from "@/components/providers/AppProviders";
 import { SITE } from "@/lib/site";
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, DM_Sans } from "next/font/google";
+import { EB_Garamond, Manrope } from "next/font/google";
 import "./globals.css";
 
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
-  subsets: ["latin"],
+/**
+ * Brand typography — both families ship full Greek + Latin glyphs, so Greek
+ * copy renders in the brand fonts instead of falling back to system fonts.
+ * - Manrope: clean modern sans for UI, navigation and body copy.
+ * - EB Garamond: classic editorial serif for headlines and storytelling.
+ */
+const brandSans = Manrope({
+  variable: "--font-brand-sans",
+  subsets: ["latin", "latin-ext", "greek"],
+  display: "swap",
 });
 
-const cormorant = Cormorant_Garamond({
-  variable: "--font-cormorant",
-  subsets: ["latin"],
+const brandSerif = EB_Garamond({
+  variable: "--font-brand-serif",
+  subsets: ["latin", "latin-ext", "greek"],
   weight: ["400", "500", "600"],
+  style: ["normal", "italic"],
+  display: "swap",
 });
 
 export const viewport: Viewport = {
@@ -93,7 +102,7 @@ export default function RootLayout({
     <html
       lang="el"
       suppressHydrationWarning
-      className={`${dmSans.variable} ${cormorant.variable} h-full`}
+      className={`${brandSans.variable} ${brandSerif.variable} h-full`}
     >
       <body className="min-h-full bg-neutral-950 font-sans text-neutral-950 antialiased">
         <AppProviders>{children}</AppProviders>

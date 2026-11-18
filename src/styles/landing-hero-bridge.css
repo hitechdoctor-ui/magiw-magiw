@@ -268,3 +268,10 @@
     animation: none;
   }
 }
+
+/* Brand typography: editorial serif headline (Greek + Latin), sans for UI. */
+.landing-banner-section .slideshow-heading.heading-font {
+  font-family: var(--font-brand-serif), Georgia, serif;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
